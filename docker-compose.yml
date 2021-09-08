@@ -25,3 +25,21 @@ services:
       sh -c "mkdir -p node_modules/.cache && chmod -R 777 node_modules/.cache
              npm install &&
              npm start"
+  database:
+    image: "postgres"
+    restart: always
+    container_name: database
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=transcendance
+    expose:
+      - 5432
+  adminer:
+    image: "adminer"
+    restart: always
+    container_name: adminer
+    environment:
+      - ADMINER_DEFAULT_SERVER=database:5432
+    ports:
+      - 8080:8080
