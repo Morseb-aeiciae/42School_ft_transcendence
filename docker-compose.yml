@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  backend:
+    build: ./dockerfiles/backend/.
+    container_name: backend
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src/backend:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: >
+      sh -c "npm install &&
+             npm start"
