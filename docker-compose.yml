@@ -12,3 +12,16 @@ services:
     command: >
       sh -c "npm install &&
              npm start"
+  frontend:
+    build: ./dockerfiles/frontend/.
+    container_name: frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src/frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: >
+      sh -c "mkdir -p node_modules/.cache && chmod -R 777 node_modules/.cache
+             npm install &&
+             npm start"
