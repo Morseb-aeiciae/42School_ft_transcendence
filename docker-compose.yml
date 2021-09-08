@@ -4,7 +4,7 @@ services:
     build: ./dockerfiles/backend/.
     container_name: backend
     ports:
-      - 8080:8080
+      - 8081:8081
     volumes:
       - ./src/backend:/usr/src/app
       - /usr/src/app/node_modules
