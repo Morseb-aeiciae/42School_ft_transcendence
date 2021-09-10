@@ -14,24 +14,32 @@ services:
   backend:
     build:
       context: ./src/backend/
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
-      - 8081:8081
+      - 3001:3000
     volumes:
       - type: bind
         source: ./src/backend/
         target: /app
+      - type: volume
+        target: /app/node_modules
   db:
     image: postgres:13
     env_file:
       - ./src/db/.env
-    # build:
-    #   context: ./src/db/
-    #   dockerfile: Dockerfile.dev
-    # volumes:
-    #   - type: volume
-    #     source: ./src/dbtest/
-    #     target: /app/db
+    volumes:
+      - type: volume
+        source: dbtest
+        target: /app/db
+    expose:
+      - 5432:5432
+  adminer:
+    image: adminer
+    restart: always
+    # env_file:
+    #   - ./src/db/.env
+    ports:
+      - 3002:8080
   reverse-proxy:
     build:
       context: ./src/reverse-proxy
@@ -41,5 +49,5 @@ services:
     depends_on:
       - api
       - db
-# volumes:
-#   dbtest:
+volumes:
+  dbtest:

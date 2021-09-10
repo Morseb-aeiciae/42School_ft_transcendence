@@ -14,36 +14,37 @@ elif [ "$1" == "run" ]  ; then
 
     case $2 in
         "back") 
-            if [ "$3" == "dev" ]  ; then
-                docker compose -f docker-compose.dev.yml run backend
+            if [ "$3" == "prod" ]  ; then
+                docker compose -f docker-compose.prod.yml run -p80:3001 backend
             else
-                docker compose -f docker-compose.prod.yml run -p80:80 backend
+                docker compose -f docker-compose.dev.yml run --service-ports backend
             fi;;
         "front")
-            if [ "$3" == "dev" ]  ; then
-                docker compose -f docker-compose.dev.yml run frontend
+            if [ "$3" == "prod" ]  ; then
+                docker compose -f docker-compose.prod.yml run -p80:3000 frontend
             else
-                docker compose -f docker-compose.prod.yml run -p80:80 frontend
+                docker compose -f docker-compose.dev.yml run --service-ports frontend
             fi;;
         "db")
-            if [ "$3" == "dev" ]  ; then
-                docker compose -f docker-compose.dev.yml run db
-            else
+            if [ "$3" == "prod" ]  ; then
                 docker compose -f docker-compose.prod.yml run -p80:80 db
+            else
+                docker compose -f docker-compose.dev.yml run --service-ports db
             fi;;
         "proxy")
-            if [ "$3" == "dev" ]  ; then
-                docker compose -f docker-compose.dev.yml run reverse-proxy
-            else
+            if [ "$3" == "prod" ]  ; then
                 docker compose -f docker-compose.prod.yml run -p80:80 reverse-proxy
+            else
+                docker compose -f docker-compose.dev.yml run --service-ports reverse-proxy
             fi;;
     esac
 
 elif [ "$1" == "clear" ] ; then
     docker system prune -af
     docker volume prune -f
-    # rm -rf ./src/api/node_modules/
-    # rm -rf ./src/client/node_modules/
+    find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+    find . -name "dist" -type d -prune -exec rm -rf '{}' +
+
 
 elif [ "$1" == "ps" ] ; then
     docker compose -f docker-compose.dev.yml ps
@@ -53,7 +54,7 @@ elif [ "$1" == "info" ] ; then
     echo -e "|--------------------INFO SCRIPT-----------------------|";
     echo -e "./manag_docker.sh \t\t to ls docker images and docker containers";
     echo -e " ";
-    echo -e "./manag_docker.sh clear \t to delete all docker images, docker containers, docker volumes and dev folders for projects";
+    echo -e "./manag_docker.sh clear \t to delete all docker images, docker containers, docker volumes and dev folders for projects (which not running)";
     echo -e " ";
     echo -e "./manag_docker.sh go \t to launch the project";
     echo -e " ";

@@ -3,16 +3,15 @@ service:
     build:
       context: ./src/frontend
       dockerfile: Dockerfile.prod
-    restart:
-      unless-stopped
+    restart: unless-stopped
   backend:
     build:
       context: ./src/backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     env_file:
       - ./src/backend/.env
     environment:
-      NODE_ENV: production
+      - NODE_ENV: production
     depends_on:
       - db
     restart: unless-stopped
