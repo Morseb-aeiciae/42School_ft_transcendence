@@ -32,12 +32,12 @@ services:
         source: dbtest
         target: /app/db
     expose:
-      - 5432:5432
+      - 5432
   adminer:
     image: adminer
     restart: always
-    # env_file:
-    #   - ./src/db/.env
+    environment:
+      - ADMINER_DEFAULT_SERVER=db:5432
     ports:
       - 3002:8080
   reverse-proxy:
@@ -47,7 +47,6 @@ services:
     ports:
       - 80:80
     depends_on:
-      - api
       - db
 volumes:
   dbtest:
