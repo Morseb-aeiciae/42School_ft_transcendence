@@ -1,0 +1,40 @@
+service:
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./src/backend/.env
+    environment:
+      - NODE_ENV: production
+    depends_on:
+      - db
+    restart: unless-stopped
+  db:
+    image: postgres:13
+    volumes:
+      - type: volume
+        source: dbprod
+        target: /data/db
+    env_file:
+      - ./src/db/.env
+    restart: unless-stopped
+  reverse-proxy:
+    build:
+      context: ./reverse-proxy
+      dockerfile: Dockerfile.prod
+    ports:
+      - 80:80
+    depends_on:
+      - api
+      - db
+      - client
+    restart: unless-stopped
+volumes:
+  dbprod:
+    external: true
