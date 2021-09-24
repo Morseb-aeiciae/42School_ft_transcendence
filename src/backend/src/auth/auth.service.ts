@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { LoginDTO, RegisterDTO } from '../models/user.models';
@@ -21,9 +22,9 @@ export class AuthService {
       return user;
     } catch (e) {
       if (e.code === '23505') {
-        throw new ConflictException('Userbane has already been taken');
+        throw new ConflictException('Username has already been taken');
       }
-      throw e;
+      throw new InternalServerErrorException();
     }
   }
 
