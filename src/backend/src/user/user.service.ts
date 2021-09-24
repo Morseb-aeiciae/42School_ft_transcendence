@@ -10,12 +10,16 @@ export class UserService {
     @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
   ) {}
 
+  async findAll(): Promise<UserEntity[]> {
+    return await this.userRepo.find();
+  }
+
   async findByUsername(username: string): Promise<UserEntity> {
-    return this.userRepo.findOne({ where: { username } });
+    return await this.userRepo.findOne({ where: { username } });
   }
 
   async updateUser(username: string, data: UpdateUserDTO) {
     await this.userRepo.update({ username }, data);
-    return this.findByUsername(username);
+    return await this.findByUsername(username);
   }
 }

@@ -13,4 +13,9 @@ export class ProfileController {
     }
     return { profile: user };
   }
+
+  @Get()
+  async findAll() {
+    return await this.userService.findAll();
+  }
 }
