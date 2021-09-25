@@ -10,7 +10,8 @@ services:
         source: ./src/frontend/
         target: /app
       - type: volume
-        target: /app/node_modules
+        target: /app/cache/
+      #   target: /app/node_modules
   backend:
     build:
       context: ./src/backend/
