@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { User } from "../../../Interfaces";
 import AuthContext from "../../../context";
-import { Redirect } from "react-router";
+// import { Redirect } from "react-router";
 
 interface Props {}
 interface ContactsState {}
@@ -27,7 +27,7 @@ export default class Account extends Component {
             style={{ width: "200px", height: "200px" }}
             className="rounded-circle"
           />
-          <div>{user.userName}</div>
+          <div>{user.username}</div>
         </div>
       </>
     );
@@ -38,7 +38,7 @@ export default class Account extends Component {
         {user ? (
           <div>
             <img src={user.img} alt="img.user" />
-            <div>{user.userName}</div>
+            <div>{user.username}</div>
           </div>
         ) : (
           <Redirect to="/home" />

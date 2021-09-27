@@ -12,7 +12,7 @@ export default class Rules extends React.Component {
       // <>
       //   {user ? (
       //     <div>
-      //       <p>Hello {user.userName} !</p>
+      //       <p>Hello {user.username} !</p>
 
       //       <p>Ceci sont les règles du jeu.</p>
       //     </div>
@@ -23,7 +23,7 @@ export default class Rules extends React.Component {
       <div className="container-fluid">
         <h1 className="border-bottom  pb-3 mb-3">RULES SECTION</h1>
         <p>
-          Hello <span className="text-warning">{user.userName}</span>!
+          Hello <span className="text-warning">{user.username}</span>!
         </p>
         <p className="lead">Rules will be there soon !</p>
       </div>

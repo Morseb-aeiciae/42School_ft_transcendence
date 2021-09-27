@@ -1,11 +1,11 @@
 export default interface User {
   id: number;
-  userName: string;
+  username: string;
   img: string;
   win: number;
   loose: number;
   isLoggedIn: boolean;
-  History: any;
+  history: any;
   [propName: string]: any;
   [propName: number]: any;
 }

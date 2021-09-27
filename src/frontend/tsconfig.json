@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    // "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     // "allowJs": true,
     "skipLibCheck": true,
@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    // "target": "ES2016",
+    "target": "ES2016",
     "declaration": false,
     // "noImplicitAny": false,
     // "noImplicitAny": strict,

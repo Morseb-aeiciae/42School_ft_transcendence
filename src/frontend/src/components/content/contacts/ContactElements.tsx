@@ -13,13 +13,12 @@ interface Props {
 
 export default class ContactElements extends Component<Props> {
   render() {
-    console.log("elem: ", this.props);
     return (
       <>
         <div className="d-flex flex-row flex-wrap align-content-start">
           <div className="p-2">
             <div className="border">
-              <h4 className="text-center">{this.props.contact.userName}</h4>
+              <h4 className="text-center">{this.props.contact.username}</h4>
               <div>
                 <img
                   max-width="150"

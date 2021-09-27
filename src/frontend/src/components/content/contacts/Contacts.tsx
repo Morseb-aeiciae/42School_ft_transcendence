@@ -3,6 +3,10 @@ import ContactElements from "./ContactElements";
 import { User } from "../../../Interfaces";
 import { Loading } from "../..";
 
+/********************/
+import Data from "../../../#Test/Data";
+/********************/
+
 interface Props {
   contacts: User[];
   loaded: boolean;
@@ -22,77 +26,27 @@ export default class Contacts extends Component {
       loaded: false,
     };
 
-    /*
-     **  TO DELETE WHEN THE DB IS UP
-     ** setTimeout function
-     ** after 1 sec loading data - Test ok
-     ** (need to be test when db is linked)
-     */
+    /******************************************************/
+    // setTimeout(() => {
+    //   this.setState({
+    //     contacts: Data,
+    //     loaded: true,
+    //   });
+    // }, 1000);
+    /******************************************************/
+  }
 
-    /******************************************************/
-    setTimeout(() => {
-      this.setState({
-        contacts: [
-          {
-            id: 0,
-            userName: "user-name-0",
-            img: "https://randomuser.me/api/portraits/men/89.jpg",
-            win: 1,
-            loose: 0,
-            isLoggedIn: false,
-          },
-          {
-            id: 1,
-            userName: "user-name-1",
-            img: "https://randomuser.me/api/portraits/women/19.jpg",
-            win: 4,
-            loose: 3,
-            isLoggedIn: true,
-          },
-          {
-            id: 2,
-            userName: "user-name-2",
-            img: "https://randomuser.me/api/portraits/women/9.jpg",
-            win: 4,
-            loose: 3,
-            isLoggedIn: true,
-          },
-          {
-            id: 0,
-            userName: "user-name-3",
-            img: "https://randomuser.me/api/portraits/men/9.jpg",
-            win: 1,
-            loose: 0,
-            isLoggedIn: false,
-          },
-          {
-            id: 0,
-            userName: "user-name-0",
-            img: "https://randomuser.me/api/portraits/men/8.jpg",
-            win: 1,
-            loose: 0,
-            isLoggedIn: false,
-          },
-          {
-            id: 1,
-            userName: "user-name-1",
-            img: "https://randomuser.me/api/portraits/women/1.jpg",
-            win: 4,
-            loose: 3,
-            isLoggedIn: true,
-          },
-        ],
-        loaded: true,
-      });
-    }, 1000);
-    /******************************************************/
+  componentDidMount() {
+    console.log("apiContact");
   }
 
   deleteContact = (index: number) => {
     console.log("deleteContact, index:", index);
     const contacts = [...this.state.contacts];
     contacts.splice(index, 1);
-    this.setState({ contacts });
+    this.setState({ contacts }, () => {
+      console.log("Need to delete contact from db ?");
+    });
   };
 
   render() {

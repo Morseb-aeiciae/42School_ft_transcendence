@@ -1,46 +1,45 @@
 import React, { Component } from "react";
 import AuthContext from "../../context";
-import { BrowserRouter as Router, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface NavLeftProps {
-  userName: string;
+  username: string;
 }
 
 export default class NavLeft extends Component<NavLeftProps> {
   static contextType = AuthContext;
 
   render() {
-    const user: string = `${this.props.userName}`;
+    const user: string = `/${this.props.username}/`;
     return (
       <>
-        <Router>
           {this.context.auth.isLoggedIn ? (
             <div className="bg-dark d-flex flex-column align-items-center justify-content-center">
-              <NavLink to={"/" + user + "/rules"}>
+              <NavLink to={`${user}rules`}>
                 <i
                   className="fas fa-file-alt fs-2 py-2"
                   onClick={() => this.context.changeContent("rules")}
                 ></i>
               </NavLink>
-              <NavLink to={"/" + user + "/account"}>
+              <NavLink to={`${user}account`}>
                 <i
                   className="fas fa-user-circle fs-2 py-2"
                   onClick={() => this.context.changeContent("account")}
                 ></i>
               </NavLink>
-              <NavLink to={"/" + user + "/contacts"}>
+              <NavLink to={`${user}contacts`}>
                 <i
                   className="fas fa-id-badge fs-2 py-2 "
                   onClick={() => this.context.changeContent("contacts")}
                 ></i>
               </NavLink>
-              <NavLink to={"/" + user + "/game"}>
+              <NavLink to={`${user}game`}>
                 <i
                   className="fas fa-gamepad fs-2 py-2"
                   onClick={() => this.context.changeContent("game")}
                 ></i>
               </NavLink>
-              <NavLink to={"/" + user + "/chats"}>
+              <NavLink to={`${user}chats`}>
                 <i
                   className="fas fa-comments fs-2 py-2"
                   onClick={() => this.context.changeContent("chats")}
@@ -48,7 +47,6 @@ export default class NavLeft extends Component<NavLeftProps> {
               </NavLink>
             </div>
           ) : null}
-        </Router>
       </>
     );
   }

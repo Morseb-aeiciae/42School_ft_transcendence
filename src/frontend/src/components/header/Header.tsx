@@ -9,7 +9,7 @@ export default class Header extends Component {
   render() {
     let path: string;
     if (this.context.auth.isLoggedIn)
-      path = "/" + this.context.auth.user.userName;
+      path = `/${this.context.auth.user.username}/`;
     else path = "/home";
     return (
       // <header className="navbar navbar-expand-lg navbar-light bg-dark navbar-dark d-flex justify-content-between">

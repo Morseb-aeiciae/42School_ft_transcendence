@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import AuthContext from "../../context";
 
 interface ContentProps {
-  userName: string;
+  username: string;
 }
 
 export default class Content extends Component<ContentProps> {
@@ -13,8 +13,6 @@ export default class Content extends Component<ContentProps> {
 
   render() {
     let content: React.ComponentClass<any, any>;
-    console.log(this.context.content);
-
     switch (this.context.content) {
       case "account": {
         content = Account;
@@ -44,15 +42,9 @@ export default class Content extends Component<ContentProps> {
     return (
       <Router>
         <Switch>
-          <Route
-            exact
-            path={"/" + `${this.props.userName}`}
-            component={UserPages}
-          />
+          <Route exact path={`/${this.props.username}`} component={UserPages} />
           <ProtectedRoute
-            path={
-              "/" + `${this.props.userName}` + "/" + `${this.context.content}`
-            }
+            path={`/${this.props.username}/${this.context.content}`}
             component={content}
             isLoggedIn={this.context.auth.isLoggedIn}
           ></ProtectedRoute>
