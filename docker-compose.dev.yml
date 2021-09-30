@@ -10,11 +10,13 @@ services:
         source: ./src/frontend/
         target: /app
       - type: volume
-        target: /app/node_modules
+        target: /app/cache/
+      #   target: /app/node_modules
   backend:
     build:
       context: ./src/backend/
       dockerfile: Dockerfile.dev
+    command: npm run start:dev
     env_file:
       - ./src/db/.env
       - ./src/backend/.env
