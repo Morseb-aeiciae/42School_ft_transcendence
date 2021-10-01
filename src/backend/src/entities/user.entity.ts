@@ -1,8 +1,9 @@
 import { AbstractEntity } from './abstract-entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { IsEmail, IsString } from 'class-validator';
 import { classToPlain, Exclude } from 'class-transformer';
 import { hash, compare } from 'bcrypt';
+import { MatchEntity } from './match.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {

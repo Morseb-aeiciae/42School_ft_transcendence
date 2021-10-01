@@ -1,12 +1,12 @@
 import { isNumber, IsNumber } from "class-validator";
+import { UserEntity } from "src/entities/user.entity";
 
 export class matchDTO
 {
-	@IsNumber()
-	id_user1: number;
 
-	@IsNumber()
-	id_user2: number;
+	user1: UserEntity;
+
+	user2: UserEntity;
 
 }
 
@@ -16,5 +16,11 @@ export class matchUpdateDTO
 	id: number;
 
 	@IsNumber()
-	id_winner: number;
+	winnerId: number;
+}
+
+export class AllMatchFromUsersDTO
+{
+	@IsNumber()
+	id_user: number;
 }

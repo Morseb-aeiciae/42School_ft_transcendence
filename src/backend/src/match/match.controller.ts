@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
-import { matchDTO, matchUpdateDTO } from 'src/models/match.model';
+import { AllMatchFromUsersDTO, matchDTO, matchUpdateDTO } from 'src/models/match.model';
 import { MatchService } from './match.service';
 
 @Controller('match')
@@ -26,4 +26,13 @@ export class MatchController {
 		return this.matchService.updateMatch(winnerId);
 	}
 
+	@Post('UserMatchs')
+	findAllMatchsByUserId(@Body(ValidationPipe) id: AllMatchFromUsersDTO) {
+		return this.matchService.findAllMatchsByUserId(id);
+	}
+
+	@Post('UserWins')
+	findAllWinsByUserId(@Body(ValidationPipe) id: AllMatchFromUsersDTO) {
+		return this.matchService.findAllWinsByUserId(id);
+	}
 }
