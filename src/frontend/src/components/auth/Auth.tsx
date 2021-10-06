@@ -1,19 +1,24 @@
 import AuthContext from "../../context";
 import React, { Component } from "react";
 import { SignInModal, SignOutModal } from "./modals";
-import apiUser, { apiUsersMap } from "../../conf/axios.conf";
+import apiUser, { apiUsersMap, apiLocal3001 } from "../../conf/axios.conf";
 
 export default class Auth extends Component {
   static contextType = AuthContext;
 
   componentDidMount() {
-    apiUser
-      .get("/users")
-      .then((response: any) => response.data)
-      .then((usersApi: any) => {
-        const users = usersApi.map(apiUsersMap);
-        this.context.updateUsers({ users });
-      })
+    // apiUser
+    //   .get("")
+    //   .then((response: any) => response.data)
+    //   .then((usersApi: any) => {
+    //     const users = usersApi.map(apiUsersMap);
+    //     this.context.updateUsers({ users });
+    //   })
+    //   .catch((err: any) => console.log(err));
+
+    apiLocal3001
+      .get("/profiles")
+      .then((response: any) => console.log("Auth:", response))
       .catch((err: any) => console.log(err));
   }
   render() {

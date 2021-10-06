@@ -6,7 +6,7 @@ export default class UserPages extends React.Component {
   static contextType = AuthContext;
 
   render() {
-    console.log("UserPage context", this.context);
+    // console.log("UserPage context", this.context);
     const user: string = `${this.context.auth?.user?.username}`;
     return (
       <section className="">

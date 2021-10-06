@@ -37,15 +37,15 @@ export default class Contacts extends Component {
   }
 
   componentDidMount() {
-    console.log("apiContact");
+    // console.log("apiContact");
   }
 
   deleteContact = (index: number) => {
-    console.log("deleteContact, index:", index);
+    // console.log("deleteContact, index:", index);
     const contacts = [...this.state.contacts];
     contacts.splice(index, 1);
     this.setState({ contacts }, () => {
-      console.log("Need to delete contact from db ?");
+      // console.log("Need to delete contact from db ?");
     });
   };
 

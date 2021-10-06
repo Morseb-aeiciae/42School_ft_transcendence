@@ -1,19 +1,33 @@
 import axios from "axios";
 
+export const apiLocal3001 = axios.create({
+  baseURL: "http://localhost:3001",
+  // headers: {
+  //   "Access-Control-Allow-Origin": "*",
+  //   "Access-Control-Allow-Headers": "Content-Type",
+  //   "Access-Control-Allow-Credentials": "true",
+  //   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+  // },
+  timeout: 3000,
+});
+
 const apiUser = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com",
+  baseURL: "http://localhost:3001/users",
   timeout: 3000,
 });
 
 apiUser.interceptors.request.use((req) => {
-  req.headers["Authorization"] = "AUTH_TOKEN";
+  req.headers["Access-Control-Allow-Origin"] = "*";
+  req.headers["Access-Control-Allow-Headers"] = "Content-Type";
+  req.headers["Access-Control-Allow-Credentials"] = "true";
+  req.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS";
   console.log("request : ", req);
   return req;
 });
 
 // apiUser.interceptors.response.use((req) => {
 //   req.headers["Authorization"] = "AUTH_TOKEN";
-//     console.log("response : ", req);
+//   console.log("response : ", req);
 //   return req;
 // });
 

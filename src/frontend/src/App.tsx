@@ -31,7 +31,7 @@ const ComponentUserConnected = ({
   match,
 }: RouteComponentProps<TParams>): JSX.Element => {
   const user: string = `${match.params.username}`;
-  console.log("App params : ", match.params);
+  // console.log("App params : ", match.params);
   return (
     <>
       <NavLeft username={user} />
@@ -116,7 +116,7 @@ class App extends React.Component<AppProps> {
     this.setState(users);
   };
   render() {
-    console.log(this);
+    // console.log(this);
 
     return (
       <Router>
@@ -125,7 +125,7 @@ class App extends React.Component<AppProps> {
             <Header />
             <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
               <Switch>
-                <Route
+                {/* <Route
                   exact
                   path="/"
                   render={() => {
@@ -135,7 +135,7 @@ class App extends React.Component<AppProps> {
                       <Redirect to="/home" />
                     );
                   }}
-                />
+                /> */}
                 <Route path="/home" sensitive={true} component={Home} />
                 <Route path="/login" sensitive={true} component={Login} />
                 <ProtectedRoute

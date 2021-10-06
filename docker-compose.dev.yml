@@ -12,6 +12,9 @@ services:
       - type: volume
         target: /app/cache/
       #   target: /app/node_modules
+    networks:
+      - front_network
+
   backend:
     build:
       context: ./src/backend/
@@ -26,6 +29,10 @@ services:
       - type: bind
         source: ./src/backend/
         target: /app
+    networks:
+      - db_network
+      - back_network
+
   db:
     image: postgres:13
     env_file:
@@ -36,6 +43,9 @@ services:
         target: /app/db
     expose:
       - 5432
+    networks:
+      - db_network
+
   adminer:
     image: adminer
     restart: always
@@ -43,6 +53,9 @@ services:
       - ADMINER_DEFAULT_SERVER=db:5432
     ports:
       - 3002:8080
+    networks:
+      - db_network
+
   reverse-proxy:
     build:
       context: ./src/reverse-proxy
@@ -51,5 +64,16 @@ services:
       - 80:80
     depends_on:
       - db
+    networks:
+      - db_network
+      - front_network
+      - back_network
+
+networks:
+  db_network: {}
+  front_network: {}
+  back_network: {}
+
+
 volumes:
   dbtest:
