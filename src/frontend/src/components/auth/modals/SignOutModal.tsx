@@ -21,7 +21,7 @@ const SignOutModal = () => {
             ></button>
           </div>
           <div className="modal-body">
-            <p>You have been Sign out successfully</p>
+            <p>You have been sign out successfully</p>
           </div>
           <div className="modal-footer">
             <button

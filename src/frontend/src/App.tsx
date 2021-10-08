@@ -21,7 +21,7 @@ import {
 } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 
-import test from "./#Test/User";
+// import test from "./#Test/User";
 
 //***************************************************** */
 interface AppProps {}
@@ -125,7 +125,7 @@ class App extends React.Component<AppProps> {
             <Header />
             <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
               <Switch>
-                {/* <Route
+                <Route
                   exact
                   path="/"
                   render={() => {
@@ -135,7 +135,7 @@ class App extends React.Component<AppProps> {
                       <Redirect to="/home" />
                     );
                   }}
-                /> */}
+                />
                 <Route path="/home" sensitive={true} component={Home} />
                 <Route path="/login" sensitive={true} component={Login} />
                 <ProtectedRoute
