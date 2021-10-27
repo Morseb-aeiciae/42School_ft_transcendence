@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConnectionService } from './database-connection.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UserModule } from './user/user.module';
     }),
     AuthModule,
     UserModule,
+	MatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
