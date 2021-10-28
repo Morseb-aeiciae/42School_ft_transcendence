@@ -17,8 +17,8 @@ export class MatchService {
 	async createMatch(matchInfo: MatchDTO) {
 		const match = this.MatchRepo.create(matchInfo);
 		await match.save();
-		await this.addUserToMatch(matchInfo.user1, match);
-		await this.addUserToMatch(matchInfo.user2, match);
+		await this.addUserToMatch(await this.UserRepo.findOne(matchInfo.user1), match);
+		await this.addUserToMatch(await this.UserRepo.findOne(matchInfo.user2), match);
 		return match;
 	}
 

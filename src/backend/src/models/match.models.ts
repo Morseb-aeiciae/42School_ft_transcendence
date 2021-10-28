@@ -3,11 +3,11 @@ import { UserEntity } from "src/entities/user.entity";
 
 export class MatchDTO {
 
-	@IsObject()
-	user1: UserEntity;
+	@IsNumber()
+	user1: number;
 
-	@IsObject()
-	user2: UserEntity;
+	@IsNumber()
+	user2: number;
 
 	@IsOptional()
 	pts_limit: number;
