@@ -1,8 +1,9 @@
 import { AbstractEntity } from './abstract-entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { IsEmail, IsString } from 'class-validator';
 import { classToPlain, Exclude } from 'class-transformer';
 import { hash, compare } from 'bcrypt';
+import { Match_userEntity } from './match-user.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -34,4 +35,7 @@ export class UserEntity extends AbstractEntity {
   toJSON() {
     return classToPlain(this);
   }
+
+  @OneToMany(() => Match_userEntity, Match_userEntity => Match_userEntity.user)
+  public match_user!: Match_userEntity[];
 }
