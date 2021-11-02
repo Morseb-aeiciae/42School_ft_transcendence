@@ -4,6 +4,7 @@ import { IsEmail, IsString } from 'class-validator';
 import { classToPlain, Exclude } from 'class-transformer';
 import { hash, compare } from 'bcrypt';
 import { Match_userEntity } from './match-user.entity';
+import { Chat_userEntity } from './chat-user.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -25,7 +26,8 @@ export class UserEntity extends AbstractEntity {
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await hash(this.password, 10);
+	  if (this.password)
+    	this.password = await hash(this.password, 10);
   }
 
   async comparePassword(attempt: string) {
@@ -37,5 +39,8 @@ export class UserEntity extends AbstractEntity {
   }
 
   @OneToMany(() => Match_userEntity, Match_userEntity => Match_userEntity.user)
-  public match_user!: Match_userEntity[];
+ public match_user!: Match_userEntity[];
+
+ @OneToMany(() => Chat_userEntity, Chat_userEntity => Chat_userEntity.chat)
+	chat_user: Chat_userEntity[];
 }

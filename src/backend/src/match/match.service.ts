@@ -29,12 +29,24 @@ export class MatchService {
 		await match_user.save();
 	}
 
-	async getUsersOfMatch(id: number) : Promise<Match_userEntity[]> {
+	async getUsersOfMatch(id: number) : Promise<UserEntity[]> {
 		const user = await getRepository(Match_userEntity)
 		.createQueryBuilder("match_user")
 		.where("match_user.matchId = :id", {id: id})
 		.getMany();
-		return user;
+
+		let i : number = 0;
+		let arr:number[] = [];
+		while (i < user.length) {
+			arr[i] = user[i].userId;
+			i++;
+		}
+
+		const userArray = await getRepository(UserEntity)
+		.createQueryBuilder("user")
+		.where("user.id IN (:...ids)", {ids: arr,})
+		.getMany();
+		return userArray;
 	}
 
 	async getMatch(id: number) : Promise<MatchEntity> {
@@ -59,6 +71,18 @@ export class MatchService {
 		.createQueryBuilder("match_user")
 		.where("match_user.userId = :id", {id : id})
 		.getMany();
-		return matchs;
+
+		let i : number = 0;
+		let arr:number[] = [];
+		while (i < matchs.length) {
+			arr[i] = matchs[i].matchId;
+			i++;
+		}
+
+		const matchArray = await getRepository(MatchEntity)
+		.createQueryBuilder("match")
+		.where("match.id IN (:...ids)", {ids: arr,})
+		.getMany();
+		return matchArray;
 	}
 }
