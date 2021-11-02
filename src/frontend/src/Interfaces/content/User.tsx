@@ -1,6 +1,7 @@
 export default interface User {
   id: number;
   username: string;
+  email: string;
   img: string;
   win: number;
   loose: number;

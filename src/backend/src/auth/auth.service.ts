@@ -4,7 +4,11 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDTO, RegisterDTO } from '../models/user.models';
+import {
+  LoginDTO,
+  RegisterDTO,
+  LoginWithTokenDTO,
+} from '../models/user.models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
@@ -48,6 +52,24 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     } catch (e) {
       throw e;
+    }
+  }
+
+  async loginWithToken(credentials: LoginWithTokenDTO) {
+    try {
+      const user = await this.userRepo.findOne({
+        where: { email: credentials.email },
+      });
+      const isValid: boolean =
+        user && !!(await this.jwtService.verify(credentials.token));
+
+      if (isValid) {
+        const payload = { username: user.username };
+        return { user: { ...user.toJSON() } };
+      }
+      throw new UnauthorizedException('Invalid credentials');
+    } catch (e) {
+      // throw e;
     }
   }
 }

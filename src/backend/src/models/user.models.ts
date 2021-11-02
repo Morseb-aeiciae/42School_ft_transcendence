@@ -7,6 +7,16 @@ import {
   MinLength,
 } from 'class-validator';
 
+export class LoginWithTokenDTO {
+  @IsEmail()
+  @IsString()
+  @MinLength(5)
+  email: string;
+
+  @IsString()
+  token: string;
+}
+
 export class LoginDTO {
   @IsEmail()
   @IsString()

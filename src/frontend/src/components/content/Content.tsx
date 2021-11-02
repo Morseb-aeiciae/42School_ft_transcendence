@@ -12,7 +12,7 @@ export default class Content extends Component<ContentProps> {
   static contextType = AuthContext;
 
   render() {
-    let content: React.ComponentClass<any, any>;
+    let content: React.ComponentClass<any, any> | any;
     switch (this.context.content) {
       case "account": {
         content = Account;

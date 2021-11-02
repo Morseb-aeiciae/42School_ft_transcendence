@@ -1,15 +1,12 @@
 import React from "react";
 import { AppState } from "./App";
-import { User } from "./Interfaces";
+// import { User } from "./Interfaces";
 
 const initialContext: AppState = {
   auth: { isLoggedIn: false, user: null },
   users: [],
-  login: () => {},
-  logout: () => {},
   changeContent: (string) => {},
-  updateUser: (user) => {},
-  updateUsers: (users: Array<User>) => {},
+  updateUser: (b, user) => {},
   status: "noConnected",
   content: "none",
 };

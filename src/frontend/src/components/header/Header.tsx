@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Status from "./Status";
 import AuthContext from "../../context";
 import { Auth } from "../";
+// import { Redirect } from "react-router-dom";
 
 export default class Header extends Component {
   static contextType = AuthContext;
@@ -12,7 +13,6 @@ export default class Header extends Component {
       path = `/${this.context.auth.user.username}/`;
     else path = "/home";
     return (
-      // <header className="navbar navbar-expand-lg navbar-light bg-dark navbar-dark d-flex justify-content-between">
       <header className="navbar navbar-expand-lg bg-dark navbar-dark">
         <div className="container-fluid">
           <a className="navbar-brand" href={path}>
@@ -51,6 +51,7 @@ export default class Header extends Component {
               </>
             )}
           </div> */}
+
           <button
             className="btn fs-2 btn-dark text-light"
             data-bs-toggle="modal"
@@ -60,7 +61,11 @@ export default class Header extends Component {
               <>
                 <i
                   className="fas fa-sign-out-alt"
-                  onClick={this.context.logout}
+                  onClick={() => {
+                    localStorage.clear();
+                    this.context.updateUser(false, null);
+                    // return <Redirect to={"/home"} />;
+                  }}
                 ></i>
               </>
             ) : (

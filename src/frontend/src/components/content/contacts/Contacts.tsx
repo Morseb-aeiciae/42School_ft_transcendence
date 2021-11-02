@@ -1,16 +1,9 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import ContactElements from "./ContactElements";
 import { User } from "../../../Interfaces";
 import { Loading } from "../..";
 
-/********************/
-// import Data from "../../../#Test/Data";
-/********************/
-
-interface Props {
-  contacts: User[];
-  loaded: boolean;
-}
+interface Props {}
 interface ContactsState {
   contacts: Array<User>;
   loaded: boolean;
@@ -25,18 +18,16 @@ export default class Contacts extends Component {
       contacts: [],
       loaded: false,
     };
-
-    /******************************************************/
-    // setTimeout(() => {
-    //   this.setState({
-    //     contacts: Data,
-    //     loaded: true,
-    //   });
-    // }, 1000);
-    /******************************************************/
   }
 
+  updateLoaded = (loaded: boolean) => {
+    this.setState({
+      loaded,
+    });
+  };
+
   componentDidMount() {
+    this.updateLoaded(true);
     // console.log("apiContact");
   }
 
@@ -55,7 +46,7 @@ export default class Contacts extends Component {
         <h1 className="border-bottom">CONTACTS</h1>
         <div className="container">
           {this.state.loaded ? (
-            <div>
+            this.state.contacts.length ? (
               <div className="row g-4">
                 {this.state.contacts.map((contact: User, index: number) => (
                   <>
@@ -71,7 +62,9 @@ export default class Contacts extends Component {
                   </>
                 ))}
               </div>
-            </div>
+            ) : (
+              <h1 className="text-light p-5 text-center">No contact yet</h1>
+            )
           ) : (
             <Loading />
           )}

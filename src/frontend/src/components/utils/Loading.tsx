@@ -3,7 +3,7 @@ import { Component } from "react";
 export default class Loading extends Component {
   render() {
     return (
-      <section className=" bg-dark text-light p-5 text-center flex-grow-1">
+      <section className=" bg-dark text-light p-5 text-center flex-grow-1 min-vh-100">
         <h1>Loading</h1>
         <br />
         <img
