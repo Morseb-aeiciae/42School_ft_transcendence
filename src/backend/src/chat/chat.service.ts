@@ -97,6 +97,14 @@ export class ChatService {
 		.where("chat_user.chatId = :id", {id: id})
 		.getMany();
 
+		if (users.length == 0)
+		{
+			const err = await getRepository(UserEntity)
+			.createQueryBuilder("chat")
+			.where("chat.id  = :id", {id: 98547})
+			.getMany();
+			return err;
+		}
 		let i : number = 0;
 		let arr:number[] = [];
 		while (i < users.length) {
@@ -124,6 +132,15 @@ export class ChatService {
 
 		let i : number = 0;
 		let arr:number[] = [];
+
+		if (chats.length == 0)
+		{
+			const err = await getRepository(ChatEntity)
+			.createQueryBuilder("user")
+			.where("user.id  = :id", {id: 98547})
+			.getMany();
+			return err;
+		}
 		while (i < chats.length) {
 			arr[i] = chats[i].chatId;
 			i++;
@@ -177,6 +194,13 @@ export class ChatService {
 			const blocker = await this.UserRepo.findOne(blockInfo.blockerId);
 			if ((blockInfo.targetId == blockInfo.blockerId) || !target || !blocker)
 				throw new ConflictException("Error with target or blocker id");
+			const isBlocked = await getRepository(BlockEntity)
+			.createQueryBuilder("block")
+			.where("block.blockerId = :blockerId", {blockerId: blockInfo.blockerId})
+			.andWhere("block.targetId = :targetId", {targetId: blockInfo.targetId})
+			.getOne();
+			if	(isBlocked != undefined)
+				throw new ConflictException("User already blocked");
 			const block = this.BlockRepo.create(blockInfo);
 			await block.save();
 			return block;
@@ -195,6 +219,14 @@ export class ChatService {
 			.where("block.blockerId = :userId", {userId: userId})
 			.getMany();
 	
+			if (block.length == 0)
+			{
+				const err = await getRepository(UserEntity)
+				.createQueryBuilder("user")
+				.where("user.id  = :id", {id: 98547})
+				.getMany();
+				return err;
+			}
 			let i : number = 0;
 			let arr:number[] = [];
 			while (i < block.length) {
@@ -213,13 +245,59 @@ export class ChatService {
 	}
 
 	async unblockUser(blockInfo: BlockUserDTO) {
-		await getConnection()
-		.createQueryBuilder()
-		.delete()
-		.from(BlockEntity)
-		.where("targetId = :targetId", {targetId: blockInfo.targetId})
-		.andWhere("blockerId = :blockerId", {blockerId: blockInfo.blockerId})
-		.execute();
-		return "succesfully deleted";
+		try {
+			const isBlocked = await getRepository(BlockEntity)
+			.createQueryBuilder("block")
+			.where("block.blockerId = :blockerId", {blockerId: blockInfo.blockerId})
+			.andWhere("block.targetId = :targetId", {targetId: blockInfo.targetId})
+			.getOne();
+			if	(isBlocked == undefined)
+				throw new ConflictException("User already unblocked");
+			await getConnection()
+			.createQueryBuilder()
+			.delete()
+			.from(BlockEntity)
+			.where("targetId = :targetId", {targetId: blockInfo.targetId})
+			.andWhere("blockerId = :blockerId", {blockerId: blockInfo.blockerId})
+			.execute();
+			return "succesfully deleted";
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async getChatList() {
+		const chats = await getRepository(ChatEntity)
+		.createQueryBuilder("chats")
+		.where("chats.protection = :protectionP", {protectionP: chat_protection.private_with_pwd})
+		.orWhere("chats.protection = :protection", {protection: chat_protection.public})
+		.getMany();
+		return chats;
+	}
+
+	async leaveChat(chatInfo: FindMessageDTO) {
+		try {
+			const user = await this.UserRepo.findOne(chatInfo.userId);
+			const chat = await this.ChatRepo.findOne(chatInfo.chatId);
+			if (!user || !chat)
+				throw new ConflictException('User or chat doesnt exist');
+			if (user.id == chat.ownerId)
+				throw new ConflictException('Owner cant leave chat');
+			if (await this.isUserOnChat(chatInfo))
+			{
+				await getConnection()
+				.createQueryBuilder()
+				.delete()
+				.from(Chat_userEntity)
+				.where("chatId = :chatId", {chatId: chatInfo.chatId})
+				.andWhere("userId = :userId", {userId: chatInfo.userId})
+				.execute();
+				return true;
+			}
+			else
+				throw new ConflictException('User not in chat');
+		} catch (error) {
+			return error;
+		}
 	}
 }

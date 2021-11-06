@@ -71,4 +71,13 @@ export class ChatController {
 		return this.ChatService.unblockUser(blockInfo);
 	}
 
+	@Get("getChatList")
+	async getChatList() {
+		return this.ChatService.getChatList();
+	}
+
+	@Post("leaveChat")
+	async leaveChat(@Body(ValidationPipe) chatInfo: FindMessageDTO) {
+		return this.ChatService.leaveChat(chatInfo);
+	}
 }

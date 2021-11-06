@@ -35,3 +35,12 @@ export class MuteUserDTO {
 	@IsNumber()
 	chatId: number;
 }
+
+export class DeleteChatDTO {
+	
+	@IsNumber()
+	chatId: number;
+
+	@IsNumber()
+	userId: number;
+}

@@ -1,5 +1,5 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
-import { BanUserDTO, SetAdminDTO } from 'src/models/chat.admin.models';
+import { BanUserDTO, DeleteChatDTO, SetAdminDTO } from 'src/models/chat.admin.models';
 import { AdminService } from './admin.service';
 
 @Controller('chat/admin')
@@ -34,5 +34,10 @@ export class AdminController {
 	@Post('unmuteUser')
 	async  unmuteUser(@Body(ValidationPipe) banInfo: BanUserDTO) {
 		return this.AdminService.unmuteUser(banInfo);
+	}
+
+	@Post("deleteChat")
+	async deleteChat(@Body(ValidationPipe) chatInfo: DeleteChatDTO) {
+		return this.AdminService.deleteChat(chatInfo);
 	}
 }

@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Chat_userEntity } from 'src/entities/chat-user.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
 import { UserEntity } from 'src/entities/user.entity';
-import { BanUserDTO, MuteUserDTO, SetAdminDTO } from 'src/models/chat.admin.models';
-import { getRepository, Repository } from 'typeorm';
+import { BanUserDTO, DeleteChatDTO, MuteUserDTO, SetAdminDTO } from 'src/models/chat.admin.models';
+import { getConnection, getRepository, Repository } from 'typeorm';
 import { getSystemErrorMap } from 'util';
 
 enum AdminLvl {
@@ -180,6 +180,28 @@ export class AdminService {
 			else
 				throw new UnauthorizedException('insufisant right to unmute user');
 		} catch (error) {
+			return error;
+		}
+	}
+
+	async deleteChat(chatInfo: DeleteChatDTO) {
+		try {
+			const user = await this.UserRepo.findOne(chatInfo.userId);
+			const chat = await this.ChatRepo.findOne(chatInfo.chatId);
+			if (!user || !chat)
+				throw new ConflictException('User or chat doesnt exist');
+			if (chat.ownerId != chatInfo.userId)
+				throw new UnauthorizedException('insufisant right to delete user');
+			await getConnection()
+				.createQueryBuilder()
+				.delete()
+				.from(Chat_userEntity)
+				.where("chatId = :chatId", {chatId: chatInfo.chatId})
+				.execute();
+			ChatEntity.delete(chatInfo.chatId);
+			return true;
+		}
+		catch (error) {
 			return error;
 		}
 	}
