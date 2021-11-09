@@ -1,9 +1,21 @@
 import React, { Component } from "react";
 import { Formik } from "formik";
+import { apiChat } from "../../../conf/axios.conf_chats";
+
+const ShowChats = () => {};
+export {ShowChats};
 
 export default class SearchBar extends Component {
   submit = (values: any, actions: any) => {
-    console.log(values);
+    apiChat
+      .get("/getChatList/")
+      .then((response: any) => {
+        console.log(response.data);
+        // setChats(response.data);
+      })
+      .catch((err: any) => {
+        console.log("Chats:", err);
+      });
   };
 
   render() {
@@ -17,7 +29,7 @@ export default class SearchBar extends Component {
             className="d-flex flex-column flex-fill m-2"
             onSubmit={handleSubmit}
           >
-            <div className="d-flex flex-row p-1">
+            {/* <div className="d-flex flex-row p-1">
               <input
                 name="query"
                 className="flex-fill form-control mr-2"
@@ -58,15 +70,16 @@ export default class SearchBar extends Component {
                   />
                   <label htmlFor="false"> protected</label>
                 </p>
-              </div>
-              <button
-                className="btn btn-outline-secondary btn-lg"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                Submit
-              </button>
-            </div>
+              </div> */}
+            <button
+              className="btn btn-outline-secondary btn-lg"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {/* Submit */}
+              Search Chat
+            </button>
+            {/* </div> */}
           </form>
         )}
       </Formik>
