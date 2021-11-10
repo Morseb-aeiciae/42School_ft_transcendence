@@ -300,4 +300,21 @@ export class ChatService {
 			return error;
 		}
 	}
+
+	async getMessageOfChat(chatId: number) {
+		try {
+			const chat = await this.ChatRepo.findOne(chatId);
+			if (!chat)
+				throw new ConflictException('chat doesnt exist');
+			const msg = await getRepository(MessageEntity)
+			.createQueryBuilder("msg")
+			.where("msg.chatId = :id", {id: chatId})
+			.getMany()
+			
+			return msg;
+		
+		} catch (error) {
+			return error;
+		}
+	}
 }

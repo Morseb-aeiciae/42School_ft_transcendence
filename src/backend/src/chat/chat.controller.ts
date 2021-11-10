@@ -80,4 +80,9 @@ export class ChatController {
 	async leaveChat(@Body(ValidationPipe) chatInfo: FindMessageDTO) {
 		return this.ChatService.leaveChat(chatInfo);
 	}
+
+	@Get("getMessageOfChat/:id")
+	async getMessageOfChat(@Param(("id")) id:number) {
+		return this.ChatService.getMessageOfChat(id);
+	}
 }
