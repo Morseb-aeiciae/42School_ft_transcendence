@@ -23,6 +23,7 @@ const ShowUser = (props: any) => {
           if (u.id === uId) {
             setUser(u);
           }
+          return "patate";
         });
         setLoading(false);
       })

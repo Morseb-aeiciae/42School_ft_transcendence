@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
-import SearchBar from "./SearchBar";
+import SearchBar, { ShowChats } from "./SearchBar";
 import AuthContext from "../../../context";
 import CreateChat from "./CreateChat";
 import FetchChat from "./DisplayChats";
@@ -35,7 +35,7 @@ const displayChatCard = (chat: any, setState: any, leave: any) => {
 };
 
 const display = (chats: any, props: any) => {
-  if (chats.length > 0 && props.props.stateId === 0) {
+  if (chats.length > 0 && props.props.stateId < 0) {
     return (
       <section>
         <div className="row g-4 m-1">
@@ -83,15 +83,16 @@ const CurrentChats = (props: any) => {
   }, [id, props.props.state]);
 
   useEffect(() => {
-    apiChat
-      .post("/leaveChat", { userId: id, chatId: props.props.leave })
-      .then((response: any) => {
-        console.log("user leave a chat", response.data);
-      })
-      .catch((err: any) => {
-        console.log("Chats:", err);
-        setLoading(false);
-      });
+    if (props.props.leave > 0)
+      apiChat
+        .post("/leaveChat", { userId: id, chatId: props.props.leave })
+        .then((response: any) => {
+          console.log("user leave a chat", response.data);
+        })
+        .catch((err: any) => {
+          console.log("Chats:", err);
+          setLoading(false);
+        });
   }, [id, props.props.leave]);
 
   if (isLoading) {
@@ -102,10 +103,12 @@ const CurrentChats = (props: any) => {
 
 const Chats = () => {
   const context = useContext(AuthContext);
-  const [state, setState] = useState(0);
-  const [stateId, setStateId] = useState(0);
-  const [leave, leaveChats] = useState(0);
+  const [state, setState] = useState(-1);
+  const [stateId, setStateId] = useState(-1);
+  const [leave, leaveChats] = useState(-1);
   const [showUser, setShowUser] = useState(-1);
+  const [showChats, setShowChats] = useState([]);
+  const [noChat, setNoChat] = useState(0);
 
   const user = context.auth.user?.id;
   const props = {
@@ -119,15 +122,35 @@ const Chats = () => {
   };
 
   if (showUser >= 0) {
-    return <ShowUser chatId={stateId} userId={showUser} />;
+    return (
+      <section>
+        <h1 className="border-bottom pb-3 mb-3">User</h1>
+        <ShowUser chatId={stateId} userId={showUser} />
+      </section>
+    );
+  }
+  if (showChats.length > 0) {
+    return (
+      <section>
+        <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
+        <ShowChats chats={showChats} userId={user} />
+      </section>
+    );
+  } else if (noChat) {
+    return (
+      <section>
+        <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
+        No chat created yet
+      </section>
+    );
   }
 
-  if (state === 0)
+  if (state < 0)
     return (
       <section>
         <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
         <div className="border-bottom pb-3 mb-3">
-          <SearchBar />
+          <SearchBar showChats={setShowChats} noChat={setNoChat} />
         </div>
         <div className="border-bottom pb-3 mb-3">
           <CreateChat props={setState} />
@@ -144,6 +167,7 @@ const Chats = () => {
 
   return (
     <section>
+      <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
       <CurrentChats userId={user} props={props} />
     </section>
   );
