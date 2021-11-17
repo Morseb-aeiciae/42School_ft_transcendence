@@ -205,4 +205,19 @@ export class AdminService {
 			return error;
 		}
 	}
+
+	async getAdminInfo(chatId: number) {
+		try {
+			const chat = await this.ChatRepo.findOne(chatId);
+			if (!chat)
+				throw new ConflictException('Chat doesnt exist');
+			const admin = await getRepository(Chat_userEntity)
+			.createQueryBuilder("admin")
+			.where("admin.chatId = :chatId", {chatId: chatId})
+			.getMany();
+			return admin;
+		} catch (error) {
+			return error;
+		}
+	}
 }

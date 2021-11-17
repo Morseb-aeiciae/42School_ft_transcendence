@@ -1,4 +1,4 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ValidationPipe } from '@nestjs/common';
 import { BanUserDTO, DeleteChatDTO, SetAdminDTO } from 'src/models/chat.admin.models';
 import { AdminService } from './admin.service';
 
@@ -39,5 +39,10 @@ export class AdminController {
 	@Post("deleteChat")
 	async deleteChat(@Body(ValidationPipe) chatInfo: DeleteChatDTO) {
 		return this.AdminService.deleteChat(chatInfo);
+	}
+
+	@Get("getAdminInfo/:id")
+	async getAdminInfo(@Param("id")id: number) {
+		return this.AdminService.getAdminInfo(id);
 	}
 }
