@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { Formik } from "formik";
+import AdminPanel from "./ChatsAdmin";
 
 const ChatUsers = (props: any) => {
   const [users, setUsers] = useState([]);
@@ -40,7 +41,6 @@ const MessageBar = (props: any) => {
     apiChat
       .post("/addMessage", values)
       .then((response: any) => {
-        // setState(Math.random());
         action.setSubmitting(false);
       })
       .catch((err: any) => {
@@ -85,17 +85,18 @@ const MessageBar = (props: any) => {
 
 const Messages = (props: any) => {
   const [msg, setMsg] = useState([]);
-
   useEffect(() => {
     apiChat
-      .post(`/getMessages`, { chatId: props.chatId, userId: props.id })
+      .get(`getMessageOfChat/${props.chatId}`)
+
+      // .post(`/getMessages`, { chatId: props.chatId, userId: props.id })
       .then((response: any) => {
         setMsg(response.data);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
       });
-  }, [props.chatId, props.id]);
+  }, [props.chatId, props.id, msg]);
 
   return (
     <>
@@ -110,6 +111,7 @@ const Messages = (props: any) => {
 
 const FetchChat = (props: any) => {
   const [isLoading, setLoading] = useState(true);
+  const [userType, setUserType] = useState(2); // 0 owner | 1 admin | 2 user
   const [chat, setChat] = useState({
     id: -1,
     name: "",
@@ -118,11 +120,13 @@ const FetchChat = (props: any) => {
     protection: 2,
   });
   const i = props.uId;
+  const [displayAdmin, setdisplayAdmin] = useState(false);
 
   useEffect(() => {
     apiChat
       .get(`/getChat/${props.chatId}`)
       .then((response: any) => {
+        if (response.data.ownerId === i) setUserType(0);
         setChat(response.data);
         setLoading(false);
       })
@@ -133,11 +137,36 @@ const FetchChat = (props: any) => {
 
   if (isLoading) {
     return <Loading />;
+  } else if (displayAdmin) {
+    return (
+      <AdminPanel
+        chatId={props.chatId}
+        userId={i}
+        userType={userType}
+        propsB={props}
+      />
+    );
   }
+
   return (
     <>
       <div className="container">
         <h2>{chat.name}</h2>
+        {userType === 0 ? (
+          <button
+            onClick={() => {
+              setdisplayAdmin(true);
+            }}
+            className="fas fa-cogs"
+          ></button>
+        ) : userType === 1 ? (
+          <button
+            onClick={() => {
+              setdisplayAdmin(true);
+            }}
+            className="fas fa-cog"
+          ></button>
+        ) : null}
         <div className="d-flex border bg-primary text-dark">
           <hr />
           <div className="flex-fill border p-2 m-1 bg-light">

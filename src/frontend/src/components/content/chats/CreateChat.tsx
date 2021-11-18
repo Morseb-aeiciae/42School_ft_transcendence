@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import AuthContext from "../../../context";
 
 import { Formik } from "formik";
@@ -38,12 +38,12 @@ export default class CreateChat extends Component<Props> {
     const setState = this.props.props;
     apiChat
       .post("/createChat", values)
-      .then((response: any) => {
-        setState(Math.random());
+      .then(() => {
         action.setSubmitting(false);
+        setState(Math.random());
       })
       .catch((err: any) => {
-        console.log("creating chats", "err");
+        console.log("creating chats", err);
       });
   };
 
@@ -80,7 +80,7 @@ export default class CreateChat extends Component<Props> {
               {errors.name && touched.name ? (
                 <div className="text-danger">{errors.name}</div>
               ) : null}
-              <select
+              {/* <select
                 name="type"
                 className="mr-2 form-control w-25"
                 onChange={handleChange}
@@ -88,7 +88,7 @@ export default class CreateChat extends Component<Props> {
               >
                 <option value="public">Public</option>
                 <option value="private">Private</option>
-              </select>
+              </select> */}
             </div>
             <div className="d-flex flex-row p-1">
               <div className="d-flex flex-row flex-grow-1 align-items-end justify-content-evenly">

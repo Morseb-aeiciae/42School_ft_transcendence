@@ -6,6 +6,7 @@ import AuthContext from "../../../context";
 import CreateChat from "./CreateChat";
 import FetchChat from "./DisplayChats";
 import ShowUser from "./ShowUser";
+import { apiChatAdmin } from "../../../conf/axios.conf_chats admin";
 
 const displayChatCard = (chat: any, setState: any, leave: any) => {
   return (
@@ -57,6 +58,7 @@ const display = (chats: any, props: any) => {
         uId={props.userId}
         chatId={props.props.stateId}
         showUser={props.props.setShowUser}
+        refresh={props.props.setState}
       />
     );
   } else {
@@ -67,8 +69,9 @@ const display = (chats: any, props: any) => {
 const CurrentChats = (props: any) => {
   const [isLoading, setLoading] = useState(true);
   const [fetchData, setChats] = useState([]);
+  const [owner, setOwner] = useState(1);
+  const [ownerCantLeave, setOwnerLeave] = useState(0);
   const id = props.userId;
-
   useEffect(() => {
     apiChat
       .get(`/getChatsOfUser/${id}`, {})
@@ -83,22 +86,56 @@ const CurrentChats = (props: any) => {
   }, [id, props.props.state]);
 
   useEffect(() => {
-    if (props.props.leave > 0)
+    if (props.props.leave > 0) {
       apiChat
         .post("/leaveChat", { userId: id, chatId: props.props.leave })
         .then((response: any) => {
-          console.log("user leave a chat", response.data);
+          if (response.data.status === 409) setOwner(-owner);
+          else {
+            console.log("user leave a chat", response.data);
+            props.props.setState(Math.random());
+          }
         })
         .catch((err: any) => {
           console.log("Chats:", err);
           setLoading(false);
         });
+    }
   }, [id, props.props.leave]);
+
+  useEffect(() => {
+    let len = 0;
+
+    if (props.props.leave > 0)
+      apiChat
+        .get(`/getUsersOfChat/${props.props.leave}`)
+        .then((response: any) => {
+          len = response.data.length;
+          if (len === 1) {
+            apiChatAdmin
+              .post("/deleteChat", { userId: id, chatId: props.props.leave })
+              .then((response: any) => {
+                console.log("owner delete a chat", response.data);
+                props.props.setState(Math.random());
+              })
+              .catch((err: any) => {
+                console.log("Chats:", err);
+                setLoading(false);
+              });
+          } else {
+            setOwnerLeave(1);
+          }
+        })
+        .catch((err: any) => {
+          console.log("Chat:", err);
+        });
+  }, [owner]);
 
   if (isLoading) {
     return <Loading />;
-  }
-  return display(fetchData, props);
+  } else if (ownerCantLeave) {
+    return <p> Owner of chat can't leave if he is not the last</p>;
+  } else return display(fetchData, props);
 };
 
 const Chats = () => {
@@ -128,12 +165,16 @@ const Chats = () => {
         <ShowUser chatId={stateId} userId={showUser} />
       </section>
     );
-  }
-  if (showChats.length > 0) {
+  } else if (showChats.length > 0) {
     return (
       <section>
         <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
-        <ShowChats chats={showChats} userId={user} />
+        <ShowChats
+          chats={showChats}
+          userId={user}
+          resetChat={setShowChats}
+          setState={setState}
+        />
       </section>
     );
   } else if (noChat) {
@@ -143,9 +184,7 @@ const Chats = () => {
         No chat created yet
       </section>
     );
-  }
-
-  if (state < 0)
+  } else if (state < 0) {
     return (
       <section>
         <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
@@ -164,13 +203,14 @@ const Chats = () => {
         </button>
       </section>
     );
-
-  return (
-    <section>
-      <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
-      <CurrentChats userId={user} props={props} />
-    </section>
-  );
+  } else {
+    return (
+      <section>
+        <h1 className="border-bottom pb-3 mb-3">CHATS</h1>
+        <CurrentChats userId={user} props={props} />
+      </section>
+    );
+  }
 };
 
 export default Chats;
