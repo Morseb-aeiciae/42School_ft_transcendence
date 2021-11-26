@@ -1,4 +1,3 @@
-export { default as Auth } from "./auth/Auth";
 export { default as Header } from "./header/Header";
 export { default as Content } from "./content/Content";
 export { default as NavLeft } from "./navLeft/NavLeft";

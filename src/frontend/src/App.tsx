@@ -19,6 +19,7 @@ import {
   Route,
   Switch,
   Redirect,
+  withRouter,
 } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import apiUser from "./conf/axios.conf";
@@ -107,12 +108,12 @@ class AppV1 extends React.Component<AppProps> {
                     );
                   }}
                 />
-                <Route path="/home" sensitive={true} component={Home} />
+                <Route path="/home" sensitive={true} component={withRouter(Home)} />
                 <Route path="/login" sensitive={true} component={Login} />
                 <ProtectedRoute
                   path="/:username"
                   sensitive={true}
-                  component={ComponentUserConnected}
+                  component={withRouter(ComponentUserConnected)}
                   isLoggedIn={this.state.auth.isLoggedIn}
                 />
                 <Route component={PageNotFound} />

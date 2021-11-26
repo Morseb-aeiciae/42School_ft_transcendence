@@ -1,2 +1,2 @@
-export { default as SignInModal } from "./modals/SignInModal";
-export { default as SignOutModal } from "./modals/SignOutModal";
+export { default as SignInModal } from "./SignInModal";
+export { default as SignOutModal } from "./SignOutModal";

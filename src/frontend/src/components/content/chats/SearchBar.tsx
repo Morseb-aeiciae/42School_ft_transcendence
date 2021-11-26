@@ -34,8 +34,6 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
           password: pwd,
         })
         .then((response: any) => {
-          // console.log(response.data.response.statusCode);
-          console.log(response);
           if (response.data.chat) {
             resetChat([]);
             reload(Math.random());
@@ -47,7 +45,7 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
           console.log("Chats:", err);
           setLoading(false);
         });
-  }, [user, chat.id, join, pwd]);
+  }, [user, chat.id, join, pwd, resetChat, reload]);
 
   const submit = (values: any, action: any) => {
     if (join)
@@ -58,9 +56,6 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
           password: values.pwd,
         })
         .then((response: any) => {
-          // console.log(response.data.response.statusCode);
-          console.log(response);
-          action.setSubmitting(false);
           setNeed(false);
 
           if (response.data.chat) {

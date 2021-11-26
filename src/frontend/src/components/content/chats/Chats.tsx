@@ -101,7 +101,7 @@ const CurrentChats = (props: any) => {
           setLoading(false);
         });
     }
-  }, [id, props.props.leave]);
+  }, [id, props.props.leave, owner, props.props]);
 
   useEffect(() => {
     let len = 0;
@@ -129,7 +129,7 @@ const CurrentChats = (props: any) => {
         .catch((err: any) => {
           console.log("Chat:", err);
         });
-  }, [owner]);
+  }, [owner, id, props.props]);
 
   if (isLoading) {
     return <Loading />;
@@ -162,7 +162,7 @@ const Chats = () => {
     return (
       <section>
         <h1 className="border-bottom pb-3 mb-3">User</h1>
-        <ShowUser chatId={stateId} userId={showUser} />
+        <ShowUser chatId={stateId} targetId={showUser} userId={user} />
       </section>
     );
   } else if (showChats.length > 0) {

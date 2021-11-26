@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { apiChatAdmin } from "../../../conf/axios.conf_chats admin";
+import { Formik } from "formik";
 
 // /***************************************/
 // // BanUserDTO
@@ -149,9 +151,43 @@ import { apiChatAdmin } from "../../../conf/axios.conf_chats admin";
 
 const UserOfChat = (props: any) => {
   const [content, setContent] = useState("");
-  const targetId = props.user.id;
+  const [R, setR] = useState(0);
+  const [currentUser, setCurrentUser] = useState({
+    adminlvl: 3,
+    banned: false,
+    muted: false,
+    userId: 0,
+    chatId: 0,
+  });
+  const [target, setTarget] = useState({
+    adminlvl: 4,
+    banned: false,
+    muted: false,
+    userId: 0,
+    chatId: 0,
+  });
+  const targetId = props.target.id;
 
-  console.log(props);
+  useEffect(() => {
+    apiChatAdmin
+      .get(`/getAdminInfo/${props.chatId}`)
+      .then((response: any) => {
+        const users = response.data;
+        users.map((u: any) => {
+          if (u.userId === targetId) {
+            setTarget(u);
+          } else if (u.userId === props.userId) {
+            setCurrentUser(u);
+          }
+          return "patate";
+        });
+      })
+      .catch((err: any) => {
+        console.log("Chat:", err);
+      });
+  }, [R, props.chatId, props.userId, targetId]);
+
+  /******************     switch      ****************** */
   switch (content) {
     case "setAdmin": {
       apiChatAdmin
@@ -162,12 +198,12 @@ const UserOfChat = (props: any) => {
         })
         .then((response: any) => {
           console.log("setAdminResponse", response);
+          setR(Math.random());
         })
         .catch((err: any) => {
           console.log("chatAdmin:", err);
         });
       setContent("none");
-
       break;
     }
     case "removeAdmin": {
@@ -179,6 +215,7 @@ const UserOfChat = (props: any) => {
         })
         .then((response: any) => {
           console.log("removeAdminResponse", response);
+          setR(Math.random());
         })
         .catch((err: any) => {
           console.log("chatAdmin:", err);
@@ -195,12 +232,12 @@ const UserOfChat = (props: any) => {
         })
         .then((response: any) => {
           console.log("muteUserResponse", response);
+          setR(Math.random());
         })
         .catch((err: any) => {
           console.log("chatAdmin:", err);
         });
       setContent("none");
-
       break;
     }
     case "unmute": {
@@ -212,12 +249,12 @@ const UserOfChat = (props: any) => {
         })
         .then((response: any) => {
           console.log("unmuteUserResponse", response);
+          setR(Math.random());
         })
         .catch((err: any) => {
           console.log("chatAdmin:", err);
         });
       setContent("none");
-
       break;
     }
     case "ban": {
@@ -229,12 +266,12 @@ const UserOfChat = (props: any) => {
         })
         .then((response: any) => {
           console.log("banUserResponse", response);
+          setR(Math.random());
         })
         .catch((err: any) => {
           console.log("chatAdmin:", err);
         });
       setContent("none");
-
       break;
     }
     case "unban": {
@@ -246,87 +283,132 @@ const UserOfChat = (props: any) => {
         })
         .then((response: any) => {
           console.log("unbanUserResponse", response);
+          setR(Math.random());
         })
         .catch((err: any) => {
           console.log("chatAdmin:", err);
         });
       setContent("none");
-
+      break;
+    }
+    case "kick": {
+      apiChat
+        .post("/leaveChat", { userId: targetId, chatId: props.chatId })
+        .then((response: any) => {
+          console.log("kickAdmin", response);
+          props.r(Math.random());
+        })
+        .catch((err: any) => {
+          console.log("chatAdmin:", err);
+        });
+      setContent("none");
       break;
     }
     default: {
     }
   }
+  /******************     switch      ****************** */
 
   return (
     <>
-      {props.user.username}
+      {props.target.username}
       <br />
       <br />
-      {props.userType === 0 ? (
+      {currentUser.adminlvl === 1 ? (
+        <>
+          {target.adminlvl === 2 ? (
+            <>
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#modal"
+                onClick={() => {
+                  setContent("removeAdmin");
+                }}
+              >
+                removeAdmin
+              </button>{" "}
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#modal"
+                onClick={() => {
+                  setContent("setAdmin");
+                }}
+              >
+                setAdmin
+              </button>{" "}
+            </>
+          )}
+        </>
+      ) : null}
+      {target.muted ? (
         <>
           <button
             type="button"
             data-bs-toggle="modal"
             data-bs-target="#modal"
             onClick={() => {
-              setContent("removeAdmin");
+              setContent("unmute");
             }}
           >
-            removeAdmin
+            unmute
           </button>{" "}
+        </>
+      ) : (
+        <>
           <button
             type="button"
             data-bs-toggle="modal"
             data-bs-target="#modal"
             onClick={() => {
-              setContent("setAdmin");
+              setContent("mute");
             }}
           >
-            setAdmin
+            mute
           </button>{" "}
         </>
-      ) : null}
-      <button
-        type="button"
-        data-bs-toggle="modal"
-        data-bs-target="#modal"
-        onClick={() => {
-          setContent("unmute");
-        }}
-      >
-        unmute
-      </button>{" "}
-      <button
-        type="button"
-        data-bs-toggle="modal"
-        data-bs-target="#modal"
-        onClick={() => {
-          setContent("mute");
-        }}
-      >
-        mute
-      </button>{" "}
-      <button
-        type="button"
-        data-bs-toggle="modal"
-        data-bs-target="#modal"
-        onClick={() => {
-          setContent("ban");
-        }}
-      >
-        ban
-      </button>{" "}
-      <button
-        type="button"
-        data-bs-toggle="modal"
-        data-bs-target="#modal"
-        onClick={() => {
-          setContent("unban");
-        }}
-      >
-        unban
-      </button>
+      )}
+      {target.banned ? (
+        <>
+          <button
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#modal"
+            onClick={() => {
+              setContent("unban");
+            }}
+          >
+            unban
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#modal"
+            onClick={() => {
+              setContent("ban");
+            }}
+          >
+            ban
+          </button>{" "}
+        </>
+      )}{" "}
+      <>
+        <button
+          type="button"
+          onClick={() => {
+            setContent("kick");
+          }}
+        >
+          kick
+        </button>{" "}
+      </>
       <div className="border-bottom pb-3 mb-3"></div>
       {/*    <--- MODAL --->     */}
       <div
@@ -358,13 +440,129 @@ const UserOfChat = (props: any) => {
   );
 };
 
+/******************** update pwd *********************/
+
+const UpdatePwd = (props: any) => {
+  const [isLoading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState({
+    adminlvl: 3,
+    userId: 0,
+    chatId: 0,
+  });
+  useEffect(() => {
+    apiChatAdmin
+      .get(`/getAdminInfo/${props.chatId}`)
+      .then((response: any) => {
+        const users = response.data;
+        users.map((u: any) => {
+          if (u.userId === props.userId) {
+            setCurrentUser(u);
+          }
+          return "patate";
+        });
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        console.log("Chat:", err);
+      });
+  }, [props.chatId, props.userId]);
+
+  const submit = (values: any, action: any) => {
+    apiChat
+      .post("/updatePassword", {
+        userId: currentUser.userId,
+        chatId: currentUser.chatId,
+        password: values.password,
+      })
+      .then((response: any) => {
+        console.log("update Pwd :", response);
+        action.setSubmitting(false);
+      })
+      .catch((err: any) => {
+        console.log("Chats:", err);
+        setLoading(false);
+        action.setSubmitting(false);
+      });
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  } else
+    return (
+      <>
+        {currentUser.adminlvl === 1 ? (
+          <>
+            <>
+              <Formik onSubmit={submit} initialValues={{ password: "" }}>
+                {({ handleSubmit, handleChange, handleBlur, isSubmitting }) => (
+                  <>
+                    <form onSubmit={handleSubmit}>
+                      <div className="mb-3">
+                        <input
+                          name="password"
+                          type="password"
+                          className="form-control"
+                          id="Password"
+                          placeholder="New password for the chat"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        data-bs-toggle="modalPwd"
+                        data-bs-target="#modalPwd"
+                        disabled={isSubmitting}
+                      >
+                        change password
+                      </button>{" "}
+                      <div className="border-bottom pb-3 mb-3"></div>
+                      <div className="border-bottom pb-3 mb-3"></div>
+                    </form>
+                  </>
+                )}
+              </Formik>
+            </>
+          </>
+        ) : null}
+
+        {/*    <--- MODAL --->     */}
+        <div
+          className="modal fade"
+          id="modalPwd"
+          tabIndex={-1}
+          aria-labelledby="modalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content bg-dark text-light">
+              <div className="modal-header">
+                <h5 className="modal-title" id="modalLabel">
+                  Admin
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modalPwd"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">Password changed</div>
+            </div>
+          </div>
+        </div>
+        {/*    <--- MODAL --->     */}
+      </>
+    );
+};
+
 /*****************************************************/
+
 const AdminPanel = (props: any) => {
   const chatId = props.chatId;
-  const userId = props.userId;
-  const userType = props.userType;
-
+  const userId = props.user.userId;
   const [users, setUsers] = useState([]);
+  const [rKick, setRKick] = useState(0);
 
   useEffect(() => {
     apiChat
@@ -375,18 +573,32 @@ const AdminPanel = (props: any) => {
       .catch((err: any) => {
         console.log("Chat:", err);
       });
-  }, [chatId]);
+  }, [chatId, rKick]);
 
   return (
     <section>
+      <UpdatePwd userId={userId} chatId={chatId} />
       {users.map((u: any, index: number) => (
-        <UserOfChat
-          key={index}
-          user={u}
-          userType={userType}
-          chatId={chatId}
-          userId={userId}
-        />
+        <div key={index}>
+          {u.id === props.ownerId ? (
+            <>
+              <p>{u.username} Owner of the chat ! Protected ^^</p>
+              <div className="border-bottom pb-3 mb-3"></div>
+            </>
+          ) : u.id !== userId ? (
+            <UserOfChat
+              target={u}
+              chatId={chatId}
+              userId={userId}
+              r={setRKick}
+            />
+          ) : (
+            <>
+              {u.username} ! Is it you ?! XD
+              <div className="border-bottom pb-3 mb-3"></div>
+            </>
+          )}
+        </div>
       ))}
     </section>
   );

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import Status from "./Status";
 import AuthContext from "../../context";
-import { Auth } from "../";
+import { SignInModal, SignOutModal } from "../auth";
 // import { Redirect } from "react-router-dom";
 
 export default class Header extends Component {
@@ -64,6 +64,7 @@ export default class Header extends Component {
                   onClick={() => {
                     localStorage.clear();
                     this.context.updateUser(false, null);
+                    this.context.changeContent("");
                     // return <Redirect to={"/home"} />;
                   }}
                 ></i>
@@ -74,8 +75,7 @@ export default class Header extends Component {
               </>
             )}
           </button>
-
-          <Auth />
+          {this.context.auth.isLoggedIn ? <SignOutModal /> : <SignInModal />}
 
           {/* <button
             className="navbar-toggler"

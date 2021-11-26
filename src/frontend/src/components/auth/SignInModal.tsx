@@ -1,9 +1,8 @@
-import { Component } from "react";
+import { useContext, useState } from "react";
 import { Formik, FormikHelpers } from "formik";
-// import apiUser, { apiUserConnecting } from "../../../conf/axios.conf";
-import apiUser from "../../../conf/axios.conf";
-// import { User } from "../../../Interfaces";
-import AuthContext from "../../../context";
+import apiUser from "../../conf/axios.conf";
+import AuthContext from "../../context";
+
 /**********************************************/
 /*          MODAL INTERFACE                   */
 /**********************************************/
@@ -90,27 +89,29 @@ const ModalFooter = () => {
   );
 };
 
-export default class SignInModal extends Component {
-  static contextType = AuthContext;
+const SignInModal = () => {
+  const context = useContext(AuthContext);
+  const [wrongPwd, setWrongPwd] = useState(false);
 
-  // onSubmit: (values: Values, formikHelpers: FormikHelpers<Values>) => void | Promise<any>;
-  submit = (values: any, action: FormikHelpers<any>) => {
+  const submit = (values: any, action: FormikHelpers<any>) => {
     apiUser
       .post("/login", values)
       .then((response: any) => {
-        // const user: User = apiUserConnecting(response.data.user);
-        // this.context.updateUser(true, user);
-        this.context.updateUser(true, response.data.user);
+        setWrongPwd(false);
+        context.updateUser(true, response.data.user);
         localStorage.setItem("email", response.data.user.email);
         localStorage.setItem("token", response.data.user.token);
       })
       .catch((err: any) => {
         console.log("err apiUser:", "err");
+        setWrongPwd(true);
         action.setSubmitting(false);
       });
   };
 
-  render() {
+  if (wrongPwd) {
+    return <div className="modal-header">adsfgkjsdhgf </div>;
+  } else {
     return (
       <div
         className="modal fade"
@@ -125,7 +126,7 @@ export default class SignInModal extends Component {
               <ModalHeader />
             </div>
             <div className="modal-body">
-              <ModalBody submit={this.submit} />
+              <ModalBody submit={submit} />
             </div>
             <div className="modal-footer">
               <ModalFooter />
@@ -135,4 +136,6 @@ export default class SignInModal extends Component {
       </div>
     );
   }
-}
+};
+
+export default SignInModal;

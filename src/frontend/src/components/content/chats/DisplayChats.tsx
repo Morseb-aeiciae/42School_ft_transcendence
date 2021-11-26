@@ -3,6 +3,7 @@ import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { Formik } from "formik";
 import AdminPanel from "./ChatsAdmin";
+import { apiChatAdmin } from "../../../conf/axios.conf_chats admin";
 
 const ChatUsers = (props: any) => {
   const [users, setUsers] = useState([]);
@@ -85,18 +86,60 @@ const MessageBar = (props: any) => {
 
 const Messages = (props: any) => {
   const [msg, setMsg] = useState([]);
-  useEffect(() => {
-    apiChat
-      .get(`getMessageOfChat/${props.chatId}`)
+  const [blocked, setBlocked] = useState([]);
+  const [muted, setMuted] = useState([]);
 
-      // .post(`/getMessages`, { chatId: props.chatId, userId: props.id })
+  useEffect(() => {
+    apiChatAdmin
+      .get(`/getAdminInfo/${props.chatId}`)
       .then((response: any) => {
-        setMsg(response.data);
+        const mutedUsers = response.data.filter((e: any) => {
+          return e.muted !== false;
+        });
+        setMuted(mutedUsers);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
       });
-  }, [props.chatId, props.id, msg]);
+  }, [props.chatId]);
+
+  useEffect(() => {
+    apiChat
+      .get(`/getBlockedUsers/${props.id}`)
+      .then((response: any) => {
+        const blockedUsers = response.data;
+        setBlocked(blockedUsers);
+      })
+      .catch((err: any) => {
+        console.log("ShowUserDetails:", err);
+      });
+  }, [props.id]);
+
+  useEffect(() => {
+    apiChat
+      .get(`getMessageOfChat/${props.chatId}`)
+      .then((response: any) => {
+        let msgs = response.data;
+        //muted contacts
+        muted.map(
+          (m: any) =>
+            (msgs = response.data.filter((e: any) => {
+              return e.userId !== m.id;
+            }))
+        );
+        //blocked contacts
+        blocked.map(
+          (b: any) =>
+            (msgs = response.data.filter((e: any) => {
+              return e.userId !== b.id;
+            }))
+        );
+        setMsg(msgs);
+      })
+      .catch((err: any) => {
+        console.log("Chat:", err);
+      });
+  }, [props.chatId, props.id, msg, blocked, muted]);
 
   return (
     <>
@@ -111,7 +154,13 @@ const Messages = (props: any) => {
 
 const FetchChat = (props: any) => {
   const [isLoading, setLoading] = useState(true);
-  const [userType, setUserType] = useState(2); // 0 owner | 1 admin | 2 user
+  const [user, setUser] = useState({
+    adminlvl: 4,
+    banned: false,
+    muted: false,
+    userId: 0,
+    chatId: 0,
+  });
   const [chat, setChat] = useState({
     id: -1,
     name: "",
@@ -123,27 +172,43 @@ const FetchChat = (props: any) => {
   const [displayAdmin, setdisplayAdmin] = useState(false);
 
   useEffect(() => {
+    apiChatAdmin
+      .get(`/getAdminInfo/${props.chatId}`)
+      .then((response: any) => {
+        const users = response.data;
+        users.map((u: any) => {
+          if (u.userId === i) {
+            setUser(u);
+          }
+          return "patate";
+        });
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        console.log("Chat:", err);
+        setLoading(false);
+      });
+
     apiChat
       .get(`/getChat/${props.chatId}`)
       .then((response: any) => {
-        if (response.data.ownerId === i) setUserType(0);
         setChat(response.data);
         setLoading(false);
       })
       .catch((err: any) => {
         console.log(`Chat ${props.chatId}:`, err);
       });
-  }, [props.chatId]);
+  }, [props.chatId, i]);
 
   if (isLoading) {
     return <Loading />;
   } else if (displayAdmin) {
     return (
       <AdminPanel
-        chatId={props.chatId}
-        userId={i}
-        userType={userType}
+        user={user}
         propsB={props}
+        ownerId={chat.ownerId}
+        chatId={props.chatId}
       />
     );
   }
@@ -152,14 +217,14 @@ const FetchChat = (props: any) => {
     <>
       <div className="container">
         <h2>{chat.name}</h2>
-        {userType === 0 ? (
+        {user.adminlvl === 1 ? (
           <button
             onClick={() => {
               setdisplayAdmin(true);
             }}
             className="fas fa-cogs"
           ></button>
-        ) : userType === 1 ? (
+        ) : user.adminlvl === 2 ? (
           <button
             onClick={() => {
               setdisplayAdmin(true);
