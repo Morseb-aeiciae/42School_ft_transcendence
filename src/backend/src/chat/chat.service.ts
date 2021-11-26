@@ -6,7 +6,9 @@ import { ChatEntity } from 'src/entities/chat.entity';
 import { MessageEntity } from 'src/entities/message.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { AddMessageDTO, addUserToChatDTO, BlockUserDTO, ChatDTO, DirectChatDTO, FindBlockedUsersDTO, FindMessageDTO } from 'src/models/chat.models';
-import { getConnection, getRepository, In, Repository } from 'typeorm';
+import { createQueryBuilder, getConnection, getRepository, In, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { Dir } from 'fs';
 
 enum chat_protection {
 	public = 1,
@@ -40,8 +42,9 @@ export class ChatService {
 		const user1 = await this.UserRepo.findOne(chatInfo.userId_1);
 		const user2 = await this.UserRepo.findOne(chatInfo.userId_2);
 		const chat = this.ChatRepo.create({name: user1.username + "_" + user2.username});
-		this.addUserToChat(user1.id, chat.id);
-		this.addUserToChat(user2.id, chat.id);
+		await chat.save();
+		await this.addUserToChat(user1.id, chat.id);
+		await this.addUserToChat(user2.id, chat.id);
 		chat.protection = chat_protection.private_wo_pwd;
 		await chat.save();
 		return chat;
@@ -51,11 +54,15 @@ export class ChatService {
 		try {
 			const chat = await this.ChatRepo.findOne(passwordInfo.chatId);
 		const user = await this.UserRepo.findOne(passwordInfo.userId);
-		if (chat.owner.username != user.username)
+		if (user == undefined || chat == undefined)
+			throw new UnauthorizedException("Chat or user undefined");
+		if (chat.ownerId != user.id)
 			throw new UnauthorizedException("Not authorized to change password");
-		chat.password = passwordInfo.password;
+		const hash = await bcrypt.hash(passwordInfo.password, 10);
+		chat.password = hash;
 		if (chat.password.length == 0)
 			chat.protection = chat_protection.public;
+		await chat.save()
 		return chat;
 		} catch (error) {
 			return error;
@@ -316,5 +323,30 @@ export class ChatService {
 		} catch (error) {
 			return error;
 		}
+	}
+
+	async getDirectChat(data: DirectChatDTO) {
+
+		/*const chat = await createQueryBuilder("Chat_userEntity")
+		.leftJoinAndSelect("Chat_userEntity.chat", "chatEntity", "chatEntity.protection = :pro", {pro : chat_protection.private_wo_pwd})
+		.where("Chat_userEntity.userId = :userId1", {
+			userId1 : data.userId_1
+		})
+		.orWhere("Chat_userEntity.userId = :userId2", {userId2 : data.userId_2})
+		.getMany();
+		//.andWhere("chatEntity.protection = :pro", {pro: chat_protection.private_wo_pwd})*/
+
+		const chat = await createQueryBuilder("ChatEntity")
+		.leftJoinAndSelect("ChatEntity.chat_user", "ChatUser_Entity", "ChatUser_Entity.userId = :userId1 OR ChatUser_Entity.userId = :userId2", {
+			userId1 : data.userId_1, userId2 : data.userId_2})
+		.where("ChatEntity.protection = :pro", {pro: chat_protection.private_wo_pwd})
+	//	.andWhere("ChatUser_Entity.userId = :userId1 OR ChatUser_Entity.userId = :userId2", {
+	//		userId1 : data.userId_1, userId2 : data.userId_2
+	//	})
+		.getMany();
+	
+		return chat;
+		
+		//while (users = await this.getUsersOfChat(chat[i].id) != users[0])
 	}
 }

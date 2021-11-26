@@ -18,8 +18,9 @@ export class UserService {
     return await this.userRepo.findOne({ where: { username } });
   }
 
-  async updateUser(username: string, data: UpdateUserDTO) {
-    await this.userRepo.update({ username }, data);
-    return await this.findByUsername(username);
+  async updateUser(data: UpdateUserDTO) {
+   const user = await this.userRepo.findOne(data.userId);
+   return this.userRepo.save({...user,
+      ...data})
   }
 }

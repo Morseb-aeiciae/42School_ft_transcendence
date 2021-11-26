@@ -85,4 +85,9 @@ export class ChatController {
 	async getMessageOfChat(@Param(("id")) id:number) {
 		return this.ChatService.getMessageOfChat(id);
 	}
+
+	@Post("getDirectChat")
+	async getDirectChat(@Body(ValidationPipe) data: DirectChatDTO) {
+		return this.ChatService.getDirectChat(data);
+	}
 }
