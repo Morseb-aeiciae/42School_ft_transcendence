@@ -17,8 +17,8 @@ export class ChatEntity extends AbstractEntity {
 
 	@BeforeInsert()
 	async hashPassword() {
-		if (this.password)
-			this.password = await hash(this.password, 10);
+	if (this.password)
+		this.password = await hash(this.password, 10);
 	}
 
 	async comparePassword(attempt: string) {

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Post,
   Put,
   UseGuards,
   ValidationPipe,
@@ -22,13 +23,8 @@ export class UserController {
     return this.userService.findByUsername(username);
   }
 
-  @Put()
-  @UseGuards(AuthGuard())
-  update(
-    @User() { username }: UserEntity,
-    @Body(new ValidationPipe({ transform: true, whitelist: true }))
-    data: UpdateUserDTO,
-  ) {
-    return this.userService.updateUser(username, data);
+  @Post("updateUser")
+  update(@Body(new ValidationPipe()) data: UpdateUserDTO) {
+    return this.userService.updateUser(data);
   }
 }

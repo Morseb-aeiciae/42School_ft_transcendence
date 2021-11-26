@@ -1,5 +1,7 @@
 import {
 	IsEmail,
+	IsNegative,
+	IsNumber,
 	IsOptional,
 	IsString,
 	MaxLength,
@@ -41,12 +43,17 @@ import {
   }
   
   export class UpdateUserDTO {
+
 	@IsEmail()
-	@IsString()
-	@MinLength(5)
-	@IsOptional()
 	email: string;
   
+	@IsString()
 	@IsOptional()
 	image: string;
+
+	@IsString()
+	username: string;
+
+	@IsNumber()
+	userId: number;
   }
