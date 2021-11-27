@@ -180,6 +180,7 @@ export class ChatService {
 		.where("message.userId = :userId", {userId: userId})
 		.andWhere("message.chatId = :chatId", {chatId: chatId})
 		.getMany();
+
 		return message;
 	}
 
@@ -325,28 +326,28 @@ export class ChatService {
 		}
 	}
 
-	async getDirectChat(data: DirectChatDTO) {
+	async getDirectChat(data: DirectChatDTO)  {
 
-		/*const chat = await createQueryBuilder("Chat_userEntity")
-		.leftJoinAndSelect("Chat_userEntity.chat", "chatEntity", "chatEntity.protection = :pro", {pro : chat_protection.private_wo_pwd})
-		.where("Chat_userEntity.userId = :userId1", {
-			userId1 : data.userId_1
-		})
-		.orWhere("Chat_userEntity.userId = :userId2", {userId2 : data.userId_2})
-		.getMany();
-		//.andWhere("chatEntity.protection = :pro", {pro: chat_protection.private_wo_pwd})*/
 
-		const chat = await createQueryBuilder("ChatEntity")
+		const chat = await getRepository(ChatEntity)
+		.createQueryBuilder("ChatEntity")
 		.leftJoinAndSelect("ChatEntity.chat_user", "ChatUser_Entity", "ChatUser_Entity.userId = :userId1 OR ChatUser_Entity.userId = :userId2", {
 			userId1 : data.userId_1, userId2 : data.userId_2})
 		.where("ChatEntity.protection = :pro", {pro: chat_protection.private_wo_pwd})
-	//	.andWhere("ChatUser_Entity.userId = :userId1 OR ChatUser_Entity.userId = :userId2", {
-	//		userId1 : data.userId_1, userId2 : data.userId_2
-	//	})
 		.getMany();
 	
-		return chat;
-		
-		//while (users = await this.getUsersOfChat(chat[i].id) != users[0])
+		let a : boolean = false;
+		let i : number = 0;
+		let test : undefined | number;
+		if (chat.length == 0)
+			return []
+		while (i < chat.length)
+		{
+			test = chat[i].chat_user.length;
+			if (test == 2)
+				return chat[i];
+			i++; 
+		}
+		return [];
 	}
 }
