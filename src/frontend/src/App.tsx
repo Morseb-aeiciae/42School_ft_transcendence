@@ -22,7 +22,7 @@ import {
   withRouter,
 } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
-import apiUser from "./conf/axios.conf";
+import apiUsers from "./conf/axios.conf";
 
 //***************************************************** */
 type TParams = { username: string };
@@ -108,7 +108,11 @@ class AppV1 extends React.Component<AppProps> {
                     );
                   }}
                 />
-                <Route path="/home" sensitive={true} component={withRouter(Home)} />
+                <Route
+                  path="/home"
+                  sensitive={true}
+                  component={withRouter(Home)}
+                />
                 <Route path="/login" sensitive={true} component={Login} />
                 <ProtectedRoute
                   path="/:username"
@@ -148,7 +152,7 @@ const App = () => {
     const loggedInToken = localStorage.getItem("token");
     const loggedInMail = localStorage.getItem("email");
     if (loggedInToken) {
-      apiUser
+      apiUsers
         .post("/loginWithToken", {
           email: loggedInMail,
           token: loggedInToken,

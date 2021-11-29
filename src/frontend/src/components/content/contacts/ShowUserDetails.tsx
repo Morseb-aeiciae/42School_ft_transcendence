@@ -1,16 +1,31 @@
 import { useState, useEffect } from "react";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
+import { apiFriends } from "../../../conf/axios.conf_friends";
 import Duel from "./Duel";
 import PrivateMsg from "./PrivateMsg";
 
 const ShowUserDetails = (props: any) => {
   const [isLoading, setLoading] = useState(true);
   const [blocked, setBlocked] = useState(false);
+  const [friend, setFriend] = useState(false);
   const [content, setContent] = useState("");
   const [R, setR] = useState(0);
   const target = props.target;
   const userId = props.userId;
+
+  useEffect(() => {
+    apiFriends
+      .post("/isFriends", { userId, targetId: target.id })
+      .then((response: any) => {
+        setFriend(response.data);
+        console.log("log ::",response.data);
+        
+      })
+      .catch((err: any) => {
+        console.log("isFriends:", err);
+      });
+  }, [userId, target.id, friend]);
 
   useEffect(() => {
     apiChat
@@ -31,42 +46,40 @@ const ShowUserDetails = (props: any) => {
       });
   }, [R, target.id, userId]);
 
-  // console.log("log::", blocked);
-
   // /******************     switch      ****************** */
   switch (content) {
-    //   case "Add": {
-    //     apiChat
-    //       .post("/???", {
-    //          blockerId: userId,
-    //          targetId: target.id,
-    //       })
-    //       .then((response: any) => {
-    //         console.log("setAdminResponse", response);
-    //          setR(Math.random());
-    //       })
-    //       .catch((err: any) => {
-    //         console.log("User Details :", err);
-    //       });
-    //     setContent("none");
-    //     break;
-    //   }
-    //   case "Rmv": {
-    //     apiChat
-    //       .post("/???", {
-    //          blockerId: userId,
-    //          targetId: target.id,
-    //       })
-    //       .then((response: any) => {
-    //         console.log("removeAdminResponse", response);
-    //          setR(Math.random());
-    //       })
-    //       .catch((err: any) => {
-    //         console.log("User Details :", err);
-    //       });
-    //     setContent("none");
-    //     break;
-    //   }
+    case "Add": {
+      apiFriends
+        .post("/sendFriendInvite", {
+          userId: userId,
+          targetId: target.id,
+        })
+        .then((response: any) => {
+          console.log("setAdminResponse", response);
+          setR(Math.random());
+        })
+        .catch((err: any) => {
+          console.log("User Details :", err);
+        });
+      setContent("none");
+      break;
+    }
+    case "Rmv": {
+      apiFriends
+        .post("/removeFriends", {
+          userId: userId,
+          targetId: target.id,
+        })
+        .then((response: any) => {
+          console.log("removeAdminResponse", response);
+          setR(Math.random());
+        })
+        .catch((err: any) => {
+          console.log("User Details :", err);
+        });
+      setContent("none");
+      break;
+    }
     case "unblock": {
       apiChat
         .post("/unblockUser", {
@@ -127,22 +140,25 @@ const ShowUserDetails = (props: any) => {
           <p>Id : {target.id} </p>
           <p>Username : {target.username} </p>
           <div className="container">
-            <button
-              type="button"
-              onClick={() => {
-                setContent("Add");
-              }}
-            >
-              Add contact
-            </button>{" "}
-            <button
-              type="button"
-              onClick={() => {
-                setContent("Rmv");
-              }}
-            >
-              Remove contact
-            </button>{" "}
+            {friend ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setContent("Rmv");
+                }}
+              >
+                Remove contact
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setContent("Add");
+                }}
+              >
+                Add contact
+              </button>
+            )}{" "}
             <button
               type="button"
               onClick={() => {

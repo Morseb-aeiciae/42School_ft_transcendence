@@ -1,11 +1,9 @@
 import { Component } from "react";
 import { User } from "../../../Interfaces";
 import AuthContext from "../../../context";
-
 import { Formik, FormikHelpers } from "formik";
-import apiUser from "../../../conf/axios.conf";
+import apiUsers, { apiUser } from "../../../conf/axios.conf";
 import * as Yup from "yup";
-// import { Redirect } from "react-router-dom";
 
 interface Props {}
 interface ContactsState {
@@ -53,26 +51,43 @@ export default class Account extends Component {
       .max(25, errMaxChar(25))
       .required(errRequired),
   });
+
   submit = (values: any, action: FormikHelpers<any>) => {
     const user: User = this.context.auth.user;
     const email = user.email;
+    console.log("log :class Account:", { userId: user.id, ...values });
 
-    apiUser
+    /*
+
+          .post("/updateUser", { userId: user.id, ...values })
+
+          .post("/updateUser", {
+            userId: user.id,
+            email: values.email,
+            image: values.image,
+            username: values.username,
+          })
+*/
+    apiUsers
       .post("/login", { email, password: values.password })
       .then((response: any) => {
-        // registration need to be remplace by updateUser
         this.setState({
           wrongPwd: false,
         });
         apiUser
-          .post("/updateUser", values)
+          .post("/updateUser", {
+            userId: user.id,
+            email: values.email,
+            image: values.image,
+            username: values.username,
+          })
           .then((response: any) => {
-            this.context.updateUser(true, response.data.user);
-            localStorage.setItem("email", response.data.user.email);
-            localStorage.setItem("token", response.data.user.token);
+            localStorage.setItem("email", response.data.email);
+            localStorage.setItem("token", response.data.password);
+            this.context.updateUser(true, response.data);
           })
           .catch((err: any) => {
-            console.log("Err login \n", err);
+            console.log("Err updateUser \n", err);
             action.setSubmitting(false);
           });
 
@@ -92,9 +107,6 @@ export default class Account extends Component {
     const username = user.username;
     const email = user.email;
 
-    // token for auth =>
-    // const token = localStorage.getItem("token");
-
     return (
       <div className="container-fluid">
         <h1 className="border-bottom  pb-3 mb-3">MY ACCOUNT</h1>
@@ -113,7 +125,7 @@ export default class Account extends Component {
           <div className="container text-lef p-2 fs-3">
             <Formik
               onSubmit={this.submit}
-              initialValues={{ username, email, picture: "", password: "" }}
+              initialValues={{ username, email, image: "", password: "" }}
               validationSchema={this.userSchema}
               validateOnChange={false}
               // isSubmitting={false}
@@ -161,18 +173,18 @@ export default class Account extends Component {
                     </div>
 
                     <div className="mb-3">
-                      picture
+                      image
                       <input
-                        name="picture"
+                        name="image"
                         type="text"
                         className="form-control"
-                        id="picture"
-                        placeholder={"link adress to an picture"}
+                        id="image"
+                        placeholder={"link adress to an image"}
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {errors.picture && touched.picture ? (
-                        <div className="text-danger">{errors.picture}</div>
+                      {errors.image && touched.image ? (
+                        <div className="text-danger">{errors.image}</div>
                       ) : null}
                     </div>
 

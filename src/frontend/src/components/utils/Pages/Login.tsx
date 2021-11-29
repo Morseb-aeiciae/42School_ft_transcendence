@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Formik, FormikHelpers } from "formik";
-// import apiUser, { apiUserConnecting } from "../../../conf/axios.conf";
-import apiUser from "../../../conf/axios.conf";
+// import apiUsers, { apiUsersConnecting } from "../../../conf/axios.conf";
+import apiUsers from "../../../conf/axios.conf";
 import AuthContext from "../../../context";
 // import { User } from "../../../Interfaces";
 import * as Yup from "yup";
@@ -47,10 +47,10 @@ export default class Login extends Component {
 
   // onSubmit: (values: Values, formikHelpers: FormikHelpers<Values>) => void | Promise<any>;
   submit = (values: any, action: FormikHelpers<any>) => {
-    apiUser
+    apiUsers
       .post("/registration", values)
       .then((response: any) => {
-        // const user: User = apiUserConnecting(response.data.user);
+        // const user: User = apiUsersConnecting(response.data.user);
         // this.context.updateUser(true, user);
         this.context.updateUser(true, response.data.user);
         localStorage.setItem("email", response.data.user.email);

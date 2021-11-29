@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Formik, FormikHelpers } from "formik";
-import apiUser from "../../conf/axios.conf";
+import apiUsers from "../../conf/axios.conf";
 import AuthContext from "../../context";
 
 /**********************************************/
@@ -94,7 +94,7 @@ const SignInModal = () => {
   const [wrongPwd, setWrongPwd] = useState(false);
 
   const submit = (values: any, action: FormikHelpers<any>) => {
-    apiUser
+    apiUsers
       .post("/login", values)
       .then((response: any) => {
         setWrongPwd(false);
@@ -103,7 +103,7 @@ const SignInModal = () => {
         localStorage.setItem("token", response.data.user.token);
       })
       .catch((err: any) => {
-        console.log("err apiUser:", "err");
+        console.log("err apiUsers:", "err");
         setWrongPwd(true);
         action.setSubmitting(false);
       });

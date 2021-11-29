@@ -17,18 +17,24 @@ export const apiLocal3001 = axios.create({
   timeout: 3000,
 });
 
-const apiUser = axios.create({
+export const apiUser = axios.create({
+  baseURL: "http://localhost:3001/user",
+  headers: configHeaders,
+  timeout: 3000,
+});
+
+const apiUsers = axios.create({
   baseURL: "http://localhost:3001/users",
   headers: configHeaders,
   timeout: 3000,
 });
-export default apiUser;
+export default apiUsers;
 
 /**********************************************/
 //  interceptor request
 /**********************************************/
 
-apiUser.interceptors.request.use((req) => {
+apiUsers.interceptors.request.use((req) => {
   // req.headers["Authorization"] = "AUTH_TOKEN";
   // console.log("request : ", req);
   return req;
@@ -61,7 +67,7 @@ const successHandler = (response: AxiosResponse) => {
   return response;
 };
 
-apiUser.interceptors.response.use(
+apiUsers.interceptors.response.use(
   (response) => successHandler(response),
   (err) => errorHandler(err)
 );
@@ -70,7 +76,7 @@ apiUser.interceptors.response.use(
 //  utils
 /**********************************************/
 
-// export const apiUserConnecting = (u: any): User => {
+// export const apiUsersConnecting = (u: any): User => {
 //   return {
 //     id: u.id,
 //     username: u.username,
