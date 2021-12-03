@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import { apiFriends } from "../../../conf/axios.conf_friends";
-import Duel from "./Duel";
-import PrivateMsg from "./PrivateMsg";
 
 const ContactElements = (props: any) => {
-  console.log("log ::", props);
   const [rmv, setRmv] = useState(false);
-  const [w, setW] = useState(false);
-  const [c, setC] = useState(false);
 
   useEffect(() => {
     if (rmv)
@@ -25,11 +20,6 @@ const ContactElements = (props: any) => {
         });
   }, [props, rmv]);
 
-  if (w) {
-    return <PrivateMsg targetId={props.target.id} userId={props.userId} />;
-  } else if (c) {
-    return <Duel targetId={props.target.id} userId={props.userId} />;
-  } else 
   return (
     <>
       <div className="d-flex flex-row flex-wrap align-content-start">
@@ -63,14 +53,16 @@ const ContactElements = (props: any) => {
           <br />
           <button
             onClick={() => {
-              setW(true);
+              props.setDisplay(2);
+              props.setTarget(props.target.id);
             }}
           >
             whisper
           </button>
           <button
             onClick={() => {
-              setC(true);
+              props.setDisplay(3);
+              props.setTarget(props.target.id);
             }}
           >
             challenge

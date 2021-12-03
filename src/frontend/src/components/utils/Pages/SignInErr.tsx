@@ -1,9 +1,7 @@
 import { Component } from "react";
 import { Formik, FormikHelpers } from "formik";
-// import apiUsers, { apiUsersConnecting } from "../../../conf/axios.conf";
 import apiUsers from "../../../conf/axios.conf";
 import AuthContext from "../../../context";
-// import { User } from "../../../Interfaces";
 import * as Yup from "yup";
 import { Redirect } from "react-router-dom";
 
@@ -27,7 +25,7 @@ const errEmail = () => {
 
 /******************************************/
 
-export default class Login extends Component {
+export default class SignInErr extends Component {
   static contextType = AuthContext;
 
   userSchema = Yup.object().shape({
@@ -45,19 +43,17 @@ export default class Login extends Component {
       .required(errRequired),
   });
 
-  // onSubmit: (values: Values, formikHelpers: FormikHelpers<Values>) => void | Promise<any>;
   submit = (values: any, action: FormikHelpers<any>) => {
     apiUsers
-      .post("/registration", values)
+      .post("/login", values)
       .then((response: any) => {
-        // const user: User = apiUsersConnecting(response.data.user);
-        // this.context.updateUser(true, user);
         this.context.updateUser(true, response.data.user);
+        this.context.changeRender(0);
         localStorage.setItem("email", response.data.user.email);
         localStorage.setItem("token", response.data.user.token);
       })
       .catch((err: any) => {
-        console.log("Err login \n", err);
+        console.log("err apiUsers:", err);
         action.setSubmitting(false);
       });
   };
@@ -66,9 +62,16 @@ export default class Login extends Component {
     if (!this.context.auth.isLoggedIn)
       return (
         <div className="bg-dark text-light p-5 text-center flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+          <p className="text-danger">Something happened !</p>
+          <p className="text-danger">
+            Are you register ? If not, sign up first
+          </p>
+          <p className="text-danger">
+            If you are register, check your password or email
+          </p>
           <Formik
             onSubmit={this.submit}
-            initialValues={{ username: "", email: "", password: "" }}
+            initialValues={{ email: "", password: "" }}
             validationSchema={this.userSchema}
             validateOnChange={false}
           >
@@ -82,21 +85,6 @@ export default class Login extends Component {
             }) => (
               <>
                 <form onSubmit={handleSubmit}>
-                  <div className="mb-3">
-                    <input
-                      name="username"
-                      type="text"
-                      className="form-control"
-                      id="username"
-                      placeholder="username"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.username && touched.username ? (
-                      <div className="text-danger">{errors.username}</div>
-                    ) : null}
-                  </div>
-
                   <div className="mb-3">
                     <input
                       name="email"
@@ -130,7 +118,7 @@ export default class Login extends Component {
                     disabled={isSubmitting}
                     className="btn btn-primary"
                   >
-                    Sign up
+                    Sign in
                   </button>
                 </form>
               </>

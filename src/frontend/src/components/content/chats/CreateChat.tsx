@@ -40,7 +40,9 @@ export default class CreateChat extends Component<Props> {
       .post("/createChat", values)
       .then(() => {
         action.setSubmitting(false);
-        setState(Math.random());
+        setTimeout(function () {
+          setState(Math.random());
+        }, 100);
       })
       .catch((err: any) => {
         console.log("creating chats", err);

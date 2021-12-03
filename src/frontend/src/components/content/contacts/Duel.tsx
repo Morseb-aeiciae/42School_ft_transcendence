@@ -7,7 +7,9 @@ const Duel = (props: any) => {
   const userId = props.userId;
 
   useEffect(() => {
-    setLoading(false);
+    setTimeout(function () {
+      setLoading(false);
+    }, 500);
   }, []);
 
   if (isLoading) {

@@ -179,7 +179,7 @@ const UserOfChat = (props: any) => {
           } else if (u.userId === props.userId) {
             setCurrentUser(u);
           }
-          return "patate";
+          return null;
         });
       })
       .catch((err: any) => {
@@ -458,9 +458,11 @@ const UpdatePwd = (props: any) => {
           if (u.userId === props.userId) {
             setCurrentUser(u);
           }
-          return "patate";
+          return null;
         });
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
@@ -480,7 +482,9 @@ const UpdatePwd = (props: any) => {
       })
       .catch((err: any) => {
         console.log("Chats:", err);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
         action.setSubmitting(false);
       });
   };

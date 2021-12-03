@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { apiFriends } from "../../../conf/axios.conf_friends";
-import Duel from "./Duel";
-import PrivateMsg from "./PrivateMsg";
 
 const ShowUserDetails = (props: any) => {
   const [isLoading, setLoading] = useState(true);
@@ -19,8 +17,6 @@ const ShowUserDetails = (props: any) => {
       .post("/isFriends", { userId, targetId: target.id })
       .then((response: any) => {
         setFriend(response.data);
-        console.log("log ::",response.data);
-        
       })
       .catch((err: any) => {
         console.log("isFriends:", err);
@@ -38,11 +34,15 @@ const ShowUserDetails = (props: any) => {
           }
           return null;
         });
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       })
       .catch((err: any) => {
         console.log("ShowUserDetails:", err);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       });
   }, [R, target.id, userId]);
 
@@ -119,10 +119,10 @@ const ShowUserDetails = (props: any) => {
 
   if (isLoading) {
     return <Loading />;
-  } else if (content === "Msg") {
-    return <PrivateMsg targetId={props.target.id} userId={userId} />;
-  } else if (content === "Duel") {
-    return <Duel targetId={props.target.id} userId={userId} />;
+    // } else if (content === "Msg") {
+    //   return <PrivateMsg targetId={props.target.id} userId={userId} />;
+    // } else if (content === "Duel") {
+    //   return <Duel targetId={props.target.id} userId={userId} />;
   } else {
     return (
       <section className="d-flex flex-row">
@@ -162,7 +162,10 @@ const ShowUserDetails = (props: any) => {
             <button
               type="button"
               onClick={() => {
-                setContent("Msg");
+                props.setDisplay(2);
+                props.setTarget(target.id);
+
+                // setContent("Msg");
               }}
             >
               Private msgs
@@ -170,7 +173,10 @@ const ShowUserDetails = (props: any) => {
             <button
               type="button"
               onClick={() => {
-                setContent("Duel");
+                props.setDisplay(3);
+                props.setTarget(target.id);
+
+                // setContent("Duel");
               }}
             >
               Duel

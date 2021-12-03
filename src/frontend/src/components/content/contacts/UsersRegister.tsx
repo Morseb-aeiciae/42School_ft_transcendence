@@ -15,18 +15,29 @@ const UsersRegister = (props: any) => {
       .get("/profiles")
       .then((response: any) => {
         setUsers(response.data);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       });
   }, []);
 
   if (isLoading) {
     return <Loading />;
   } else if (showUser.id) {
-    return <ShowUserDetails userId={props.userId} target={showUser} />;
+    return (
+      <ShowUserDetails
+        userId={props.userId}
+        target={showUser}
+        setDisplay={props.setDisplay}
+        setTarget={props.setTarget}
+      />
+    );
   } else if (users.length > 1) {
     return (
       <>

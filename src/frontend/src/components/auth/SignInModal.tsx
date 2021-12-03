@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Formik, FormikHelpers } from "formik";
 import apiUsers from "../../conf/axios.conf";
 import AuthContext from "../../context";
@@ -91,51 +91,45 @@ const ModalFooter = () => {
 
 const SignInModal = () => {
   const context = useContext(AuthContext);
-  const [wrongPwd, setWrongPwd] = useState(false);
 
   const submit = (values: any, action: FormikHelpers<any>) => {
     apiUsers
       .post("/login", values)
       .then((response: any) => {
-        setWrongPwd(false);
         context.updateUser(true, response.data.user);
         localStorage.setItem("email", response.data.user.email);
         localStorage.setItem("token", response.data.user.token);
       })
       .catch((err: any) => {
-        console.log("err apiUsers:", "err");
-        setWrongPwd(true);
+        console.log("err apiUsers:", err);
+        context.changeRender(1);
         action.setSubmitting(false);
       });
   };
 
-  if (wrongPwd) {
-    return <div className="modal-header">adsfgkjsdhgf </div>;
-  } else {
-    return (
-      <div
-        className="modal fade"
-        id="log"
-        tabIndex={-1}
-        aria-labelledby="logLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content bg-dark text-light">
-            <div className="modal-header">
-              <ModalHeader />
-            </div>
-            <div className="modal-body">
-              <ModalBody submit={submit} />
-            </div>
-            <div className="modal-footer">
-              <ModalFooter />
-            </div>
+  return (
+    <div
+      className="modal fade"
+      id="log"
+      tabIndex={-1}
+      aria-labelledby="logLabel"
+      aria-hidden="true"
+    >
+      <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-content bg-dark text-light">
+          <div className="modal-header">
+            <ModalHeader />
+          </div>
+          <div className="modal-body">
+            <ModalBody submit={submit} />
+          </div>
+          <div className="modal-footer">
+            <ModalFooter />
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 };
 
 export default SignInModal;

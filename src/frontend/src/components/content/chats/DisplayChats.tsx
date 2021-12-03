@@ -38,15 +38,50 @@ const ChatUsers = (props: any) => {
 };
 
 const MessageBar = (props: any) => {
-  const submit = (values: any, action: any) => {
-    apiChat
-      .post("/addMessage", values)
+  const [r, setR] = useState(0);
+  const [currentUser, setCurrentUser] = useState({
+    banned: false,
+  });
+
+  useEffect(() => {
+    setTimeout(function () {
+      setR(Math.random());
+    }, 500);
+    apiChatAdmin
+      .get(`/getAdminInfo/${props.chatId}`)
       .then((response: any) => {
-        action.setSubmitting(false);
+        const users = response.data;
+        users.map((u: any) => {
+          if (u.userId === props.id) {
+            setCurrentUser(u);
+          }
+          return null;
+        });
       })
       .catch((err: any) => {
-        console.log("creating chats", "err");
+        console.log("Chat:", err);
       });
+  }, [r, props.chatId, props.id]);
+
+  const submit = (values: any, action: any) => {
+    if (!currentUser.banned)
+      apiChat
+        .post("/isUserOnChat", { userId: props.id, chatId: props.chatId })
+        .then((response: any) => {
+          if (response.data) {
+            apiChat
+              .post("/addMessage", values)
+              .then((response: any) => {
+                action.setSubmitting(false);
+              })
+              .catch((err: any) => {
+                console.log("creating chats", "err");
+              });
+          }
+        })
+        .catch((err: any) => {
+          console.log("Chats:", err);
+        });
   };
 
   return (
@@ -139,8 +174,8 @@ const Messages = (props: any) => {
       .catch((err: any) => {
         console.log("Chat:", err);
       });
-  }, [props.chatId, props.id, blocked, muted]);
-// }, [props.chatId, props.id, msg, blocked, muted]);
+  }, [props.chatId, props.id, msg, blocked, muted]);
+  // }, [props.chatId, props.id, msg, blocked, muted]);
 
   return (
     <>
@@ -181,20 +216,26 @@ const FetchChat = (props: any) => {
           if (u.userId === i) {
             setUser(u);
           }
-          return "patate";
+          return null;
         });
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       });
 
     apiChat
       .get(`/getChat/${props.chatId}`)
       .then((response: any) => {
         setChat(response.data);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       })
       .catch((err: any) => {
         console.log(`Chat ${props.chatId}:`, err);

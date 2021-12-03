@@ -5,34 +5,48 @@ import SearchBar, { ShowChats } from "./SearchBar";
 import AuthContext from "../../../context";
 import CreateChat from "./CreateChat";
 import FetchChat from "./DisplayChats";
-import ShowUser from "./ShowUser";
 import { apiChatAdmin } from "../../../conf/axios.conf_chats admin";
+import ShowUserDetails from "../contacts/ShowUserDetails";
+import PrivateMsg from "../contacts/PrivateMsg";
+import Duel from "../contacts/Duel";
 
 const displayChatCard = (chat: any, setState: any, leave: any) => {
-  return (
-    <>
-      <div className="p-2 border">
-        <h4 className="text-center">{chat.name}</h4>
-        <p className="text-center">id :{chat.id}</p>
-        <button
-          className="btn btn-secondary"
-          onClick={() => {
-            setState(chat.id);
-          }}
-        >
-          <i className="fas fa-keyboard fs-1 text-dark"></i>
-        </button>
-        <button
-          className="btn btn-danger"
-          onClick={() => {
-            leave(chat.id);
-          }}
-        >
-          <i className="fas fa-trash-alt fs-1"></i>
-        </button>
-      </div>
-    </>
-  );
+  if (chat.banned) {
+    return (
+      <>
+        <div className="p-2 border">
+          <h4 className="text-center">{chat.name}</h4>
+          <p className="text-center">id :{chat.id}</p>
+          <button className="btn text-light p-2 px-4 border">Banned</button>
+        </div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <div className="p-2 border">
+          <h4 className="text-center">{chat.name}</h4>
+          <p className="text-center">id :{chat.id}</p>
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              setState(chat.id);
+            }}
+          >
+            <i className="fas fa-keyboard fs-1 text-dark"></i>
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              leave(chat.id);
+            }}
+          >
+            <i className="fas fa-trash-alt fs-1"></i>
+          </button>
+        </div>
+      </>
+    );
+  }
 };
 
 const display = (chats: any, props: any) => {
@@ -72,18 +86,42 @@ const CurrentChats = (props: any) => {
   const [owner, setOwner] = useState(1);
   const [ownerCantLeave, setOwnerLeave] = useState(0);
   const id = props.userId;
+
   useEffect(() => {
     apiChat
       .get(`/getChatsOfUser/${id}`, {})
       .then((response: any) => {
-        setChats(response.data);
-        setLoading(false);
+        let chats = response.data.map((chat: any) => {
+          apiChatAdmin
+            .get(`/getAdminInfo/${chat.id}`)
+            .then((response: any) => {
+              const users = response.data;
+              users.map((u: any) => {
+                if (u.userId === props.userId) {
+                  chat.banned = u.banned;
+                }
+                return null;
+              });
+            })
+            .catch((err: any) => {
+              console.log("Chat:", err);
+            });
+          return chat;
+        });
+        setChats(chats);
+        setTimeout(function () {
+          setTimeout(function () {
+            setLoading(false);
+          }, 200);
+        }, 500);
       })
       .catch((err: any) => {
         console.log("Chats:", err);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       });
-  }, [id, props.props.state]);
+  }, [id, props.props.state, props.userId]);
 
   useEffect(() => {
     if (props.props.leave > 0) {
@@ -93,12 +131,15 @@ const CurrentChats = (props: any) => {
           if (response.data.status === 409) setOwner(-owner);
           else {
             console.log("user leave a chat", response.data);
-            props.props.setState(Math.random());
+            // props.props.setState(Math.random());
+            props.props.leaveChats(0);
           }
         })
         .catch((err: any) => {
           console.log("Chats:", err);
-          setLoading(false);
+          setTimeout(function () {
+            setLoading(false);
+          }, 200);
         });
     }
   }, [id, props.props.leave, owner, props.props]);
@@ -116,11 +157,14 @@ const CurrentChats = (props: any) => {
               .post("/deleteChat", { userId: id, chatId: props.props.leave })
               .then((response: any) => {
                 console.log("owner delete a chat", response.data);
-                props.props.setState(Math.random());
+                // props.props.setState(Math.random());
+                props.props.leaveChats(0);
               })
               .catch((err: any) => {
                 console.log("Chats:", err);
-                setLoading(false);
+                setTimeout(function () {
+                  setLoading(false);
+                }, 500);
               });
           } else {
             setOwnerLeave(1);
@@ -134,7 +178,7 @@ const CurrentChats = (props: any) => {
   if (isLoading) {
     return <Loading />;
   } else if (ownerCantLeave) {
-    return <p> Owner of chat can't leave if he is not the last</p>;
+    return <p> Owner of chat can't leave if he's not the last</p>;
   } else return display(fetchData, props);
 };
 
@@ -146,6 +190,10 @@ const Chats = () => {
   const [showUser, setShowUser] = useState(-1);
   const [showChats, setShowChats] = useState([]);
   const [noChat, setNoChat] = useState(0);
+  const [display, setDisplay] = useState(0);
+  const [target, setTarget] = useState({
+    id: 0,
+  });
 
   const user = context.auth.user?.id;
   const props = {
@@ -158,11 +206,21 @@ const Chats = () => {
     setShowUser,
   };
 
+  if (display === 2) {
+    return <PrivateMsg targetId={target} userId={user} />;
+  } else if (display === 3) {
+    return <Duel targetId={target} userId={user} />;
+  }
   if (showUser >= 0) {
     return (
       <section>
         <h1 className="border-bottom pb-3 mb-3">User</h1>
-        <ShowUser chatId={stateId} targetId={showUser} userId={user} />
+        <ShowUserDetails
+          target={{ id: showUser }}
+          userId={user}
+          setDisplay={setDisplay}
+          setTarget={setTarget}
+        />
       </section>
     );
   } else if (showChats.length > 0) {

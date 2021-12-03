@@ -3,6 +3,7 @@ import { Formik } from "formik";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { Loading } from "../..";
 import WrongInput from "../../utils/Pages/WrongInput";
+import { apiChatAdmin } from "../../../conf/axios.conf_chats admin";
 
 const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
   const [isLoading, setLoading] = useState(true);
@@ -12,16 +13,41 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
   const [wrongPwd, setWrong] = useState(false);
   let pwd: any = undefined;
 
+  const [currentUser, setCurrentUser] = useState({
+    banned: false,
+  });
+
+  useEffect(() => {
+    apiChatAdmin
+      .get(`/getAdminInfo/${chat.id}`)
+      .then((response: any) => {
+        const users = response.data;
+        users.map((u: any) => {
+          if (u.userId === user) {
+            setCurrentUser(u);
+          }
+          return null;
+        });
+      })
+      .catch((err: any) => {
+        console.log("Chat:", err);
+      });
+  }, [user, chat.id]);
+
   useEffect(() => {
     apiChat
       .post("/isUserOnChat", { userId: user, chatId: chat.id })
       .then((response: any) => {
         if (response.data) setChat(true);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       })
       .catch((err: any) => {
         console.log("Chats:", err);
-        setLoading(false);
+        setTimeout(function () {
+          setLoading(false);
+        }, 500);
       });
   }, [user, chat.id]);
 
@@ -43,7 +69,9 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
         })
         .catch((err: any) => {
           console.log("Chats:", err);
-          setLoading(false);
+          setTimeout(function () {
+            setLoading(false);
+          }, 200);
         });
   }, [user, chat.id, join, pwd, resetChat, reload]);
 
@@ -69,7 +97,9 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
         })
         .catch((err: any) => {
           console.log("Chats:", err);
-          setLoading(false);
+          setTimeout(function () {
+            setLoading(false);
+          }, 200);
           action.setSubmitting(false);
         });
   };
@@ -178,7 +208,11 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
         <h4 className="text-center">{chat.name}</h4>
         <p className="text-center">id :{chat.id}</p>
         <button className="btn text-light p-2 px-4 border">
-          Already joined
+          {currentUser.banned ? (
+            <span>Banned</span>
+          ) : (
+            <span>Already joined</span>
+          )}
         </button>
       </div>
     );

@@ -55,19 +55,8 @@ export default class Account extends Component {
   submit = (values: any, action: FormikHelpers<any>) => {
     const user: User = this.context.auth.user;
     const email = user.email;
-    console.log("log :class Account:", { userId: user.id, ...values });
+    // console.log("log :class Account:", { userId: user.id, ...values });
 
-    /*
-
-          .post("/updateUser", { userId: user.id, ...values })
-
-          .post("/updateUser", {
-            userId: user.id,
-            email: values.email,
-            image: values.image,
-            username: values.username,
-          })
-*/
     apiUsers
       .post("/login", { email, password: values.password })
       .then((response: any) => {

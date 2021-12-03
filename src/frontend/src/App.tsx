@@ -11,6 +11,7 @@ import {
   PageNotFound,
   ProtectedRoute,
   Loading,
+  SignInErr,
 } from "./components";
 import AuthContext from "./context";
 import { User } from "./Interfaces";
@@ -51,8 +52,11 @@ export interface AppState {
   users: Array<User>;
   updateUser: (b: boolean, user: User) => any;
   changeContent: (newStatus: string) => any;
+  changeStatus: (newStatus: string) => any;
+  changeRender: (newStatus: number) => any;
   status: string;
   content: string;
+  switchRender: number;
 }
 
 class AppV1 extends React.Component<AppProps> {
@@ -69,14 +73,27 @@ class AppV1 extends React.Component<AppProps> {
       users: [],
       updateUser: this.updateUser,
       changeContent: this.changeContent,
+      changeRender: this.changeRender,
+      changeStatus: this.changeStatus,
       status: "idle",
       content: "",
+      switchRender: 0,
     };
   }
 
   changeContent = (newContent: string) => {
     this.setState({
       content: newContent,
+    });
+  };
+  changeStatus = (newStatus: string) => {
+    this.setState({
+      status: newStatus,
+    });
+  };
+  changeRender = (render: number) => {
+    this.setState({
+      switchRender: render,
     });
   };
   updateUser = (isLoggedIn: boolean, user: User) => {
@@ -89,45 +106,60 @@ class AppV1 extends React.Component<AppProps> {
   };
 
   render() {
-    // console.log("App :", this);
-    return (
-      <Router>
-        <div className="App d-flex flex-column">
-          <AuthContext.Provider value={this.state}>
-            <Header />
-            <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  render={() => {
-                    return this.state.auth.isLoggedIn ? (
-                      <Redirect to={`/${this.state.auth.user?.username}`} />
-                    ) : (
-                      <Redirect to="/home" />
-                    );
-                  }}
-                />
-                <Route
-                  path="/home"
-                  sensitive={true}
-                  component={withRouter(Home)}
-                />
-                <Route path="/login" sensitive={true} component={Login} />
-                <ProtectedRoute
-                  path="/:username"
-                  sensitive={true}
-                  component={withRouter(ComponentUserConnected)}
-                  isLoggedIn={this.state.auth.isLoggedIn}
-                />
-                <Route component={PageNotFound} />
-              </Switch>
-            </div>
-            <Footer />
-          </AuthContext.Provider>
-        </div>
-      </Router>
-    );
+    if (this.state.switchRender === 1) {
+      return (
+        <Router>
+          <div className="App d-flex flex-column">
+            <AuthContext.Provider value={this.state}>
+              <Header />
+              <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
+                <SignInErr />
+              </div>
+              <Footer />
+            </AuthContext.Provider>
+          </div>
+        </Router>
+      );
+    } else if (this.state.switchRender === 0) {
+      return (
+        <Router>
+          <div className="App d-flex flex-column">
+            <AuthContext.Provider value={this.state}>
+              <Header />
+              <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
+                <Switch>
+                  <Route
+                    exact
+                    path="/"
+                    render={() => {
+                      return this.state.auth.isLoggedIn ? (
+                        <Redirect to={`/${this.state.auth.user?.username}`} />
+                      ) : (
+                        <Redirect to="/home" />
+                      );
+                    }}
+                  />
+                  <Route
+                    path="/home"
+                    sensitive={true}
+                    component={withRouter(Home)}
+                  />
+                  <Route path="/login" sensitive={true} component={Login} />
+                  <ProtectedRoute
+                    path="/:username"
+                    sensitive={true}
+                    component={withRouter(ComponentUserConnected)}
+                    isLoggedIn={this.state.auth.isLoggedIn}
+                  />
+                  <Route component={PageNotFound} />
+                </Switch>
+              </div>
+              <Footer />
+            </AuthContext.Provider>
+          </div>
+        </Router>
+      );
+    }
   }
 }
 
@@ -159,14 +191,20 @@ const App = () => {
         })
         .then((response: any) => {
           setUser(response.data.user);
-          setLoading(false);
+          setTimeout(function () {
+            setLoading(false);
+          }, 200);
         })
         .catch((err: any) => {
           console.log("not loggin yet:", "err");
-          setLoading(false);
+          setTimeout(function () {
+            setLoading(false);
+          }, 200);
         });
     } else {
-      setLoading(false);
+      setTimeout(function () {
+        setLoading(false);
+      }, 500);
     }
   }, []);
   if (fetchData) {
