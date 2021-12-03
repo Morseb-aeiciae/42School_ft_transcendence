@@ -62,6 +62,8 @@ export class ChatService {
 		chat.password = hash;
 		if (chat.password.length == 0)
 			chat.protection = chat_protection.public;
+		else
+			chat.protection = chat_protection.private_with_pwd;
 		await chat.save()
 		return chat;
 		} catch (error) {
