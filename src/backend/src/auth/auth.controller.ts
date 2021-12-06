@@ -1,26 +1,51 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res,  UseGuards } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
+import { Response, Request } from 'express';
+import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
-import {
-  LoginDTO,
-  RegisterDTO,
-  LoginWithTokenDTO,
-} from '../models/user.models';
+import { SchoolAuthGuard } from './guard/42.guard';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
-@Controller('users')
+@Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService,
+       private userService : UserService,
+       private jwtService : JwtService) {}
+    
+    @Get('login')
+    @UseGuards(SchoolAuthGuard)
+    login() {
+        return ;
+    }
 
-  @Post('/registration')
-  register(@Body(ValidationPipe) credentials: RegisterDTO) {
-    return this.authService.register(credentials);
-  }
+    @Get('redirect')
+    @UseGuards(SchoolAuthGuard)
+    async redirectSchool(@Res({passthrough: true}) res: Response, @Req() req: Request) {
+        const user = await this.authService.addUser(req.user['username'], req.user['email']);
+        const token = this.jwtService.sign(user.username);
+       // res.cookie("acces_token", token, {httpOnly : true})
+       console.log(token);
+   /* res
+        .cookie('access_token', token, {
+          httpOnly: true,
+          domain: 'localhost', // your domain here!
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        })
+        .send({ success: true });*/
+        res.cookie('access_token', token, {
+            httpOnly: true,
+          });
+       // res.status(302).redirect("http://localhost:3000");
+        return user;
+    }
+    
+    @UseGuards(JwtAuthGuard)
+    @Get('profile/:username')
+    async status(@Param("username") username: string) {
+        return this.userService.findByUsername(username);
+    }
 
-  @Post('/login')
-  login(@Body(ValidationPipe) credentials: LoginDTO) {
-    return this.authService.login(credentials);
-  }
-  @Post('/loginWithToken')
-  loginWithToken(@Body(ValidationPipe) credentials: LoginWithTokenDTO) {
-    return this.authService.loginWithToken(credentials);
-  }
+    @Get('logout')
+    logout() {}
 }

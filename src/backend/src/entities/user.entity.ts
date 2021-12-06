@@ -20,7 +20,7 @@ export class UserEntity extends AbstractEntity {
   @Column({ default: null, nullable: true })
   image: string | null;
 
-  @Column()
+  @Column({nullable : true})
   @Exclude()
   password: string;
 
@@ -37,6 +37,12 @@ export class UserEntity extends AbstractEntity {
   toJSON() {
     return classToPlain(this);
   }
+
+  @Column({nullable: true})
+  public twoFactorAuthenticationSecret?: string;
+
+  @Column({ default: false })
+  public isTwoFactorAuthenticationEnabled: boolean;
 
   @OneToMany(() => Match_userEntity, Match_userEntity => Match_userEntity.user)
  public match_user!: Match_userEntity[];

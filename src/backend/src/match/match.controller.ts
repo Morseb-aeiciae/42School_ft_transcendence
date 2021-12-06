@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { MatchDTO, UpdateMatchDTO } from 'src/models/match.models';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('match')
 export class MatchController {
 	constructor(private MatchService: MatchService) {}

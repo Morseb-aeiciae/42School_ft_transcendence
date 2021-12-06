@@ -1,4 +1,3 @@
-import { User } from "src/auth/user.decorator";
 import { Column, Entity, ManyToOne } from "typeorm";
 import { AbstractEntity } from "./abstract-entity";
 import { MatchEntity } from "./match.entity";
