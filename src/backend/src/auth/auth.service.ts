@@ -1,75 +1,41 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  LoginDTO,
-  RegisterDTO,
-  LoginWithTokenDTO,
-} from '../models/user.models';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../entities/user.entity';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { response, urlencoded } from 'express';
+import { UserService } from 'src/user/user.service';
+import TokenPayload from './token.payload.interface';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
-    private jwtService: JwtService,
-  ) {}
+    configService: any;
+    constructor(  private jwtService: JwtService,
+        private userService : UserService) {}
+    
+    validateUser(req : any) {
+       // console.log(req.avatar);
 
-  async register(credentials: RegisterDTO) {
-    try {
-      const user = this.userRepo.create(credentials);
-      await user.save();
-      const payload = { username: user.username };
-      const token = this.jwtService.sign(payload);
-      return { user: { ...user.toJSON(), token } };
-    } catch (e) {
-      if (e.code === '23505') {
-        throw new ConflictException('Username has already been taken');
-      }
-      throw new InternalServerErrorException();
+        }
+
+   async addUser(username : string, mail : string) {
+      // console.log(mail);
+        let user = await this.userService.findByUsername(username);
+        if (user == undefined)
+        {
+           let test = await this.userService.createUser(username, mail);
+        }
+        return user;
     }
-  }
 
-  async login(credentials: LoginDTO) {
-    try {
-      const user = await this.userRepo.findOne({
-        where: { email: credentials.email },
-      });
-      const isValid: boolean =
-        user && (await user.comparePassword(credentials.password));
-
-      if (isValid) {
-        const payload = { username: user.username };
-        const token = this.jwtService.sign(payload);
-        return { user: { ...user.toJSON(), token } };
-      }
-      throw new UnauthorizedException('Invalid credentials');
-    } catch (e) {
-      throw e;
+    findUser() {
+        throw new Error("dfsdf")
     }
-  }
 
-  async loginWithToken(credentials: LoginWithTokenDTO) {
-    try {
-      const user = await this.userRepo.findOne({
-        where: { email: credentials.email },
-      });
-      const isValid: boolean =
-        user && !!(await this.jwtService.verify(credentials.token));
-
-      if (isValid) {
-        const payload = { username: user.username };
-        return { user: { ...user.toJSON() } };
+    public getCookieWithJwtAccessToken(userId: number, isSecondFactorAuthenticated = false) {
+        const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
+        const token = this.jwtService.sign(payload, {
+          secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+          expiresIn: `${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}s`
+        });
+        return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
       }
-      throw new UnauthorizedException('Invalid credentials');
-    } catch (e) {
-      // throw e;
-    }
-  }
 }
+

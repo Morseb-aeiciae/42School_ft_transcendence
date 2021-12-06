@@ -8,20 +8,21 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from '../auth/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDTO } from '../models/user.models';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get()
+  /*@Get()
   @UseGuards(AuthGuard())
   findCurrentUser(@User() { username }: UserEntity) {
     return this.userService.findByUsername(username);
-  }
+  }*/
 
   @Post("updateUser")
   update(@Body(new ValidationPipe()) data: UpdateUserDTO) {
