@@ -1,16 +1,29 @@
-import { Component } from "react";
+import { useContext } from "react";
 import Status from "./Status";
 import AuthContext from "../../context";
 import { SignInModal, SignOutModal } from "../auth";
 // import { Redirect } from "react-router-dom";
 
-export default class Header extends Component {
-  static contextType = AuthContext;
+/*
+    apiAuth
+      .get("/login")
+      .then((response: any) => {
+        console.log("SignIn auth :", response);
+      })
+      .catch((err: any) => {
+        console.log("err apiUsers:", err);
+        context.changeRender(1);
+        action.setSubmitting(false);
+      });
+*/
 
-  render() {
+const Header =() => {
+  const context = useContext(AuthContext);
+
+  
     let path: string;
-    if (this.context.auth.isLoggedIn)
-      path = `/${this.context.auth.user.username}/`;
+    if (context.auth.isLoggedIn)
+      path = `/${context.auth.user?.username}/`;
     else path = "/home";
     return (
       <header className="navbar navbar-expand-lg bg-dark navbar-dark">
@@ -57,14 +70,14 @@ export default class Header extends Component {
             data-bs-toggle="modal"
             data-bs-target="#log"
           >
-            {this.context.auth.isLoggedIn ? (
+            {context.auth.isLoggedIn ? (
               <>
                 <i
                   className="fas fa-sign-out-alt"
                   onClick={() => {
                     localStorage.clear();
-                    this.context.updateUser(false, null);
-                    this.context.changeContent("");
+                    context.updateUser(false, null);
+                    context.changeContent("");
                     // return <Redirect to={"/home"} />;
                   }}
                 ></i>
@@ -75,7 +88,7 @@ export default class Header extends Component {
               </>
             )}
           </button>
-          {this.context.auth.isLoggedIn ? <SignOutModal /> : <SignInModal />}
+          {context.auth.isLoggedIn ? <SignOutModal /> : <SignInModal />}
 
           {/* <button
             className="navbar-toggler"
@@ -108,5 +121,7 @@ export default class Header extends Component {
         </div>
       </header>
     );
-  }
+  
 }
+
+export default Header;

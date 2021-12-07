@@ -50,7 +50,7 @@ interface AppProps {
 export interface AppState {
   auth: { isLoggedIn: boolean; user: User | null };
   users: Array<User>;
-  updateUser: (b: boolean, user: User) => any;
+  updateUser: (b: boolean, user: User | null) => any;
   changeContent: (newStatus: string) => any;
   changeStatus: (newStatus: string) => any;
   changeRender: (newStatus: number) => any;
@@ -96,7 +96,7 @@ class AppV1 extends React.Component<AppProps> {
       switchRender: render,
     });
   };
-  updateUser = (isLoggedIn: boolean, user: User) => {
+  updateUser = (isLoggedIn: boolean, user: User | null) => {
     this.setState({
       auth: {
         isLoggedIn,
