@@ -43,6 +43,16 @@ const ComponentUserConnected = ({
 };
 //***************************************************** */
 
+
+const test = () => {
+	return (
+		<section>
+			<p>0</p>
+			<p>1</p>
+		</section>
+	);
+}
+
 interface AppProps {
   isLoggedIn: boolean;
   user: User | null;
@@ -143,6 +153,13 @@ class AppV1 extends React.Component<AppProps> {
                     path="/home"
                     sensitive={true}
                     component={withRouter(Home)}
+                  />
+				  <Route
+                    path="/google"
+                    sensitive={true}
+                    component={
+						withRouter(test)
+					}
                   />
                   <Route path="/login" sensitive={true} component={Login} />
                   <ProtectedRoute
