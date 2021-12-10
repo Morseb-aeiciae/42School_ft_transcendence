@@ -12,6 +12,9 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { GoogleController } from './google/google.controller';
+import { GoogleService } from './google/google.service';
+import { GoogleModule } from './google/google.module';
 
 
 @Module({
@@ -24,6 +27,7 @@ import { JwtModule } from '@nestjs/jwt';
 	MatchModule,
 	ChatModule,
 	FriendsModule,
+	GoogleModule,
  
         ],
   controllers: [AppController],
