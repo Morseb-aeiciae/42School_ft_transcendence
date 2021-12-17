@@ -3,6 +3,7 @@ export { default as Content } from "./content/Content";
 export { default as NavLeft } from "./navLeft/NavLeft";
 export { default as Footer } from "./footer/Footer";
 export { default as Home } from "./utils/Pages/Home";
+export { default as Auth } from "./utils/Pages/Auth";
 export { default as Login } from "./utils/Pages/Login";
 export { default as SignInErr } from "./utils/Pages/SignInErr";
 export { default as PageNotFound } from "./utils/Pages/PageNotFound";

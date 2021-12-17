@@ -12,6 +12,7 @@ import {
   ProtectedRoute,
   Loading,
   SignInErr,
+  Auth,
 } from "./components";
 import AuthContext from "./context";
 import { User } from "./Interfaces";
@@ -42,16 +43,6 @@ const ComponentUserConnected = ({
   );
 };
 //***************************************************** */
-
-
-const test = () => {
-	return (
-		<section>
-			<p>0</p>
-			<p>1</p>
-		</section>
-	);
-}
 
 interface AppProps {
   isLoggedIn: boolean;
@@ -154,14 +145,8 @@ class AppV1 extends React.Component<AppProps> {
                     sensitive={true}
                     component={withRouter(Home)}
                   />
-				  <Route
-                    path="/google"
-                    sensitive={true}
-                    component={
-						withRouter(test)
-					}
-                  />
                   <Route path="/login" sensitive={true} component={Login} />
+                  <Route path="/auth" sensitive={true} component={Auth} />
                   <ProtectedRoute
                     path="/:username"
                     sensitive={true}

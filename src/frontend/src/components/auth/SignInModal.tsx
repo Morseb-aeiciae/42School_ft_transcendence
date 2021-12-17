@@ -71,20 +71,41 @@ const ModalBody = (submit: any) => {
   );
 };
 
-const ModalFooter = () => {
+const ModalFooter1 = () => {
   return (
     <>
       <p>No account?</p>
       <a href="http://localhost/login">Create one ! </a>
+    </>
+  );
+};
 
+const ModalFooter2 = () => {
+  return (
+    <>
       <p> Or continue with </p>
       <button
         type="button"
         className="btn btn-secondary"
         data-bs-dismiss="modal"
+        onClick={() => {
+          window.location.href =
+            "https://api.intra.42.fr/oauth/authorize?client_id=4b246ff59cfa4b2fa13f340cb680a2eb8c6428afcaf81a92d544f1537680741c&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2F&response_type=code";
+        }}
       >
         42 Api
       </button>
+      {/* <button
+        type="button"
+        className="btn btn-secondary"
+        data-bs-dismiss="modal"
+        onClick={() => {
+          window.location.href =
+            "https://accounts.google.com/o/oauth2/v2/auth/identifier?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fgoogle%2Fredirect&scope=email%20profile&client_id=418311849972-2oj2e63ccsj36srmfvcv9k06mv0ge8lo.apps.googleusercontent.com&flowName=GeneralOAuthFlow";
+        }}
+      >
+        Google
+      </button> */}
     </>
   );
 };
@@ -124,7 +145,10 @@ const SignInModal = () => {
             <ModalBody submit={submit} />
           </div>
           <div className="modal-footer">
-            <ModalFooter />
+            <ModalFooter1 />
+          </div>{" "}
+          <div className="modal-footer">
+            <ModalFooter2 />
           </div>
         </div>
       </div>
