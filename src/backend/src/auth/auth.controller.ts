@@ -36,8 +36,8 @@ export class AuthController {
         res.cookie('access_token', token, {
             httpOnly: true,
           });
-       // res.status(302).redirect("http://localhost:3000");
-        return user;
+       res.status(302).redirect("http://localhost");
+        //return user;
     }
     
     @UseGuards(JwtAuthGuard)
