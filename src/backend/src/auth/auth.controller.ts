@@ -25,7 +25,7 @@ export class AuthController {
         const user = await this.authService.addUser(req.user['username'], req.user['email']);
         const token = this.jwtService.sign(user.username);
        // res.cookie("acces_token", token, {httpOnly : true})
-       console.log(token);
+       console.log(req.user["username"]);
    /* res
         .cookie('access_token', token, {
           httpOnly: true,
@@ -47,5 +47,9 @@ export class AuthController {
     }
 
     @Get('logout')
-    logout() {}
-}
+    @UseGuards(JwtAuthGuard)
+        logout(@Res({ passthrough: true }) response: Response) {
+          response.clearCookie('access_token');
+          return;
+        }
+} 
