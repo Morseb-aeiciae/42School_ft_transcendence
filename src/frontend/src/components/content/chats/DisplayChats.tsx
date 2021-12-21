@@ -175,7 +175,6 @@ const Messages = (props: any) => {
         console.log("Chat:", err);
       });
   }, [props.chatId, props.id, msg, blocked, muted]);
-  // }, [props.chatId, props.id, msg, blocked, muted]);
 
   return (
     <>

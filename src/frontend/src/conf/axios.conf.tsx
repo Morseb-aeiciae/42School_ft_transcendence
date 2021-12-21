@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-// import { User } from "../Interfaces";
 
 const configHeaders = {
   "content-type": "application/json",
@@ -63,7 +62,6 @@ const errorHandler = (err: any) => {
 };
 
 const successHandler = (response: AxiosResponse) => {
-  // console.log("response : ", response);
   return response;
 };
 
@@ -71,20 +69,3 @@ apiUsers.interceptors.response.use(
   (response) => successHandler(response),
   (err) => errorHandler(err)
 );
-
-/**********************************************/
-//  utils
-/**********************************************/
-
-// export const apiUsersConnecting = (u: any): User => {
-//   return {
-//     id: u.id,
-//     username: u.username,
-//     email: u.email,
-//     img: u.website,
-//     win: 1,
-//     loose: 1,
-//     isLoggedIn: true,
-//     history: "",
-//   };
-// };

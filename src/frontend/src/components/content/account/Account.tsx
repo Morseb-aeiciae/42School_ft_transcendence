@@ -20,9 +20,6 @@ const errMinChar = (val: number) => {
 const errMaxChar = (val: number) => {
   return `too long. maximum ${val} characters`;
 };
-// const errRequired = () => {
-//   return "password required to edit personnal informations";
-// };
 
 const errEmail = () => {
   return "email address is not valid";
@@ -43,26 +40,12 @@ export default class Account extends Component {
 
   userSchema = Yup.object().shape({
     username: Yup.string().min(4, errMinChar(4)).max(10, errMaxChar(10)),
-    // .required(errRequired),
     email: Yup.string().email(errEmail).min(5, errMinChar(5)),
-    // .required(errRequired),
-    // password: Yup.string()
-    //   .min(8, errMinChar(8))
-    //   .max(25, errMaxChar(25))
-    //   .required(errRequired),
   });
 
   submit = (values: any, action: FormikHelpers<any>) => {
     const user: User = this.context.auth.user;
-    // const email = user.email;
-    // console.log("log :class Account:", { userId: user.id, ...values });
 
-    // apiUsers
-    // .post("/login", { email, password: values.password })
-    // .then((response: any) => {
-    //   this.setState({
-    //     wrongPwd: false,
-    //   });
     apiUser
       .post("/updateUser", {
         userId: user.id,
@@ -81,14 +64,6 @@ export default class Account extends Component {
       });
 
     action.setSubmitting(false);
-    // })
-    // .catch((err: any) => {
-    //   console.log("Err auth \n", err);
-    //   this.setState({
-    //     wrongPwd: true,
-    //   });
-    //   action.setSubmitting(false);
-    // });
   };
 
   render() {
@@ -117,7 +92,6 @@ export default class Account extends Component {
               initialValues={{ username, email, image: "" }}
               validationSchema={this.userSchema}
               validateOnChange={false}
-              // isSubmitting={false}
             >
               {({
                 handleSubmit,

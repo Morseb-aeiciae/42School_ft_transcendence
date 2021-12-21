@@ -131,7 +131,6 @@ const CurrentChats = (props: any) => {
           if (response.data.status === 409) setOwner(-owner);
           else {
             console.log("user leave a chat", response.data);
-            // props.props.setState(Math.random());
             props.props.leaveChats(0);
           }
         })

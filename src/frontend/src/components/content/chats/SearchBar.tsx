@@ -267,60 +267,13 @@ export default class SearchBar extends Component<SBProps> {
             className="d-flex flex-column flex-fill m-2"
             onSubmit={handleSubmit}
           >
-            {/* <div className="d-flex flex-row p-1">
-              <input
-                name="query"
-                className="flex-fill form-control mr-2"
-                placeholder="Search ..."
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <select
-                name="type"
-                className="mr-2 form-control w-25"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              >
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-              </select>
-            </div>
-            <div className="d-flex flex-row p-1">
-              <div className="d-flex flex-row flex-grow-1 align-items-end justify-content-evenly">
-                <p>
-                  <input
-                    type="radio"
-                    name="protected"
-                    id="false"
-                    value="no"
-                    checked
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="false"> no protected</label>
-                </p>
-                <p>
-                  <input
-                    type="radio"
-                    name="protected"
-                    id="true"
-                    value="yes"
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="false"> protected</label>
-                </p>
-              </div> */}
             <button
               className="btn btn-outline-secondary btn-lg"
               type="submit"
               disabled={isSubmitting}
-              // onClick={() => {
-              //   this.props.showChats(1);
-              // }}
             >
-              {/* Submit */}
               Search Chat
             </button>
-            {/* </div> */}
           </form>
         )}
       </Formik>

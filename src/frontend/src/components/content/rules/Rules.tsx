@@ -1,6 +1,5 @@
 import React from "react";
 import AuthContext from "../../../context";
-// import { Redirect } from "react-router";
 import { User } from "../../../Interfaces";
 
 export default class Rules extends React.Component {

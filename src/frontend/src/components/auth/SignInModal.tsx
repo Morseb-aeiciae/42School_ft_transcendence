@@ -95,7 +95,7 @@ const ModalFooter2 = () => {
       >
         42 Api
       </button>
-      {/* <button
+      <button
         type="button"
         className="btn btn-secondary"
         data-bs-dismiss="modal"
@@ -105,7 +105,7 @@ const ModalFooter2 = () => {
         }}
       >
         Google
-      </button> */}
+      </button>
     </>
   );
 };

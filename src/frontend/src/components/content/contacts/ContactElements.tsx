@@ -40,17 +40,8 @@ const ContactElements = (props: any) => {
             />
           </div>
 
-          {/* <div className="d-flex flex-column p-2 border">
-            <p className="text-center">History</p>
-            <p className="text-center">
-              <i className="fas fa-trophy"></i> {props.target.win}
-            </p>
-            <p className="text-center">
-              <i className="fas fa-times-circle"></i> {props.target.loose}
-            </p>
-          </div> */}
-
           <br />
+
           <button
             onClick={() => {
               props.setDisplay(2);

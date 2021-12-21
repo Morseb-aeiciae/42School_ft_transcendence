@@ -119,10 +119,6 @@ const ShowUserDetails = (props: any) => {
 
   if (isLoading) {
     return <Loading />;
-    // } else if (content === "Msg") {
-    //   return <PrivateMsg targetId={props.target.id} userId={userId} />;
-    // } else if (content === "Duel") {
-    //   return <Duel targetId={props.target.id} userId={userId} />;
   } else {
     return (
       <section className="d-flex flex-row">

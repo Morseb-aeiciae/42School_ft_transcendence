@@ -36,32 +36,6 @@ const Header = () => {
           <Status />
         </div>
 
-        {/* <div className="bg-secondary min-vw-25">
-            {this.context.auth.isLoggedIn ? (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-lg"
-                  onClick={this.context.logout}
-                  style={{ width: "150px" }}
-                >
-                  Deconnexion
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-lg"
-                  onClick={this.context.login}
-                  style={{ width: "150px" }}
-                >
-                  Connexion
-                </button>
-              </>
-            )}
-          </div> */}
-
         <button
           className="btn fs-2 btn-dark text-light"
           data-bs-toggle="modal"
@@ -87,35 +61,6 @@ const Header = () => {
           )}
         </button>
         {context.auth.isLoggedIn ? <SignOutModal /> : <SignInModal />}
-
-        {/* <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navMenu"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-
-          <div className="collapse navbar-collapse text-center" id="navMenu">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <a href="#" className="nav-link">
-                  1 - First Link
-                </a>
-              </li>
-              <li className="nav-item">
-                <a href="#" className="nav-link">
-                  2 - Second Link
-                </a>
-              </li>
-              <li className="nav-item">
-                <a href="#" className="nav-link">
-                  3 - Third Link
-                </a>
-              </li>
-            </ul>
-          </div> */}
       </div>
     </header>
   );

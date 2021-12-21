@@ -1,47 +1,8 @@
-// import React, { useContext } from "react";
 import { Account, Rules, Contacts, Chats, UserPages } from ".";
-import {
-  PageNotFound,
-  //  ProtectedRoute
-} from "..";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  // withRouter,
-} from "react-router-dom";
-// import AuthContext from "../../context";
+import { PageNotFound } from "..";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const Content = (props: any) => {
-  // const context = useContext(AuthContext);
-
-  // let content: React.ComponentClass<any, any> | any;
-  // switch (context.content) {
-  //   case "account": {
-  //     content = Account;
-  //     break;
-  //   }
-  //   case "chats": {
-  //     content = Chats;
-  //     break;
-  //   }
-  //   case "contacts": {
-  //     content = Contacts;
-  //     // content = WithLoader(Contacts, "loaded");
-  //     break;
-  //   }
-  //   case "rules": {
-  //     content = Rules;
-  //     break;
-  //   }
-  //   // case "game": {
-  //   //   content = Game;
-  //   //   break;
-  //   // }
-  //   default: {
-  //     content = PageNotFound;
-  //   }
-  // }
   return (
     <Router>
       <Switch>
@@ -66,11 +27,6 @@ const Content = (props: any) => {
           sensitive={true}
           component={Rules}
         />
-        {/* <ProtectedRoute
-          path={`/${props.username}/${context.content}`}
-          component={withRouter(content)}
-          isLoggedIn={context.auth.isLoggedIn}
-        ></ProtectedRoute> */}
         <Route component={PageNotFound}></Route>
       </Switch>
     </Router>

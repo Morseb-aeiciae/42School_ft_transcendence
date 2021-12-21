@@ -1,9 +1,7 @@
 import { Component } from "react";
 import { Formik, FormikHelpers } from "formik";
-// import apiUsers, { apiUsersConnecting } from "../../../conf/axios.conf";
 import apiUsers from "../../../conf/axios.conf";
 import AuthContext from "../../../context";
-// import { User } from "../../../Interfaces";
 import * as Yup from "yup";
 import { Redirect } from "react-router-dom";
 
@@ -45,13 +43,10 @@ export default class Login extends Component {
       .required(errRequired),
   });
 
-  // onSubmit: (values: Values, formikHelpers: FormikHelpers<Values>) => void | Promise<any>;
   submit = (values: any, action: FormikHelpers<any>) => {
     apiUsers
       .post("/registration", values)
       .then((response: any) => {
-        // const user: User = apiUsersConnecting(response.data.user);
-        // this.context.updateUser(true, user);
         this.context.updateUser(true, response.data.user);
         localStorage.setItem("email", response.data.user.email);
         localStorage.setItem("token", response.data.user.token);
