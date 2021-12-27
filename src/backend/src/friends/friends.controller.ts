@@ -3,7 +3,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { SendFriendInviteDTO } from 'src/models/friends.models';
 import { FriendsService } from './friends.service';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('friends')
 export class FriendsController {
 

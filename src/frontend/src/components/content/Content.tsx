@@ -1,4 +1,4 @@
-import { Account, Rules, Contacts, Chats, UserPages } from ".";
+import { Account, Rules, Contacts, Chats, UserPages, SuperAdmin } from ".";
 import { PageNotFound } from "..";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -26,6 +26,11 @@ const Content = (props: any) => {
           path={`/${props.username}/rules`}
           sensitive={true}
           component={Rules}
+        />
+        <Route
+          path={`/${props.username}/superAdmin`}
+          sensitive={true}
+          component={SuperAdmin}
         />
         <Route component={PageNotFound}></Route>
       </Switch>
