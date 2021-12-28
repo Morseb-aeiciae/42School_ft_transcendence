@@ -24,7 +24,7 @@ export class SchoolStrategy extends PassportStrategy(Strategy, '42') {
         const details = {
             username : username, 
             email : emails[0].value};
-      //  console.log(username,  details.email);
+        //console.log(details.username,  details.email);
         done(null, details);
        // await this.authService.valiateUser(details);
     }

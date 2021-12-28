@@ -57,3 +57,11 @@ import {
 	@IsNumber()
 	userId: number;
   }
+
+  export class createUserDTO {
+	@IsString()
+	username: string;
+
+	@IsString()
+	mail: string;
+  }
