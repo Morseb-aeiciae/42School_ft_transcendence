@@ -44,8 +44,8 @@ export class AuthController {
           return;
         }
 
-		@Post("create")
-		async createUser(@Body(ValidationPipe) data: createUserDTO) {
-			return this.userService.createUser(data.username, data.mail);
-		}
+		// @Post("create")
+		// async createUser(@Body(ValidationPipe) data: createUserDTO) {
+		// 	return this.userService.createUser(data.username, data.mail);
+		// }
 } 

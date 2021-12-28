@@ -95,17 +95,6 @@ const ModalFooter2 = () => {
       >
         42 Api
       </button>
-      <button
-        type="button"
-        className="btn btn-secondary"
-        data-bs-dismiss="modal"
-        onClick={() => {
-          window.location.href =
-            "https://accounts.google.com/o/oauth2/v2/auth/identifier?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fgoogle%2Fredirect&scope=email%20profile&client_id=418311849972-2oj2e63ccsj36srmfvcv9k06mv0ge8lo.apps.googleusercontent.com&flowName=GeneralOAuthFlow";
-        }}
-      >
-        Google
-      </button>
     </>
   );
 };

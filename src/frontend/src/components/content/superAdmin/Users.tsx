@@ -86,17 +86,15 @@ const Users = (props: any) => {
     return <Loading />;
   } else if (users.length > 1) {
     return (
-      <>
+      <div className="d-flex flex-wrap">
         {users.map((u: any, index: number) => (
-          <div className="col-sm-6 col-md-6 col-lg-5 col-xl-3" key={index}>
-            <div key={index}>
-              {u.id !== props.userId
-                ? displayUserCard({ u, setActionUser })
-                : null}
-            </div>
+          <div key={index}>
+            {u.id !== props.userId
+              ? displayUserCard({ u, setActionUser })
+              : null}
           </div>
         ))}
-      </>
+      </div>
     );
   } else {
     return (

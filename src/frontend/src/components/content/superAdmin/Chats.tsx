@@ -50,15 +50,17 @@ const displayChatCard = (props: any) => {
 const Chats = (props: any) => {
   // console.log("Admin panel : user ", props);
 
-  const [users, setUsers] = useState([]);
+  const [chats, setChats] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [actionChat, setActionChat] = useState({ id: -1, action: 0 });
 
   useEffect(() => {
     apiLocal3001
-      .get("/profiles")
+      .get("/getChatList")
       .then((response: any) => {
-        setUsers(response.data);
+        console.log("superAdmin-> chats -> fix call address for api");
+
+        setChats(response.data);
         setTimeout(function () {
           setLoading(false);
         }, 500);
@@ -79,30 +81,25 @@ const Chats = (props: any) => {
     }
   }, [actionChat]);
 
+  console.log(chats);
   if (isLoading) {
     return <Loading />;
   } else if (actionChat.action === 1) {
     return <ManageUsersChat />;
-  } else if (users.length > 1) {
+  } else if (chats.length > 1) {
     return (
-      <>
-        {users.map((c: any, index: number) => (
-          <div className="col-sm-6 col-md-6 col-lg-5 col-xl-3" key={index}>
-            <div key={index}>
-              {c.id !== props.userId
-                ? displayChatCard({ c, setActionChat })
-                : null}
-            </div>
+      <div className="d-flex flex-wrap">
+        {chats.map((c: any, index: number) => (
+          <div key={index}>
+            {c.id !== props.userId
+              ? displayChatCard({ c, setActionChat })
+              : null}
           </div>
         ))}
-      </>
-    );
-  } else {
-    return (
-      <div>
-        No user register except you in this website ! Youhou, crazy stuff !
       </div>
     );
+  } else {
+    return <div>No chats created yet !</div>;
   }
 };
 

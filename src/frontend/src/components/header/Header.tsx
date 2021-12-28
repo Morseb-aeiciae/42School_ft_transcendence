@@ -19,6 +19,8 @@ const Header = () => {
     }
   }, [logout]);
 
+  console.log(context);
+
   let path: string;
   if (context.auth.isLoggedIn) path = `/${context.auth.user?.username}/`;
   else path = "/home";
@@ -26,7 +28,7 @@ const Header = () => {
     <header className="navbar navbar-expand-lg bg-dark navbar-dark">
       <div className="container-fluid">
         <a className="navbar-brand" href={path}>
-          <i className="fas fa-table-tennis fs-2 my-1"></i>
+          {/* <i className="fas fa-table-tennis fs-2 my-1"></i> */}
         </a>
 
         <div
