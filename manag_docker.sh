@@ -40,11 +40,13 @@ elif [ "$1" == "run" ]  ; then
     esac
 
 elif [ "$1" == "clear" ] ; then
+    if [ "$2" != "prod" ]  ; then
+        find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+        find . -name "dist" -type d -prune -exec rm -rf '{}' +
+        rmdir ./src/frontend/cache/
+    fi;
     docker system prune -af
     docker volume prune -f
-    find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
-    find . -name "dist" -type d -prune -exec rm -rf '{}' +
-    rmdir ./src/frontend/cache/
 
 
 elif [ "$1" == "ps" ] ; then

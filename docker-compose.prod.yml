@@ -1,4 +1,4 @@
-service:
+services:
   frontend:
     build:
       context: ./src/frontend
@@ -11,7 +11,7 @@ service:
     env_file:
       - ./src/backend/.env
     environment:
-      - NODE_ENV: production
+      - NODE_ENV= production
     depends_on:
       - db
     restart: unless-stopped
@@ -26,7 +26,7 @@ service:
     restart: unless-stopped
   reverse-proxy:
     build:
-      context: ./reverse-proxy
+      context: ./src/reverse-proxy
       dockerfile: Dockerfile.prod
     ports:
       - 80:80
