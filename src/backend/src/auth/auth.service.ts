@@ -17,10 +17,11 @@ export class AuthService {
 
    async addUser(username : string, mail : string) {
       // console.log(mail);
-        let user = await this.userService.findByUsername(username);
+        const user = await this.userService.findByUsername(username);
         if (user == undefined)
         {
-           let test = await this.userService.createUser(username, mail);
+           const newU = await this.userService.createUser(username, mail);
+		   return newU;
         }
         return user;
     }
