@@ -13,7 +13,9 @@ module.exports = {
 				 "noEmit": false
 			  }
 		   },
-		   exclude: /node_modules/,
+		   exclude: [
+			/node_modules/, /Game\.tsx$/
+		  ],
 		 },
     ],
   },
@@ -35,7 +37,7 @@ performance: {
     maxAssetSize: 512000
 },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.ts', '.js'],
   },
   output: {
     filename: 'bundle.js',
