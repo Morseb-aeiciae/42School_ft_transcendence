@@ -29,6 +29,9 @@ module.exports = {
        }
     }
 ],
+exclude: [
+    'Game.tsx'
+  ],
 performance: {
     hints: false,
     maxEntrypointSize: 512000,
