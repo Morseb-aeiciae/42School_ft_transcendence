@@ -1,6 +1,7 @@
 import { Account, Rules, Contacts, Chats, UserPages, SuperAdmin } from ".";
 import { PageNotFound } from "..";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Game from "./pong/Game";
 
 const Content = (props: any) => {
   return (
@@ -31,6 +32,11 @@ const Content = (props: any) => {
           path={`/${props.username}/superAdmin`}
           sensitive={true}
           component={SuperAdmin}
+        />
+		<Route
+          path={`/${props.username}/game`}
+          sensitive={true}
+          component={Game}
         />
         <Route component={PageNotFound}></Route>
       </Switch>
