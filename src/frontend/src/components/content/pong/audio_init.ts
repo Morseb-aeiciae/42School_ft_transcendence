@@ -27,8 +27,9 @@ export function init_audio(scene: THREE.Scene, BLOOM_SCENE: number, config: {
 
 	// audiolist.unshift('./sounds/main_song.mp3');
 	// audiolist.unshift('./sounds/enemy.mp3');
-	audiolist.unshift('./sounds/Ignite.mp3');
 	// audiolist.unshift('./sounds/post-malone-swae-lee-sunflower-spider-man-into-the-spider-verse.mp3');
+
+	audiolist.unshift('./sounds/Ignite.mp3');
 
 	const fftSize = 32;
 

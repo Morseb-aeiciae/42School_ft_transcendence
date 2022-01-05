@@ -22,6 +22,16 @@ import { updateAudioVisualizer } from './update_audio';
 import { updateplane } from './update_plane';
 import { launchFirework } from './fireworks';
 
+import { init_positions, treat_input_up_r_bar } from './back_calc';
+import { treat_input_down_r_bar } from './back_calc';
+import { treat_input_up_l_bar } from './back_calc';
+import { treat_input_down_l_bar } from './back_calc';
+import { get_l_paddles_pos, get_r_paddles_pos } from './back_calc';
+import { get_ball_pos_x } from './back_calc';
+import { get_ball_pos_z } from './back_calc';
+import { update_ball } from './back_calc';
+import { get_score } from './back_calc';
+
 //Faire une structure de configuration (longueuer/largeur terrain / barres)
 
 var config = {
@@ -247,43 +257,6 @@ const onKeyUp = function ( event: any )
 document.addEventListener( 'keydown', onKeyDown );
 document.addEventListener( 'keyup', onKeyUp );
 
-// const pointer = new THREE.Vector2();
-
-// function onPointerMove( event ) {
-
-// 	// if ( selectedObject ) {
-
-// 	// 	selectedObject.material.color.set( '#69f' );
-// 	// 	selectedObject = null;
-
-// 	// }
-
-// 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-// 	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-// 	raycaster.setFromCamera( pointer, camera );
-
-	
-// 	// const intersects = raycaster.intersectObject( group, true );
-
-// 	// if ( intersects.length > 0 ) {
-
-// 	// 	const res = intersects.filter( function ( res ) {
-
-// 	// 		return res && res.object;
-
-// 	// 	} )[ 0 ];
-
-// 	// 	if ( res && res.object ) {
-
-// 	// 		selectedObject = res.object;
-// 	// 		selectedObject.material.color.set( '#f00' );
-
-// 	// 	}
-// 	launchFirework(0 , 0, 0, 20);
-// 	}
-// 	document.addEventListener( 'pointermove', onPointerMove );
-
 //Stars
 const vertices = [];
 
@@ -309,55 +282,120 @@ const points = new THREE.Points( geometry, material );
 
 scene.add( points );
 
-//Fireworks
+export function send_score (l_score, r_score)
+{
+	score_s.LeftScore = l_score;
+	score_s.RightScore = r_score;
+	updateScore(score_s);
+	launchFirework(scene, ball_s.ball.position.x + 1,0,ball_s.ball.position.z, 20, 25, ball_s.ball_outline.material.color);
 
-// var firework_n = 50;
+	ball_s.ball_outline.material.color.setHex(0xffffff);
+	ball_s.light.color.setHex(0xffffff);
+	ball_s.pos_history_x.unshift(0);
+	ball_s.pos_history_z.unshift(0);
+	ball_s.pos_history_x.pop();
+	ball_s.pos_history_z.pop();
 
+	ball_s.after_reset = 1;
+};
 
+export function change_ball_color(i : number)
+{
+	ball_s.after_reset = 0;
+	if (i == 0)
+	{
+		ball_s.trainee_msh[0].material = ball_s.trainee_cmat;
+		ball_s.trainee_wmat.color.setHex(paddles_s.left_col);
+		ball_s.trainee_msh[0].material.color.setHex(paddles_s.left_col);
+		ball_s.ball_outline.material.color.setHex(paddles_s.left_col);
+		ball_s.light.color.setHex(paddles_s.left_col);
+	}
+	else
+	{
+		ball_s.trainee_msh[0].material = ball_s.trainee_cmat;
+		ball_s.trainee_wmat.color.setHex(paddles_s.right_col);
+		ball_s.trainee_msh[0].material.color.setHex(paddles_s.right_col);
+		ball_s.ball_outline.material.color.setHex(paddles_s.right_col);
+		ball_s.light.color.setHex(paddles_s.right_col);
+	}
+};
+
+init_positions(paddles_s.bar_left.position.z, paddles_s.bar_right.position.z, paddles_s.bar_left.position.x, paddles_s.bar_right.position.x, config.paddle_h_2, arena_s.top.position.z, arena_s.bot.position.z, arena_s.left.position.x, arena_s.right.position.x);
 
 //La game loop ======
 const animate = function ()
 {
+	paddles_s.bar_right.position.z = get_r_paddles_pos();
+	paddles_s.bar_right_out.position.z = paddles_s.bar_right.position.z;
+	paddles_s.bar_left.position.z = get_l_paddles_pos();
+	paddles_s.bar_left_out.position.z = paddles_s.bar_left.position.z;
+
 	canResetCam = true;
 	requestAnimationFrame( animate );
-	moveBall(ball_s, paddles_s, arena_s, score_s, scene, PI_s, config, BLOOM_SCENE);
+
+	ball_s.ball.position.x = get_ball_pos_x();
+	ball_s.ball.position.z = get_ball_pos_z();
+	ball_s.ball_outline.position.x = ball_s.ball.position.x;
+	ball_s.ball_outline.position.z = ball_s.ball.position.z;
+	ball_s.light.position.x = ball_s.ball.position.x;
+	ball_s.light.position.z = ball_s.ball.position.z;
+
+	//===================Trainee========================
+
+	ball_s.pos_history_x.unshift(ball_s.ball.position.x);
+	ball_s.pos_history_z.unshift(ball_s.ball.position.z);
+	ball_s.pos_history_x.pop();
+	ball_s.pos_history_z.pop();
+
+	if (ball_s.trainee_msh[ball_s.history_depth] != null)
+	{
+		scene.remove(ball_s.trainee_msh[ball_s.history_depth]);
+		ball_s.trainee_msh.pop();
+	}
+	ball_s.trainee = new THREE.Shape();
+
+	ball_s.trainee.moveTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] - 0.5);
+	ball_s.trainee.lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] - 0.5);
+	ball_s.trainee.lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] + 0.5);
+	ball_s.trainee.lineTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] + 0.5);
+
+	ball_s.old_trainee_pos_x = ball_s.pos_history_x[0 + 1];
+	ball_s.old_trainee_pos_z = ball_s.pos_history_z[0 + 1] + 0.25;
+	ball_s.trainee_geo = new THREE.ShapeGeometry(ball_s.trainee);
+
+	if (ball_s.after_reset == 1)
+	{
+		ball_s.trainee_wmat.color.setHex(0xffffff);
+		ball_s.trainee_msh.unshift (new THREE.Mesh(ball_s.trainee_geo, ball_s.trainee_wmat));
+	}
+	else
+		ball_s.trainee_msh.unshift (new THREE.Mesh(ball_s.trainee_geo, ball_s.trainee_cmat));
+
+	ball_s.trainee_msh[0].rotation.x += PI_s.M_PI_2;
+	ball_s.trainee_msh[0].layers.enable( BLOOM_SCENE );
+	scene.add(ball_s.trainee_msh[0]);
+
+	//===================Trainee========================
+
+	//backend I guess
+	update_ball();
+	// moveBall(ball_s, paddles_s, arena_s, score_s, scene, PI_s, config, BLOOM_SCENE);
+
+	//frontend side
 	updateAudioVisualizer(audio_s);
 	IncreaseBrightness = moveSun(SunMesh, IncreaseBrightness);
 	updateplane(plane_s, audio_s);
 
+	//frontend
 	if (controls.UpArrow == true)
-	{
-		if (paddles_s.bar_right.position.z - config.paddle_h_2 > arena_s.top.position.z + 1.1)
-		{
-	    	paddles_s.bar_right.position.z -= 0.5;
-			paddles_s.bar_right_out.position.z = paddles_s.bar_right.position.z;
-		}
-	}
+		treat_input_up_r_bar();	
 	if (controls.Wkey == true)
-	{
-		if (paddles_s.bar_left.position.z - config.paddle_h_2 > arena_s.top.position.z + 1.1)
-		{
-	    	paddles_s.bar_left.position.z -= 0.5;
-			paddles_s.bar_left_out.position.z = paddles_s.bar_left.position.z;
-		}
-	}
+		treat_input_up_l_bar();
 	if (controls.DownArrow == true)
-	{
-		if (paddles_s.bar_right.position.z + config.paddle_h_2 < arena_s.bot.position.z - 1.1)
-		{
-			paddles_s.bar_right.position.z += 0.5;
-			paddles_s.bar_right_out.position.z = paddles_s.bar_right.position.z;
-		}
-	}
+		treat_input_down_r_bar();
 	if (controls.Skey == true)
-	{
-		if (paddles_s.bar_left.position.z + config.paddle_h_2 < arena_s.bot.position.z - 1.1)
-		{
-			paddles_s.bar_left.position.z += 0.5;
-			paddles_s.bar_left_out.position.z = paddles_s.bar_left.position.z;
-		}
-	}
-	// launchFirework(scene, 0 , 0, 0, 20, 20);
+		treat_input_down_l_bar();
+
 	bloomComposer.render();
 	finalComposer.render();
 };
