@@ -17,15 +17,23 @@ import { TwoFactorAuthenticationService } from './twoFactorAuth/twoFactorAuthent
 
 
 @Module({
-    imports: [
+    imports: [ 
+	  
         TypeOrmModule.forFeature([UserEntity]),
        forwardRef(() => UserModule),
-        PassportModule.register({ defaultStrategy: 'jwt' }),
-        JwtModule.register({
-        secret: process.env.JWT_SECRET,
-            })],
+	   PassportModule.register({
+		defaultStrategy: 'jwt',
+		property: 'user',
+		session: false,
+	}),
+	JwtModule.register({
+		secret: process.env.JWT_SECRET, signOptions: {
+			expiresIn: 3600,
+		},
+	}),
+        ],
     providers: [SchoolStrategy, AuthService, UserService, JwtStrategy, TwoFactorAuthenticationService, ConfigService],
     controllers: [AuthController, TwoFactorAuthenticationController],
-    exports: [PassportModule]
+    exports: [PassportModule , JwtModule]
 })
 export class AuthModule {}
