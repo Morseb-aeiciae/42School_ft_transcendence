@@ -57,6 +57,8 @@ export interface AppState {
   status: string;
   content: string;
   switchRender: number;
+  token: string;
+  updateToken: (token: string) => any;
 }
 
 class AppV1 extends React.Component<AppProps> {
@@ -78,9 +80,16 @@ class AppV1 extends React.Component<AppProps> {
       status: "idle",
       content: "",
       switchRender: 0,
+      token: "",
+      updateToken: this.updateToken,
     };
   }
 
+  updateToken = (token: string) => {
+    this.setState({
+      token,
+    });
+  };
   changeContent = (newContent: string) => {
     this.setState({
       content: newContent,

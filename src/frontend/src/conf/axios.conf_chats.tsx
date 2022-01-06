@@ -1,4 +1,6 @@
 import axios, { AxiosResponse } from "axios";
+// import { useContext } from "react";
+// import AuthContext from "../context";
 
 export const apiChat = axios.create({
   baseURL: "http://localhost:3001/chat",
@@ -10,6 +12,10 @@ export const apiChat = axios.create({
 /**********************************************/
 
 apiChat.interceptors.request.use((req) => {
+  // const context = useContext(AuthContext);
+  // console.log("request : ", context.token);
+
+  // req.headers["Authorization"] = context.token;
   return req;
 });
 

@@ -51,8 +51,8 @@ Promise<RegistrationStatus> {
 			// generate and sign token    
 			const token = this._createToken(user.username);
 		
-			const tab = {username, token};
-			tab.username = username;
+			const tab = {user, token};
+			tab.user = user;
 			tab.token = token;
 			/*return {
 				username: user.username, ...token,    
