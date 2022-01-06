@@ -282,7 +282,7 @@ const points = new THREE.Points( geometry, material );
 
 scene.add( points );
 
-export function send_score (l_score, r_score)
+export function send_score (l_score : number, r_score : number)
 {
 	score_s.LeftScore = l_score;
 	score_s.RightScore = r_score;
@@ -304,17 +304,17 @@ export function change_ball_color(i : number)
 	ball_s.after_reset = 0;
 	if (i == 0)
 	{
-		ball_s.trainee_msh[0].material = ball_s.trainee_cmat;
+		(ball_s.trainee_msh[0] as any).material = ball_s.trainee_cmat;
 		ball_s.trainee_wmat.color.setHex(paddles_s.left_col);
-		ball_s.trainee_msh[0].material.color.setHex(paddles_s.left_col);
+		(ball_s.trainee_msh[0] as any).material.color.setHex(paddles_s.left_col);
 		ball_s.ball_outline.material.color.setHex(paddles_s.left_col);
 		ball_s.light.color.setHex(paddles_s.left_col);
 	}
 	else
 	{
-		ball_s.trainee_msh[0].material = ball_s.trainee_cmat;
+		(ball_s.trainee_msh[0] as any).material = ball_s.trainee_cmat;
 		ball_s.trainee_wmat.color.setHex(paddles_s.right_col);
-		ball_s.trainee_msh[0].material.color.setHex(paddles_s.right_col);
+		(ball_s.trainee_msh[0] as any).material.color.setHex(paddles_s.right_col);
 		ball_s.ball_outline.material.color.setHex(paddles_s.right_col);
 		ball_s.light.color.setHex(paddles_s.right_col);
 	}
@@ -352,34 +352,34 @@ const animate = function ()
 		scene.remove(ball_s.trainee_msh[ball_s.history_depth]);
 		ball_s.trainee_msh.pop();
 	}
-	ball_s.trainee = new THREE.Shape();
+	(ball_s.trainee as any) = new THREE.Shape();
 
-	ball_s.trainee.moveTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] - 0.5);
-	ball_s.trainee.lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] - 0.5);
-	ball_s.trainee.lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] + 0.5);
-	ball_s.trainee.lineTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] + 0.5);
+	(ball_s.trainee as any).moveTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] - 0.5);
+	(ball_s.trainee as any).lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] - 0.5);
+	(ball_s.trainee as any).lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] + 0.5);
+	(ball_s.trainee as any).lineTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] + 0.5);
 
 	ball_s.old_trainee_pos_x = ball_s.pos_history_x[0 + 1];
 	ball_s.old_trainee_pos_z = ball_s.pos_history_z[0 + 1] + 0.25;
-	ball_s.trainee_geo = new THREE.ShapeGeometry(ball_s.trainee);
+	(ball_s.trainee_geo as any) = new THREE.ShapeGeometry((ball_s.trainee as any));
 
 	if (ball_s.after_reset == 1)
 	{
 		ball_s.trainee_wmat.color.setHex(0xffffff);
-		ball_s.trainee_msh.unshift (new THREE.Mesh(ball_s.trainee_geo, ball_s.trainee_wmat));
+		(ball_s.trainee_msh as any).unshift (new THREE.Mesh((ball_s.trainee_geo as any), ball_s.trainee_wmat));
 	}
 	else
-		ball_s.trainee_msh.unshift (new THREE.Mesh(ball_s.trainee_geo, ball_s.trainee_cmat));
+		(ball_s.trainee_msh as any).unshift (new THREE.Mesh((ball_s.trainee_geo as any), ball_s.trainee_cmat));
 
-	ball_s.trainee_msh[0].rotation.x += PI_s.M_PI_2;
-	ball_s.trainee_msh[0].layers.enable( BLOOM_SCENE );
+	(ball_s.trainee_msh[0] as any).rotation.x += PI_s.M_PI_2;
+	(ball_s.trainee_msh[0] as any).layers.enable( BLOOM_SCENE );
 	scene.add(ball_s.trainee_msh[0]);
 
 	//===================Trainee========================
 
 	//backend I guess
+	//Ne doit pas se lancer dans le front mais tourner en boucle dans le back
 	update_ball();
-	// moveBall(ball_s, paddles_s, arena_s, score_s, scene, PI_s, config, BLOOM_SCENE);
 
 	//frontend side
 	updateAudioVisualizer(audio_s);
