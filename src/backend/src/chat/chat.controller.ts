@@ -3,7 +3,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { AddMessageDTO, addUserToChatDTO, BlockUserDTO, ChatDTO, DirectChatDTO, FindMessageDTO } from 'src/models/chat.models';
 import { ChatService } from './chat.service';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('chat')
 export class ChatController {
 	constructor(private ChatService: ChatService) {}

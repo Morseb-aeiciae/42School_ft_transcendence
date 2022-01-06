@@ -11,6 +11,8 @@ const initialContext: AppState = {
   status: "noConnected",
   content: "none",
   switchRender: 0,
+  token: "",
+  updateToken: (token) => {},
 };
 
 const AuthContext: React.Context<AppState> =

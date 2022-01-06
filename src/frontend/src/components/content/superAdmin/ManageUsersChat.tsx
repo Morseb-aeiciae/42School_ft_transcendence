@@ -1,34 +1,35 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { apiLocal3001 } from "../../../conf/axios.conf";
 
 const ManageUsersChat = (props: any) => {
-  const [users, setUsers] = useState([]);
-  const [isLoading, setLoading] = useState(true);
-  const [actionUser, setActionUser] = useState({ id: -1, action: 0 });
+  // const [users, setUsers] = useState([]);
+  // const [isLoading, setLoading] = useState(true);
+  // const [actionUser, setActionUser] = useState({ id: -1, action: 0 });
 
   useEffect(() => {
     apiLocal3001
       .get("/profiles")
       .then((response: any) => {
-        setUsers(response.data);
+        // setUsers(response.data);
         setTimeout(function () {
-          setLoading(false);
+          // setLoading(false);
         }, 500);
       })
       .catch((err: any) => {
         console.log("AdminPanel:", err);
         setTimeout(function () {
-          setLoading(false);
+          // setLoading(false);
         }, 500);
       });
   }, []);
 
-  useEffect(() => {
-    if (actionUser.action) {
-      // action = 1 => promote
-      // action = 2 => ban
-    }
-  }, [actionUser]);
+  // useEffect(() => {
+  //   if (actionUser.action) {
+  //     // action = 1 => promote
+  //     // action = 2 => ban
+  //   }
+  // }, [actionUser]);
 
   return (
     <section>

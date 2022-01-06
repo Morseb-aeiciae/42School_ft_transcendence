@@ -1,4 +1,6 @@
 import axios, { AxiosResponse } from "axios";
+// import { useContext } from "react";
+// import AuthContext from "../context";
 
 const configHeaders = {
   "content-type": "application/json",
@@ -34,8 +36,9 @@ export default apiUsers;
 /**********************************************/
 
 apiUsers.interceptors.request.use((req) => {
-  // req.headers["Authorization"] = "AUTH_TOKEN";
-  // console.log("request : ", req);
+  // const context = useContext(AuthContext);
+  // req.headers["Authorization"] = context.token;
+  // console.log("request : ", context.token);
   return req;
 });
 
