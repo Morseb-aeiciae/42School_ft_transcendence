@@ -1,4 +1,7 @@
-import { Body, Controller, Get, Param, Post, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, createParamDecorator, Get, Param, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Role } from 'src/admin/Role/role.enum';
+import { Roles } from 'src/admin/Role/roles.decorator';
+import RoleGuard from 'src/admin/Role/roles.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { AddMessageDTO, addUserToChatDTO, BlockUserDTO, ChatDTO, DirectChatDTO, FindMessageDTO } from 'src/models/chat.models';
 import { ChatService } from './chat.service';
@@ -6,8 +9,14 @@ import { ChatService } from './chat.service';
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 export class ChatController {
-	constructor(private ChatService: ChatService) {}
+	constructor(private ChatService: ChatService, ) {}
 
+
+	@Get("getAllChats")
+	async getAllChats() {
+		return this.ChatService.getAllChats();
+	}
+	
 	@Post('createChat')
 	async createChat(@Body(ValidationPipe) chatInfo: ChatDTO) {
 		return this.ChatService.createChat(chatInfo);

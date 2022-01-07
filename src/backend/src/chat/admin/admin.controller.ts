@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, Post, ValidationPipe } from '@nestjs/common';
 import { BanUserDTO, DeleteChatDTO, SetAdminDTO } from 'src/models/chat.admin.models';
-import { AdminService } from './admin.service';
+import { ChatAdminService } from './admin.service';
 
 @Controller('chat/admin')
-export class AdminController {
-	constructor(private AdminService: AdminService) {}
+export class ChatAdminController {
+	constructor(private AdminService: ChatAdminService) {}
 
 	@Post('setAdmin')
 	async setAdmin(@Body(ValidationPipe) adminInfo: SetAdminDTO) {

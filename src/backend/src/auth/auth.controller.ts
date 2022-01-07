@@ -45,11 +45,7 @@ export class AuthController {
       req.user['username'],
       req.user['email'],
     );
-    /*        const user = await this.authService.addUser(req.user['username'], req.user['email']);
-		const accessToken = this.jwtService.sign(user.username);
-		res.cookie('jwt', accessToken);
-        res.status(302).redirect("http://localhost");
-        return user; */
+
   }
 
   @UseGuards(JwtAuthGuard)

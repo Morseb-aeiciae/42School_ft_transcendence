@@ -20,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/user/user.service';
 import { TwoFactorAuthenticationCodeDto } from 'src/models/TwoFactorAuthenticationCodeDto';
 import { AuthService } from 'src/auth/auth.service';
+
 @Controller('2fa')
 @UseInterceptors(ClassSerializerInterceptor)
 export class TwoFactorAuthenticationController {
@@ -43,7 +44,7 @@ export class TwoFactorAuthenticationController {
 
     @Post('turn-on')
     @HttpCode(200)
-   // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     async turnOnTwoFactorAuthentication(
       @Req() request: RequestWithUser,
       @Body() { twoFactorAuthenticationCode } : TwoFactorAuthenticationCodeDto

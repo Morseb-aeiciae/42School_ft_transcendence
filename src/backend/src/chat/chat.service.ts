@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlockEntity } from 'src/entities/block.entity';
 import { Chat_userEntity } from 'src/entities/chat-user.entity';
@@ -8,7 +8,8 @@ import { UserEntity } from 'src/entities/user.entity';
 import { AddMessageDTO, addUserToChatDTO, BlockUserDTO, ChatDTO, DirectChatDTO, FindBlockedUsersDTO, FindMessageDTO } from 'src/models/chat.models';
 import { createQueryBuilder, getConnection, getRepository, In, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Dir } from 'fs';
+import { REQUEST } from '@nestjs/core';
+import { request } from 'express';
 
 enum chat_protection {
 	public = 1,
@@ -23,14 +24,19 @@ export class ChatService {
 		@InjectRepository(Chat_userEntity) private Chat_userRepo: Repository<Chat_userEntity>,
 		@InjectRepository(MessageEntity) private MessageRepo: Repository<MessageEntity>,
 		@InjectRepository(UserEntity) private UserRepo: Repository<UserEntity>,
-		@InjectRepository(BlockEntity) private BlockRepo: Repository<BlockEntity>,
-	) {}
+		@InjectRepository(BlockEntity) private BlockRepo: Repository<BlockEntity>, ) {}
+
+	async getAllChats() {
+		const chats = await this.ChatRepo.find();
+		return chats;
+	}
 
 	async createChat(chatInfo: ChatDTO) {
+		
 		const chat = this.ChatRepo.create(chatInfo);
 		if (chatInfo.password != undefined)
 			chat.protection = chat_protection.private_with_pwd;
-		else 
+		else
 			chat.protection = chat_protection.public;
 		chat.owner = await this.UserRepo.findOne(chatInfo.ownerId);
 		await chat.save();

@@ -12,9 +12,10 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-import { GoogleController } from './google/google.controller';
-import { GoogleService } from './google/google.service';
-import { GoogleModule } from './google/google.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AdminService } from './admin/admin.service';
+import { AdminController } from './admin/admin.controller';
+import { AdminModule } from './admin/admin.module';
 
 
 @Module({
@@ -27,10 +28,8 @@ import { GoogleModule } from './google/google.module';
 	MatchModule,
 	ChatModule,
 	FriendsModule,
-	GoogleModule,
- 
-        ],
+	AdminModule,],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

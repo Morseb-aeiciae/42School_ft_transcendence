@@ -1,10 +1,11 @@
 import { AbstractEntity } from './abstract-entity';
 import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
-import { IsEmail, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsString } from 'class-validator';
 import { classToPlain, Exclude } from 'class-transformer';
 import { hash, compare } from 'bcrypt';
 import { Match_userEntity } from './match-user.entity';
 import { Chat_userEntity } from './chat-user.entity';
+import { Role } from 'src/admin/Role/role.enum';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -13,7 +14,7 @@ export class UserEntity extends AbstractEntity {
   @IsString()
   email: string;
 
-  @Column({ unique: true })
+  @Column()
   @IsString()
   username: string;
 
@@ -23,6 +24,20 @@ export class UserEntity extends AbstractEntity {
   @Column({nullable : true})
   @Exclude()
   password: string;
+
+  @Column({
+    type: "enum",
+    enum: Role,
+    default: Role.User})
+  role: Role;
+
+  @Column({default: false})
+  @IsBoolean()
+  isBan: boolean;
+
+  @Column({unique: true})
+  @IsString()
+  login: string;
 
   @BeforeInsert()
   async hashPassword() {

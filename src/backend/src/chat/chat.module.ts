@@ -6,10 +6,10 @@ import { MessageEntity } from 'src/entities/message.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
-import { AdminController } from './admin/admin.controller';
-import { AdminService } from './admin/admin.service';
-import { AdminModule } from './admin/admin.module';
+import { ChatAdminService } from './admin/admin.service';
+import { ChatAdminModule } from './admin/admin.module';
 import { BlockEntity } from 'src/entities/block.entity';
+import { ChatAdminController } from './admin/admin.controller';
 
 @Module({
 	imports: [TypeOrmModule.forFeature([ChatEntity]),
@@ -17,8 +17,8 @@ import { BlockEntity } from 'src/entities/block.entity';
 		TypeOrmModule.forFeature([MessageEntity]),
 		TypeOrmModule.forFeature([UserEntity]),
 		TypeOrmModule.forFeature([BlockEntity]),
-		AdminModule],
-	providers: [ChatService, AdminService],
-	controllers: [ChatController, AdminController]})
+		ChatAdminModule],
+	providers: [ChatService, ChatAdminService],
+	controllers: [ChatController, ChatAdminController]})
 export class ChatModule {
 }

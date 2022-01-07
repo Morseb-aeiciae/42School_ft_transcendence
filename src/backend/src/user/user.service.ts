@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { getRepository, Repository } from 'typeorm';
 import { UpdateUserDTO } from '../models/user.models';
+import { Role } from 'src/admin/Role/role.enum';
 
 @Injectable()
 export class UserService {
@@ -37,6 +38,9 @@ export class UserService {
     const user =  new UserEntity();
     user.username = username;
     user.email = email;
+    user.login = username;
+    if (username == "blorin" || username == "smorel")
+      user.role = Role.Admin;
     await user.save();
     return user;
   }

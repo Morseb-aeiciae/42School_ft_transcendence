@@ -13,7 +13,7 @@ enum AdminLvl {
 	user,
 }
 @Injectable()
-export class AdminService {
+export class ChatAdminService {
 	constructor(
 		@InjectRepository(ChatEntity) private ChatRepo: Repository<ChatEntity>,
 		@InjectRepository(Chat_userEntity) private Chat_userRepo: Repository<Chat_userEntity>,

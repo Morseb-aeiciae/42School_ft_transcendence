@@ -5,79 +5,74 @@ import { UserService } from 'src/user/user.service';
 import { JwtPayload } from './strategy/jwt.strategy';
 import TokenPayload from './token.payload.interface';
 
-export interface RegistrationStatus {  
-    success: boolean;  
+export interface RegistrationStatus {
+    success: boolean;
     message: string;
 }
 
 @Injectable()
 export class AuthService {
     configService: any;
-    constructor(  private jwtService: JwtService,
-        private userService : UserService) {}
-    
-		async validateUser(payload: JwtPayload) {
-			const user = await this.userService.findByUsername(payload.username);    
-			if (!user) {
-				throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);    
-			}
-			return user;  
-		}
+    constructor(private jwtService: JwtService,
+        private userService: UserService) { }
 
-		async register(username: string, mail: string): 
-Promise<RegistrationStatus> {
-    let status: RegistrationStatus = {
-        success: true,   
-        message: 'user registered',
-    };
-    try {
-        await this.userService.createUser(username, mail);
-    } catch (err) {
-        status = {
-            success: false,        
-            message: err,
-        };    
+    async validateUser(payload: JwtPayload) {
+        const user = await this.userService.findByUsername(payload.username);
+        if (!user) {
+            throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+        }
+        return user;
     }
-    return status;
-}
 
-		async login(username :string, mail: string): Promise<any> {    
-			// find user in db    
-			let user = await this.userService.findByUsername(username);
-			if (user == undefined)
-			{
-				user = await this.userService.createUser(username, mail);
-			}
-			// generate and sign token    
-			const token = this._createToken(user.username);
-		
-			const tab = {user, token};
-			tab.user = user;
-			tab.token = token;
-			/*return {
-				username: user.username, ...token,    
-			};  */
-			console.log(tab);
-			return tab;
-		}
-		
-		private _createToken( username : string): any {
-			const user: JwtPayload = { username };    
-			const accessToken = this.jwtService.sign(user);    
-			return {
-				expiresIn: 3600,
-				accessToken,
-			};  
-		}
-		
+    async register(username: string, mail: string):
+        Promise<RegistrationStatus> {
+        let status: RegistrationStatus = {
+            success: true,
+            message: 'user registered',
+        };
+        try {
+            await this.userService.createUser(username, mail);
+        } catch (err) {
+            status = {
+                success: false,
+                message: err,
+            };
+        }
+        return status;
+    }
 
-   async addUser(username : string, mail : string) {
-      // console.log(mail);
+    async login(username: string, mail: string): Promise<any> {
+        // find user in db    
+        let user = await this.userService.findByUsername(username);
+        if (user == undefined) {
+            user = await this.userService.createUser(username, mail);
+        }
+        // generate and sign token    
+        const token = this._createToken(user.login);
+        const isBan : Boolean = false;
+        const tab = { user, token, isBan};
+        tab.user = user;
+        tab.token = token;
+        tab.isBan = user.isBan;
+        return tab;
+    }
+
+    private _createToken(username: string): any {
+        const user: JwtPayload = { username };
+        const accessToken = this.jwtService.sign(user);
+        return {
+            expiresIn: 3600,
+            accessToken,
+        };
+    }
+
+
+    async addUser(username: string, mail: string) {
+        // console.log(mail);
         const user = await this.userService.findByUsername(username);
-        if (user == undefined)
-        {
-           let test = await this.userService.createUser(username, mail);
-		   return test;
+        if (user == undefined) {
+            let test = await this.userService.createUser(username, mail);
+            return test;
         }
         return user;
     }
@@ -89,10 +84,10 @@ Promise<RegistrationStatus> {
     public getCookieWithJwtAccessToken(userId: number, isSecondFactorAuthenticated = false) {
         const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
         const token = this.jwtService.sign(payload, {
-          secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-    
+            secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+
         });
         return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
-      }
+    }
 }
 
