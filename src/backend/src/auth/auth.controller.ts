@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import { Body, Controller, Get, Param, Post, Req, Res,  UseGuards, ValidationPipe } from '@nestjs/common';
-=======
 import {
   Controller,
   Get,
@@ -11,7 +8,6 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
->>>>>>> test
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
