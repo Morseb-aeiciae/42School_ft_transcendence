@@ -106,9 +106,9 @@ const SignInModal = () => {
     apiUsers
       .post("/login", values)
       .then((response: any) => {
+        // localStorage.setItem("email", response.data.user.email);
+        // localStorage.setItem("token", response.data.user.token);
         context.updateUser(true, response.data.user);
-        localStorage.setItem("email", response.data.user.email);
-        localStorage.setItem("token", response.data.user.token);
       })
       .catch((err: any) => {
         console.log("err apiUsers:", err);

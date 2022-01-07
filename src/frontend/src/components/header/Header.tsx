@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import Status from "./Status";
 import AuthContext from "../../context";
 import { SignInModal, SignOutModal } from "../auth";
-import { apiAuth } from "../../conf/axios.conf_auth";
 
 const Header = () => {
   const context = useContext(AuthContext);
@@ -10,16 +9,18 @@ const Header = () => {
 
   useEffect(() => {
     if (logout) {
-      apiAuth
-        .get("/logout")
-        .then((response: any) => {})
-        .catch((err: any) => {
-          console.log("Auth:", err);
-        });
+      localStorage.clear();
+      setLogout(false);
+      context.updateToken("");
+      // apiAuth
+      //   .get("/logout")
+      //   .then((response: any) => {
+      //   })
+      //   .catch((err: any) => {
+      //     console.log("Auth:", err);
+      //   });
     }
-  }, [logout]);
-
-  console.log(context);
+  }, [logout, context]);
 
   let path: string;
   if (context.auth.isLoggedIn) path = `/${context.auth.user?.username}/`;
@@ -48,7 +49,6 @@ const Header = () => {
               <i
                 className="fas fa-sign-out-alt"
                 onClick={() => {
-                  localStorage.clear();
                   context.updateUser(false, null);
                   context.changeContent("");
                   setLogout(true);

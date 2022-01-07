@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
 import {
   Header,
@@ -9,7 +10,7 @@ import {
   Login,
   PageNotFound,
   ProtectedRoute,
-  Loading,
+  // Loading,
   SignInErr,
   Auth,
 } from "./components";
@@ -23,7 +24,7 @@ import {
   withRouter,
 } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
-import apiUsers from "./conf/axios.conf";
+// import apiUsers from "./conf/axios.conf";
 
 //***************************************************** */
 type TParams = { username: string };
@@ -61,7 +62,8 @@ export interface AppState {
   updateToken: (token: string) => any;
 }
 
-class AppV1 extends React.Component<AppProps> {
+// class AppV1 extends React.Component<AppProps> {
+class App extends React.Component {
   state: AppState;
   context = AuthContext;
 
@@ -86,6 +88,7 @@ class AppV1 extends React.Component<AppProps> {
   }
 
   updateToken = (token: string) => {
+    localStorage.setItem("token", token);
     this.setState({
       token,
     });
@@ -173,61 +176,62 @@ class AppV1 extends React.Component<AppProps> {
   }
 }
 
-const App = () => {
-  const init: User = {
-    id: 0,
-    username: "",
-    email: "",
-    img: "",
-    win: 0,
-    loose: 0,
-    isLoggedIn: false,
-    history: "",
-  };
-  const [isLoading, setLoading] = useState(true);
-  const [fetchData, setUser] = useState(init);
+// const App = () => {
+// const init: User = {
+//   id: 0,
+//   username: "",
+//   email: "",
+//   img: "",
+//   win: 0,
+//   loose: 0,
+//   isLoggedIn: false,
+//   history: "",
+// };
+// const [isLoading, setLoading] = useState(true);
+// const [fetchData, setUser] = useState(init);
 
-  let isLoggedIn: boolean = false;
-  let user: User | null = null;
+// let isLoggedIn: boolean = false;
+// let user: User | null = null;
 
-  useEffect(() => {
-    const loggedInToken = localStorage.getItem("token");
-    const loggedInMail = localStorage.getItem("email");
-    if (loggedInToken) {
-      apiUsers
-        .post("/loginWithToken", {
-          email: loggedInMail,
-          token: loggedInToken,
-        })
-        .then((response: any) => {
-          setUser(response.data.user);
-          setTimeout(function () {
-            setLoading(false);
-          }, 200);
-        })
-        .catch((err: any) => {
-          console.log("not loggin yet:", "err");
-          setTimeout(function () {
-            setLoading(false);
-          }, 200);
-        });
-    } else {
-      setTimeout(function () {
-        setLoading(false);
-      }, 500);
-    }
-  }, []);
-  if (fetchData) {
-    if (fetchData.username) {
-      user = fetchData;
-      isLoggedIn = true;
-    }
-  }
+// useEffect(() => {
+//   const loggedInToken = localStorage.getItem("token");
+//   const loggedInMail = localStorage.getItem("email");
+//   if (loggedInToken) {
+//     apiUsers
+//       .post("/loginWithToken", {
+//         email: loggedInMail,
+//         token: loggedInToken,
+//       })
+//       .then((response: any) => {
+//         setUser(response.data.user);
+//         setTimeout(function () {
+//           setLoading(false);
+//         }, 200);
+//       })
+//       .catch((err: any) => {
+//         console.log("not loggin yet:", "err");
+//         setTimeout(function () {
+//           setLoading(false);
+//         }, 200);
+//       });
+//   } else {
+//     setTimeout(function () {
+//       setLoading(false);
+//     }, 500);
+//   }
+// }, []);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-  return <AppV1 isLoggedIn={isLoggedIn} user={user} />;
-};
+// if (fetchData) {
+//   if (fetchData.username) {
+//     user = fetchData;
+//     isLoggedIn = true;
+//   }
+// }
+
+// if (isLoading) {
+//   return <Loading />;
+// }
+//   return <AppV1 isLoggedIn={isLoggedIn} user={user} />;
+// };
 
 export default App;

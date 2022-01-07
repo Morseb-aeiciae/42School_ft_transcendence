@@ -41,7 +41,7 @@ elif [ "$1" == "run" ]  ; then
 
 elif [ "$1" == "clear" ] ; then
     if [ "$2" != "prod" ]  ; then
-        find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+        # find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
         find . -name "dist" -type d -prune -exec rm -rf '{}' +
         rmdir ./src/frontend/cache/
     fi;

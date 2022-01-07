@@ -81,7 +81,6 @@ const Chats = (props: any) => {
     }
   }, [actionChat]);
 
-  console.log(chats);
   if (isLoading) {
     return <Loading />;
   } else if (actionChat.action === 1) {

@@ -18,7 +18,7 @@ export default class Rules extends React.Component {
           <p className="text-start">
             - It is 2 players game.
             <br />
-            - Players can move their paddle with X(up) and X(down).
+            - Players can move their paddle up and down.
             <br />
             - The ball bounces off the top and bottom walls and the paddles.
             <br />

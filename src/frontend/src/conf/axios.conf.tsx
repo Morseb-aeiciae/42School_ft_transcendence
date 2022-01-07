@@ -36,9 +36,8 @@ export default apiUsers;
 /**********************************************/
 
 apiUsers.interceptors.request.use((req) => {
-  // const context = useContext(AuthContext);
-  // req.headers["Authorization"] = context.token;
-  // console.log("request : ", context.token);
+  let token = localStorage.getItem("token");
+  req.headers["Authorization"] = "Bearer " + token;
   return req;
 });
 

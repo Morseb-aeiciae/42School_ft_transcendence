@@ -25,9 +25,6 @@ export const apiAuth = axios.create({
 /**********************************************/
 
 apiAuth.interceptors.request.use((req) => {
-  // const context = useContext(AuthContext);
-  // console.log("request : ", context.token);
-  // if (context.token) req.headers["Authorization"] = context.token;
   return req;
 });
 

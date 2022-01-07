@@ -12,10 +12,8 @@ export const apiChat = axios.create({
 /**********************************************/
 
 apiChat.interceptors.request.use((req) => {
-  // const context = useContext(AuthContext);
-  // console.log("request : ", context.token);
-
-  // req.headers["Authorization"] = context.token;
+  let token = localStorage.getItem("token");
+  req.headers["Authorization"] = "Bearer " + token;
   return req;
 });
 

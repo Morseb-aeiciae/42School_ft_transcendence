@@ -54,8 +54,8 @@ export default class Account extends Component {
         username: values.username,
       })
       .then((response: any) => {
-        localStorage.setItem("email", response.data.email);
-        localStorage.setItem("token", response.data.password);
+        // localStorage.setItem("email", response.data.email);
+        // localStorage.setItem("token", response.data.password);
         this.context.updateUser(true, response.data);
       })
       .catch((err: any) => {

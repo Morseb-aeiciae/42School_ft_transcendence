@@ -24,8 +24,6 @@ export class SchoolStrategy extends PassportStrategy(Strategy, '42') {
     profile: Profile,
     done: VerifyCallback,
   ) {
-    console.log('BACK : validate', accessToken);
-
     const { username, emails } = profile;
     const details = {
       username: username,

@@ -10,6 +10,8 @@ export const apiChatAdmin = axios.create({
 /**********************************************/
 
 apiChatAdmin.interceptors.request.use((req) => {
+  let token = localStorage.getItem("token");
+  req.headers["Authorization"] = "Bearer " + token;
   return req;
 });
 

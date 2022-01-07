@@ -36,7 +36,7 @@ export default class CreateChat extends Component<Props> {
 
   submit = (values: any, action: any) => {
     const setState = this.props.props;
-    const token = this.context.token.accessToken;
+    const token = this.context.token;
 
     apiChat
       .post("/createChat", values, {
