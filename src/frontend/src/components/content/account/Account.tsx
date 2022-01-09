@@ -77,8 +77,8 @@ export default class Account extends Component {
         <div className="d-flex flex-row align-items-center">
           <img
             src={
-              user.img
-                ? user.img
+              user.image
+                ? user.image
                 : "https://images.unsplash.com/photo-1590474879704-135dbd7f8ffd?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1160&q=80"
             }
             alt="img.user"

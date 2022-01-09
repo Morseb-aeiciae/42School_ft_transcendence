@@ -32,7 +32,7 @@ const apiUsers = axios.create({
 export default apiUsers;
 
 /**********************************************/
-//  interceptor request
+//  interceptors request
 /**********************************************/
 
 apiUsers.interceptors.request.use((req) => {
@@ -40,7 +40,11 @@ apiUsers.interceptors.request.use((req) => {
   req.headers["Authorization"] = "Bearer " + token;
   return req;
 });
-
+apiUser.interceptors.request.use((req) => {
+  let token = localStorage.getItem("token");
+  req.headers["Authorization"] = "Bearer " + token;
+  return req;
+});
 /**********************************************/
 //  interceptor response
 /**********************************************/
