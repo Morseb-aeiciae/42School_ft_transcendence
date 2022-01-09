@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Loading } from "../..";
-import { apiLocal3001 } from "../../../conf/axios.conf";
+import { apiAdmin } from "../../../conf/axios.conf_admin";
+import { apiChat } from "../../../conf/axios.conf_chats";
+import ChatPeek from "./ChatPeek";
 import ManageUsersChat from "./ManageUsersChat";
 
 const displayChatCard = (props: any) => {
@@ -53,13 +55,12 @@ const Chats = (props: any) => {
   const [chats, setChats] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [actionChat, setActionChat] = useState({ id: -1, action: 0 });
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    apiLocal3001
-      .get("/getChatList")
+    apiChat
+      .get("/getAllChats")
       .then((response: any) => {
-        console.log("superAdmin-> chats -> fix call address for api");
-
         setChats(response.data);
         setTimeout(function () {
           setLoading(false);
@@ -71,21 +72,37 @@ const Chats = (props: any) => {
           setLoading(false);
         }, 500);
       });
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
-    if (actionChat.action) {
-      // action = 1 => manage ... redirect
-      // action = 2 => view
-      // action = 3 => delte
+    if (actionChat.action === 3) {
+      apiAdmin
+        .post("/deleteChat", { chatId: actionChat.id })
+        .then((response: any) => {})
+        .catch((err: any) => {
+          console.log("AdminPanel:", err);
+        });
+      setActionChat({
+        id: -1,
+        action: 0,
+      });
+      setTimeout(function () {
+        setReload(!reload);
+      }, 100);
     }
-  }, [actionChat]);
+  }, [actionChat, reload, props]);
 
   if (isLoading) {
     return <Loading />;
   } else if (actionChat.action === 1) {
-    return <ManageUsersChat />;
-  } else if (chats.length > 1) {
+    return <ManageUsersChat chatId={actionChat.id} />;
+  } else if (actionChat.action === 2) {
+    return (
+      <div className="flex-fill border p-2 m-1 bg-darK">
+        <ChatPeek chatId={actionChat.id} />
+      </div>
+    );
+  } else if (chats.length > 0) {
     return (
       <div className="d-flex flex-wrap">
         {chats.map((c: any, index: number) => (

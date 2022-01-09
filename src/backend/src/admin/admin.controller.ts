@@ -38,14 +38,14 @@ export class AdminController {
         return this.adminService.removeChatRights(data);
     }
     
-    @Post("removeAdminRights")
-    async removeAdminRights(@Body(ValidationPipe) data: AdminBanUserDTO,  @Req() req) {
-        return this.adminService.removeAdminRights(data, req.user.login);
-    }
+    // @Post("removeAdminRights")
+    // async removeAdminRights(@Body(ValidationPipe) data: AdminBanUserDTO,  @Req() req) {
+    //     return this.adminService.removeAdminRights(data, req.user.login);
+    // }
 
-    @Post("giveAdminRights")
-    async giveAdminRights(@Body(ValidationPipe) data: AdminBanUserDTO,  @Req() req) {
-        return this.adminService.giveAdminRights(data, req.user.login);
-    }
+    // @Post("giveAdminRights")
+    // async giveAdminRights(@Body(ValidationPipe) data: AdminBanUserDTO,  @Req() req) {
+    //     return this.adminService.giveAdminRights(data, req.user.login);
+    // }
 
 }

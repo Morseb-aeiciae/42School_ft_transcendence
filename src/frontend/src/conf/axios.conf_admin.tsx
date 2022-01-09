@@ -14,17 +14,19 @@ const configHeaders = {
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
-export const apiAuth = axios.create({
-  baseURL: "http://localhost:3001/auth",
+export const apiAdmin = axios.create({
+  baseURL: "http://localhost:3001/admin",
   headers: configHeaders,
-  timeout: 5000,
+  timeout: 3000,
 });
 
 /**********************************************/
 //  interceptor request
 /**********************************************/
 
-apiAuth.interceptors.request.use((req) => {
+apiAdmin.interceptors.request.use((req) => {
+  let token = localStorage.getItem("token");
+  req.headers["Authorization"] = "Bearer " + token;
   return req;
 });
 
@@ -48,7 +50,7 @@ const successHandler = (response: AxiosResponse) => {
   return response;
 };
 
-apiAuth.interceptors.response.use(
+apiAdmin.interceptors.response.use(
   (response) => successHandler(response),
   (err) => errorHandler(err)
 );

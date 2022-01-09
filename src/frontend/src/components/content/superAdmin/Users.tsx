@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Loading } from "../..";
 import { apiLocal3001 } from "../../../conf/axios.conf";
+import { apiAdmin } from "../../../conf/axios.conf_admin";
 
 const displayUserCard = (props: any) => {
   return (
@@ -23,28 +24,56 @@ const displayUserCard = (props: any) => {
             {props.u.username} <br />
             id :{props.u.id}
           </p>
-          <button
-            className="btn btn-secondary mx-2"
-            onClick={() => {
-              props.setActionUser({
-                id: props.u.id,
-                action: 1,
-              });
-            }}
-          >
-            <i className="fas fa-angle-double-up fs-1 text-dark"></i>
-          </button>
-          <button
-            className="btn btn-danger mx-2"
-            onClick={() => {
-              props.setActionUser({
-                id: props.u.id,
-                action: 2,
-              });
-            }}
-          >
-            <i className="fas fa-ban fs-1"></i>
-          </button>
+          {props.u.role === "user" ? (
+            <button
+              className="btn btn-secondary mx-2"
+              onClick={() => {
+                props.setActionUser({
+                  id: props.u.id,
+                  action: 1,
+                });
+              }}
+            >
+              <i className="fas fa-angle-double-up fs-1 text-dark"></i>
+            </button>
+          ) : (
+            <button
+              className="btn btn-secondary mx-2"
+              onClick={() => {
+                props.setActionUser({
+                  id: props.u.id,
+                  action: 2,
+                });
+              }}
+            >
+              <i className="fas fa-angle-double-down fs-1 text-dark"></i>
+            </button>
+          )}
+          {props.u.isBan ? (
+            <button
+              className="btn btn-success mx-2"
+              onClick={() => {
+                props.setActionUser({
+                  id: props.u.id,
+                  action: 3,
+                });
+              }}
+            >
+              <i className="fas fa-door-open fs-1"></i>
+            </button>
+          ) : (
+            <button
+              className="btn btn-danger mx-2"
+              onClick={() => {
+                props.setActionUser({
+                  id: props.u.id,
+                  action: 4,
+                });
+              }}
+            >
+              <i className="fas fa-door-closed fs-1"></i>
+            </button>
+          )}
         </div>
       </div>
     </>
@@ -52,11 +81,10 @@ const displayUserCard = (props: any) => {
 };
 
 const Users = (props: any) => {
-  // console.log("Admin panel : user ", props);
-
   const [users, setUsers] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [actionUser, setActionUser] = useState({ id: -1, action: 0 });
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     apiLocal3001
@@ -73,14 +101,57 @@ const Users = (props: any) => {
           setLoading(false);
         }, 500);
       });
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
-    if (actionUser.action) {
+    switch (actionUser.action) {
       // action = 1 => promote
-      // action = 2 => ban
+      case 1:
+        apiAdmin
+          .post("/giveAdminRights", { userId: actionUser.id })
+          .then((response: any) => {})
+          .catch((err: any) => {
+            console.log("AdminPanel:", err);
+          });
+        break;
+      // action = 2 => demote
+      case 2:
+        apiAdmin
+          .post("/removeAdminRights", { userId: actionUser.id })
+          .then((response: any) => {})
+          .catch((err: any) => {
+            console.log("AdminPanel:", err);
+          });
+        break;
+      // action = 3 => ban
+      case 3:
+        apiAdmin
+          .post("/unbanUser", { userId: actionUser.id })
+          .then((response: any) => {})
+          .catch((err: any) => {
+            console.log("AdminPanel:", err);
+          });
+        break;
+      // action = 4 => unban
+      case 4:
+        apiAdmin
+          .post("/banUser", { userId: actionUser.id })
+          .then((response: any) => {})
+          .catch((err: any) => {
+            console.log("AdminPanel:", err);
+          });
+        break;
     }
-  }, [actionUser]);
+    if (actionUser.action) {
+      setActionUser({
+        id: -1,
+        action: 0,
+      });
+      setTimeout(function () {
+        setReload(!reload);
+      }, 100);
+    }
+  }, [actionUser, reload]);
 
   if (isLoading) {
     return <Loading />;
@@ -89,7 +160,7 @@ const Users = (props: any) => {
       <div className="d-flex flex-wrap">
         {users.map((u: any, index: number) => (
           <div key={index}>
-            {u.id !== props.userId
+            {u.id !== props.user.id
               ? displayUserCard({ u, setActionUser })
               : null}
           </div>

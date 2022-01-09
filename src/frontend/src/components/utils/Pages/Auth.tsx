@@ -15,13 +15,13 @@ const Auth = () => {
       .get(`/redirec${code}`)
       .then((response: any) => {
         setUp(true);
-        // if (response.data.isBan) {
-        //   setBan(true);
-        // } else {
-        //   setBan(false);
+        if (response.data.isBan) {
+          setBan(true);
+        } else {
+          setBan(false);
         context.updateToken(response.data.token.accessToken);
         context.updateUser(true, response.data.user);
-        // }
+        }
       })
       .catch((err: any) => {
         setDown(true);
@@ -36,8 +36,8 @@ const Auth = () => {
         <h1>Fail to connect</h1>
       </section>
     );
-  } else if (ban) {
-    return <section>You were ban. Contact the admin</section>;
+    } else if (ban) {
+      return <section>You were ban. Contact the admin</section>;
   }
   return (
     <section className="bg-dark text-light p-5 text-center flex-column flex-grow-1 d-flex align-items-center justify-content-center">
