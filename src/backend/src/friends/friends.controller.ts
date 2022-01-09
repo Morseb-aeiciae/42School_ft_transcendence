@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Param, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 import { SendFriendInviteDTO } from 'src/models/friends.models';
 import { FriendsService } from './friends.service';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('friends')
 export class FriendsController {
 

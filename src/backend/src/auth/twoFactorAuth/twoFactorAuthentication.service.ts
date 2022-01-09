@@ -35,6 +35,4 @@ export class TwoFactorAuthenticationService {
       secret: user.twoFactorAuthenticationSecret
     })
   }
-
 }
-

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 import { AdminBanUserDTO, AdminDeleteChatDTO, ChatRightsDTO } from 'src/models/admin.models';
 import { BanUserDTO, DeleteChatDTO } from 'src/models/chat.admin.models';
 import { AdminService } from './admin.service';
@@ -7,7 +8,7 @@ import { Role } from './Role/role.enum';
 import RoleGuard from './Role/roles.guard';
 
 @UseGuards(RoleGuard(Role.Admin))
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('admin')
 export class AdminController {
     constructor(private adminService: AdminService) {}
