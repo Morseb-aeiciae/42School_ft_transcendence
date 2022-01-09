@@ -16,8 +16,9 @@ export class AuthService {
     constructor(private jwtService: JwtService,
         private userService: UserService) { }
 
-    async validateUser(payload: JwtPayload) {
-        const user = await this.userService.findByUsername(payload.username);
+    async validateUser(payload: TokenPayload) {
+        console.log("youoyouoyoogodf");
+        const user = await this.userService.findById(payload.userId);
         if (!user) {
             throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
         }
@@ -48,23 +49,28 @@ export class AuthService {
             user = await this.userService.createUser(username, mail);
         }
         // generate and sign token    
-        const token = this._createToken(user.login);
+        const token = this.getCookieWithJwtAccessToken(user.id);
+
         const isBan : Boolean = false;
         const tab = { user, token, isBan};
         tab.user = user;
         tab.token = token;
         tab.isBan = user.isBan;
+        console.log(tab);
+        if (user.isTwoFactorAuthenticationEnabled == true)
+            tab.user = undefined;
         return tab;
     }
-
+/*
     private _createToken(username: string): any {
-        const user: JwtPayload = { username };
+        const isSecondFactorAuthenticated = false;
+        const user: SimpleTokenPayload = { username,  isSecondFactorAuthenticated};
         const accessToken = this.jwtService.sign(user);
         return {
             expiresIn: 3600,
             accessToken,
         };
-    }
+    }*/
 
 
     async addUser(username: string, mail: string) {
@@ -81,13 +87,13 @@ export class AuthService {
         throw new Error("dfsdf")
     }
 
-    public getCookieWithJwtAccessToken(userId: number, isSecondFactorAuthenticated = false) {
-        const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
-        const token = this.jwtService.sign(payload, {
-            secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-
-        });
-        return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
+   public getCookieWithJwtAccessToken(userId: number, isSecondFactorAuthenticated = false) {
+        const payload: TokenPayload = { userId, isSecondFactorAuthenticated};
+        const accessToken = this.jwtService.sign(payload);
+        return {
+            expiresIn: 3600,
+            accessToken,
+        };
     }
 }
 

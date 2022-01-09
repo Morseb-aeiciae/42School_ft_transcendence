@@ -38,7 +38,7 @@ export class AdminController {
     }
     
     @Post("removeAdminRights")
-    async removeAdminRights(@Body(ValidationPipe) data: ChatRightsDTO,  @Req() req) {
+    async removeAdminRights(@Body(ValidationPipe) data: AdminBanUserDTO,  @Req() req) {
         return this.adminService.removeAdminRights(data, req.user.login);
     }
 

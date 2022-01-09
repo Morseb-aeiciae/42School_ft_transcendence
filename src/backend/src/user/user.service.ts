@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { getRepository, Repository } from 'typeorm';
@@ -56,4 +56,15 @@ export class UserService {
       return this.userRepo.update(userId, {isTwoFactorAuthenticationEnabled: true});
       }
     
+    async findUserToken(userId: number): Promise<any> {
+      const user = await this.findById(userId);
+      if (!user) {
+          throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+      }
+      return user;
+    }
+
+    async turnOffTwoFactorAuthentication(userId: number) {
+      return this.userRepo.update(userId, {isTwoFactorAuthenticationEnabled: false});
+      }
   }

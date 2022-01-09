@@ -3,10 +3,11 @@ import { Role } from 'src/admin/Role/role.enum';
 import { Roles } from 'src/admin/Role/roles.decorator';
 import RoleGuard from 'src/admin/Role/roles.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 import { AddMessageDTO, addUserToChatDTO, BlockUserDTO, ChatDTO, DirectChatDTO, FindMessageDTO } from 'src/models/chat.models';
 import { ChatService } from './chat.service';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('chat')
 export class ChatController {
 	constructor(private ChatService: ChatService, ) {}
@@ -102,3 +103,7 @@ export class ChatController {
 		return this.ChatService.getDirectChat(data);
 	}
 }
+function JwtTwoFactorAuthGuard(JwtTwoFactorAuthGuard: any) {
+	throw new Error('Function not implemented.');
+}
+

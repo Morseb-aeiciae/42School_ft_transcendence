@@ -16,11 +16,9 @@ export class JwtTwoFactorStrategy extends PassportStrategy(
     private readonly userService: UserService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
-        return request?.cookies?.Authentication;
-      }]),
-      secretOrKey: configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET,
+  }); 
   }
  
   async validate(payload: TokenPayload) {

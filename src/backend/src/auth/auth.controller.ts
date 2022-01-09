@@ -45,7 +45,6 @@ export class AuthController {
       req.user['username'],
       req.user['email'],
     );
-
   }
 
   @UseGuards(JwtAuthGuard)
