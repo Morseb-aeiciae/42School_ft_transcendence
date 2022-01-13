@@ -53,11 +53,11 @@ const Auth = () => {
       </section>
     );
   }
-  // return (
-  //   <section className="bg-dark text-light p-5 text-center flex-column flex-grow-1 d-flex align-items-center justify-content-center">
-  //     <h1>CONNECTING ...</h1>
-  //   </section>
-  // );
+  return (
+    <section className="bg-dark text-light p-5 text-center flex-column flex-grow-1 d-flex align-items-center justify-content-center">
+      <h1>CONNECTING ...</h1>
+    </section>
+  );
 };
 
 export default Auth;

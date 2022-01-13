@@ -3,51 +3,36 @@ import { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { api2fa } from "../../../conf/axios.conf_2fa";
 import AuthContext from "../../../context";
-import QRCode from "qrcode";
 import { Formik } from "formik";
-
-const QRCodeGenerate = (text: any) => {
-  const [src, setSrc] = useState("");
-  // console.log(text);
-
-  useEffect(() => {
-    QRCode.toDataURL(text).then(setSrc);
-  }, []);
-
-  return <img src={src} alt="" />;
-};
+import Loading from "../Loading";
 
 const TwoFA = () => {
   const context = useContext(AuthContext);
   const [up, setUp] = useState(false);
   const [down, setDown] = useState(false);
   const [QR, setQR] = useState("");
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     api2fa
       .post("/generate")
       .then((response: any) => {
-        // console.log("res ::: ", response);
-
-        // const base64ImageString = Buffer.from(response.data, "binary").toString(
-        //   "base32"
-        // );
-        // setQR(base64ImageString);
-        setQR(response.data);
+        const otpauth = response.data;
+        const QRCode = `https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=${otpauth}`;
+        setQR(QRCode);
+        setLoading(false);
       })
       .catch((err: any) => {
         setDown(true);
-        setUp(false);
+        setLoading(false);
         console.log("Auth:", err);
       });
-  }, [context]);
+  }, []);
 
   const submit = (values: any, action: any) => {
     api2fa
       .post("/authenticate", values)
       .then((response: any) => {
-        console.log("I WAS HERE !!!!", context);
-
         context.updateToken(response.data.accessToken.accessToken);
         context.updateUser(true, response.user);
         setUp(true);
@@ -58,6 +43,10 @@ const TwoFA = () => {
       });
   };
   console.log("context :::", context);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   if (up) return <Redirect to="/home" />;
   else if (down) {
     return (
@@ -70,9 +59,12 @@ const TwoFA = () => {
       <section>
         You have the 2fa activated, auth with QR code :
         <br />
-        {/* <img src={`data:image/png;base64,${QR}`} alt="QR Code" /> */}
-        <img src={QR} alt="QR Code" />
-        <p> {QR}</p>
+        <img
+          src={QR}
+          alt="QR Code"
+          style={{ width: "200px", height: "200px" }}
+        />
+        <p>{QR}</p>
         <p>Enter you code from QR Code down here :</p>
         <Formik
           onSubmit={submit}
