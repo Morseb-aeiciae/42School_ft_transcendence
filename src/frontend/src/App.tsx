@@ -1,5 +1,4 @@
-// import React, { useState, useEffect } from "react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import {
   Header,
@@ -10,7 +9,7 @@ import {
   Login,
   PageNotFound,
   ProtectedRoute,
-  // Loading,
+  Loading,
   SignInErr,
   Auth,
 } from "./components";
@@ -24,7 +23,7 @@ import {
   withRouter,
 } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
-// import apiUsers from "./conf/axios.conf";
+import { apiUser } from "./conf/axios.conf";
 
 //***************************************************** */
 type TParams = { username: string };
@@ -62,8 +61,7 @@ export interface AppState {
   updateToken: (token: string) => any;
 }
 
-// class AppV1 extends React.Component<AppProps> {
-class App extends React.Component {
+class AppV1 extends React.Component<AppProps> {
   state: AppState;
   context = AuthContext;
 
@@ -162,7 +160,7 @@ class App extends React.Component {
                     path="/:username"
                     sensitive={true}
                     component={withRouter(ComponentUserConnected)}
-                    isLoggedIn={this.state.auth.isLoggedIn}
+                    auth={this.state.auth}
                   />
                   <Route component={PageNotFound} />
                 </Switch>
@@ -176,62 +174,58 @@ class App extends React.Component {
   }
 }
 
-// const App = () => {
-// const init: User = {
-//   id: 0,
-//   username: "",
-//   email: "",
-//   img: "",
-//   win: 0,
-//   loose: 0,
-//   isLoggedIn: false,
-//   history: "",
-// };
-// const [isLoading, setLoading] = useState(true);
-// const [fetchData, setUser] = useState(init);
+const App = () => {
+  const init: User = {
+    id: -1,
+    username: "",
+    email: "",
+    img: "",
+    win: 0,
+    loose: 0,
+    isLoggedIn: false,
+    history: "",
+  };
+  const [isLoading, setLoading] = useState(true);
+  const [isLoggedIn, setLog] = useState(false);
+  const [fetchData, setData] = useState(init);
 
-// let isLoggedIn: boolean = false;
-// let user: User | null = null;
+  let user: User | null = null;
 
-// useEffect(() => {
-//   const loggedInToken = localStorage.getItem("token");
-//   const loggedInMail = localStorage.getItem("email");
-//   if (loggedInToken) {
-//     apiUsers
-//       .post("/loginWithToken", {
-//         email: loggedInMail,
-//         token: loggedInToken,
-//       })
-//       .then((response: any) => {
-//         setUser(response.data.user);
-//         setTimeout(function () {
-//           setLoading(false);
-//         }, 200);
-//       })
-//       .catch((err: any) => {
-//         console.log("not loggin yet:", "err");
-//         setTimeout(function () {
-//           setLoading(false);
-//         }, 200);
-//       });
-//   } else {
-//     setTimeout(function () {
-//       setLoading(false);
-//     }, 500);
-//   }
-// }, []);
+  useEffect(() => {
+    const loggedInToken = localStorage.getItem("token");
 
-// if (fetchData) {
-//   if (fetchData.username) {
-//     user = fetchData;
-//     isLoggedIn = true;
-//   }
-// }
+    if (loggedInToken) {
+      apiUser
+        .get("/findUserToken")
+        .then((response: any) => {
+          setLog(true);
+          setData(response.data);
+          setTimeout(function () {
+            setLoading(false);
+          }, 500);
+        })
+        .catch((err: any) => {
+          localStorage.clear();
+          setLog(false);
+          setTimeout(function () {
+            setLoading(false);
+          }, 500);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
-// if (isLoading) {
-//   return <Loading />;
-// }
-//   return <AppV1 isLoggedIn={isLoggedIn} user={user} />;
-// };
+  if (isLoggedIn) {
+    user = fetchData;
+  } else {
+    user = null;
+  }
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  return <AppV1 isLoggedIn={isLoggedIn} user={user} />;
+};
 
 export default App;

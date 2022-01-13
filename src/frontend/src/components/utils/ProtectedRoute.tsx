@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import TwoFA from "./Pages/TwoFA";
 
 const ProtectedRoute = ({ component: Component, path, ...rest }: any) => {
   return (
@@ -6,7 +7,15 @@ const ProtectedRoute = ({ component: Component, path, ...rest }: any) => {
       <Route
         path={path}
         render={(props) =>
-          rest.isLoggedIn ? <Component {...props} /> : <Redirect to="/home" />
+          rest.auth.isLoggedIn ? (
+            rest.auth.user ? (
+              <Component {...props} />
+            ) : (
+              <TwoFA />
+            )
+          ) : (
+            <Redirect to="/home" />
+          )
         }
         key={Math.random()}
       />

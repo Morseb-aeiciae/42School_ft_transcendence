@@ -169,7 +169,11 @@ const Messages = (props: any) => {
               return e.userId !== b.id;
             }))
         );
-        setMsg(msgs);
+        // setMsg(msgs);
+
+        setTimeout(function () {
+          setMsg(response.data);
+        }, 100);
       })
       .catch((err: any) => {
         console.log("Chat:", err);

@@ -34,7 +34,6 @@ apiAuth.interceptors.request.use((req) => {
 
 const errorHandler = (err: any) => {
   if (err.response) {
-    console.log("err :::", err);
     return Promise.reject("auth errHandler here");
   } else if (err.request) {
     console.log(err.request);

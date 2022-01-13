@@ -7,9 +7,9 @@ import { Role } from 'src/admin/Role/role.enum';
 
 @Injectable()
 export class UserService {
-    getById(userId: number) {
-        throw new Error('Method not implemented.');
-    }
+  getById(userId: number) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
   ) {}
@@ -18,8 +18,8 @@ export class UserService {
     return await this.userRepo.find();
   }
 
-  async findByUsername(username: string): Promise<UserEntity> {
-    return await this.userRepo.findOne({ where: { username } });
+  async findByUsername(login: string): Promise<UserEntity> {
+    return await this.userRepo.findOne({ where: { login } });
   }
 
   async findById(id: number): Promise<UserEntity> {
@@ -27,20 +27,18 @@ export class UserService {
   }
 
   async updateUser(data: UpdateUserDTO) {
-   const user = await this.userRepo.findOne(data.userId);
-   return this.userRepo.save({...user,
-      ...data})
+    const user = await this.userRepo.findOne(data.userId);
+    return this.userRepo.save({ ...user, ...data });
   }
 
-  async createUser(username : string, email : string) {
+  async createUser(username: string, email: string) {
     const repository = getRepository(UserEntity);
 
-    const user =  new UserEntity();
+    const user = new UserEntity();
     user.username = username;
     user.email = email;
     user.login = username;
-    if (username == "blorin" || username == "smorel")
-      user.role = Role.Admin;
+    if (username == 'blorin' || username == 'smorel') user.role = Role.Admin;
     await user.save();
     return user;
   }
@@ -52,19 +50,23 @@ export class UserService {
     return user;
   }
 
-    async turnOnTwoFactorAuthentication(userId: number) {
-      return this.userRepo.update(userId, {isTwoFactorAuthenticationEnabled: true});
-      }
-    
-    async findUserToken(userId: number): Promise<any> {
-      const user = await this.findById(userId);
-      if (!user) {
-          throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-      }
-      return user;
-    }
-
-    async turnOffTwoFactorAuthentication(userId: number) {
-      return this.userRepo.update(userId, {isTwoFactorAuthenticationEnabled: false});
-      }
+  async turnOnTwoFactorAuthentication(userId: number) {
+    return this.userRepo.update(userId, {
+      isTwoFactorAuthenticationEnabled: true,
+    });
   }
+
+  async findUserToken(userId: number): Promise<any> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
+    return user;
+  }
+
+  async turnOffTwoFactorAuthentication(userId: number) {
+    return this.userRepo.update(userId, {
+      isTwoFactorAuthenticationEnabled: false,
+    });
+  }
+}

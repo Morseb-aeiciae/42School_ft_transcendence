@@ -3,28 +3,27 @@ import axios, { AxiosResponse } from "axios";
 // import AuthContext from "../context";
 
 const configHeaders = {
-  "content-type": "application/json",
-  Accept: "*/*",
-  "Access-Control-Max-Age": 12,
-  "Access-Control-Allow-Origin": "*",
-  // "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Headers":
-    "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
-  "Access-Control-Allow-Credentials": "true",
-  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+  // "content-type": "application/json",
+  // Accept: "*/*",
+  // "Access-Control-Max-Age": 12,
+  // "Access-Control-Allow-Origin": "*",
+  // "Access-Control-Allow-Headers":
+  //   "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
+  // "Access-Control-Allow-Credentials": "true",
+  // "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
-export const apiAdmin = axios.create({
-  baseURL: "http://localhost:3001/admin",
+export const api2fa = axios.create({
+  baseURL: "http://localhost:3001/2fa",
   headers: configHeaders,
-  timeout: 3000,
+  timeout: 30000,
 });
 
 /**********************************************/
 //  interceptor request
 /**********************************************/
 
-apiAdmin.interceptors.request.use((req) => {
+api2fa.interceptors.request.use((req) => {
   let token = localStorage.getItem("token");
   req.headers["Authorization"] = "Bearer " + token;
   return req;
@@ -49,7 +48,7 @@ const successHandler = (response: AxiosResponse) => {
   return response;
 };
 
-apiAdmin.interceptors.response.use(
+api2fa.interceptors.response.use(
   (response) => successHandler(response),
   (err) => errorHandler(err)
 );
