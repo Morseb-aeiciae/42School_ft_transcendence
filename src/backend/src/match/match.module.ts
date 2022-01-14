@@ -9,6 +9,7 @@ import { UserEntity } from 'src/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { MatchController } from './match.controller';
 import { MatchService } from './match.service';
+import { PongGateway } from './pong.gateway';
 
 @Module({
 	imports: [PassportModule.register({
@@ -18,7 +19,7 @@ import { MatchService } from './match.service';
 	}),TypeOrmModule.forFeature([MatchEntity]),
 		TypeOrmModule.forFeature([Match_userEntity]),
 		TypeOrmModule.forFeature([UserEntity])],
-	providers: [MatchService, ConfigService, JwtTwoFactorStrategy, UserService],
+	providers: [MatchService, ConfigService, JwtTwoFactorStrategy, UserService, PongGateway],
 	controllers: [MatchController]
 })
 export class MatchModule {
