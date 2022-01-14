@@ -5,12 +5,13 @@ import { MatchEntity } from 'src/entities/match.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { MatchController } from './match.controller';
 import { MatchService } from './match.service';
+import { PongGateway } from './pong.gateway';
 
 @Module({
 	imports: [TypeOrmModule.forFeature([MatchEntity]),
 		TypeOrmModule.forFeature([Match_userEntity]),
 		TypeOrmModule.forFeature([UserEntity])],
-	providers: [MatchService],
+	providers: [MatchService, PongGateway],
 	controllers: [MatchController]
 })
 export class MatchModule {

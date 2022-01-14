@@ -32,6 +32,29 @@ import { get_ball_pos_z } from './back_calc';
 import { update_ball } from './back_calc';
 import { get_score } from './back_calc';
 
+// import io, { Socket } from "socket.io-client";
+import * as io from 'socket.io-client';
+
+let socket;
+
+socket = io.connect('http://localhost:3001/', {withCredentials: true});
+
+socket.on("connect", () => {
+    console.log("Successfully connected to the newsocket game ");
+	//Waiting for another player to connect (enter matchmaking)
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Disconnected to newsocket game ");
+  });
+
+socket.on("launch_game", () =>
+{
+	console.log("Oponnent found !");
+});
+
+socket.emit('back_test');
+
 //Faire une structure de configuration (longueuer/largeur terrain / barres)
 
 var config = {
