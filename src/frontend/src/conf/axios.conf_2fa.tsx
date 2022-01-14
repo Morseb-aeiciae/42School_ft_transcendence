@@ -3,10 +3,10 @@ import axios, { AxiosResponse } from "axios";
 // import AuthContext from "../context";
 
 const configHeaders = {
+  "Access-Control-Allow-Origin": "*",
   // "content-type": "application/json",
   // Accept: "*/*",
   // "Access-Control-Max-Age": 12,
-  // "Access-Control-Allow-Origin": "*",
   // "Access-Control-Allow-Headers":
   //   "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
   // "Access-Control-Allow-Credentials": "true",
@@ -16,7 +16,7 @@ const configHeaders = {
 export const api2fa = axios.create({
   baseURL: "http://localhost:3001/2fa",
   headers: configHeaders,
-  timeout: 30000,
+  timeout: 3000,
 });
 
 /**********************************************/

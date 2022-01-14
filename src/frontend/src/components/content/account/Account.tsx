@@ -83,7 +83,7 @@ const Account = () => {
         break;
     }
     set2fa(0);
-  }, [twofa]);
+  }, [twofa, context, user]);
 
   // console.log("account :: ", user);
 

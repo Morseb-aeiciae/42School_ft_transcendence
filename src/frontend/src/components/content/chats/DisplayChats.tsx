@@ -172,7 +172,7 @@ const Messages = (props: any) => {
         // setMsg(msgs);
 
         setTimeout(function () {
-          setMsg(response.data);
+          setMsg(msgs);
         }, 100);
       })
       .catch((err: any) => {

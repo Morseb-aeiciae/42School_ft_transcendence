@@ -1,7 +1,7 @@
-import { useContext } from "react";
+// import { useContext } from "react";
 // import { Formik, FormikHelpers } from "formik";
 // import apiUsers from "../../conf/axios.conf";
-import AuthContext from "../../context";
+// import AuthContext from "../../context";
 
 /**********************************************/
 /*          MODAL INTERFACE                   */
@@ -100,7 +100,7 @@ import AuthContext from "../../context";
 // };
 
 const SignInModal = () => {
-  const context = useContext(AuthContext);
+  // const context = useContext(AuthContext);
 
   // const submit = (values: any, action: FormikHelpers<any>) => {
   //   apiUsers

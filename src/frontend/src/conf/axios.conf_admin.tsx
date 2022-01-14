@@ -7,7 +7,6 @@ const configHeaders = {
   Accept: "*/*",
   "Access-Control-Max-Age": 12,
   "Access-Control-Allow-Origin": "*",
-  // "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Headers":
     "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
   "Access-Control-Allow-Credentials": "true",
