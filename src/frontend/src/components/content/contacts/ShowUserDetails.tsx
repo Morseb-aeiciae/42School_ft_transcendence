@@ -36,13 +36,13 @@ const ShowUserDetails = (props: any) => {
         });
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log("ShowUserDetails:", err);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       });
   }, [R, target.id, userId]);
 

@@ -11,6 +11,7 @@ import {
   Body,
   UnauthorizedException,
   ValidationPipe,
+  Get,
 } from '@nestjs/common';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
 import { Response, Request } from 'express';
@@ -22,6 +23,7 @@ import { UserService } from 'src/user/user.service';
 import { TwoFactorAuthenticationCodeDto } from 'src/models/TwoFactorAuthenticationCodeDto';
 import { AuthService } from 'src/auth/auth.service';
 import { authenticator } from 'otplib';
+import JwtTwoFactorGuard from '../guard/jwt.TwoAuth.guard';
 
 @Controller('2fa')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -36,7 +38,7 @@ export class TwoFactorAuthenticationController {
   @UseGuards(JwtAuthGuard)
   // async register(@Res() response: Response, @Req() request: RequestWithUser) {
   async register(@Req() request: RequestWithUser) {
-    const { otpauthUrl } =
+    const otpauthUrl =
       await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(
         request.user,
       );
@@ -66,4 +68,11 @@ export class TwoFactorAuthenticationController {
     const tab = { user, accessToken };
     return tab;
   }
+  
+  @Get("turnOffTwoFa")
+  @UseGuards(JwtTwoFactorGuard)
+  TurnOffTwoFa(@Req() request: RequestWithUser) {
+    return this.twoFactorAuthenticationService.turnOffTwoFactorAuthentication(request.user.id); 
+  }
+
 }

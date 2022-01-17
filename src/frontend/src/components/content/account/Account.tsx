@@ -4,6 +4,7 @@ import { Formik, FormikHelpers } from "formik";
 import { apiUser } from "../../../conf/axios.conf";
 import * as Yup from "yup";
 import TwoFA from "../../utils/Pages/TwoFA";
+import { api2fa } from "../../../conf/axios.conf_2fa";
 
 /******************************************/
 //  Error msg from form (Yup)
@@ -69,13 +70,12 @@ const Account = () => {
         settwoFA(true);
         break;
       case 2:
-        apiUser
+        api2fa
           .get("/turnOffTwoFa")
           .then((response: any) => {
-            context.updateUser(true, {
-              ...user,
-              isTwoFactorAuthenticationEnabled: false,
-            });
+            localStorage.setItem("token", response.data.token.accessToken);
+
+            context.updateUser(true, response.data.user);
           })
           .catch((err: any) => {
             console.log("AdminPanel:", err);
@@ -84,8 +84,6 @@ const Account = () => {
     }
     set2fa(0);
   }, [twofa, context, user]);
-
-  // console.log("account :: ", user);
 
   if (twoFA) return <TwoFA />;
   return (

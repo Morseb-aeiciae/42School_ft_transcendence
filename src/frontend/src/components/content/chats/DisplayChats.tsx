@@ -46,7 +46,7 @@ const MessageBar = (props: any) => {
   useEffect(() => {
     setTimeout(function () {
       setR(Math.random());
-    }, 500);
+    }, 200);
     apiChatAdmin
       .get(`/getAdminInfo/${props.chatId}`)
       .then((response: any) => {
@@ -223,13 +223,13 @@ const FetchChat = (props: any) => {
         });
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       });
 
     apiChat
@@ -238,7 +238,7 @@ const FetchChat = (props: any) => {
         setChat(response.data);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log(`Chat ${props.chatId}:`, err);

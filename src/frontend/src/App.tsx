@@ -202,14 +202,14 @@ const App = () => {
           setData(response.data);
           setTimeout(function () {
             setLoading(false);
-          }, 500);
+          }, 100);
         })
         .catch((err: any) => {
           localStorage.clear();
           setLog(false);
           setTimeout(function () {
             setLoading(false);
-          }, 500);
+          }, 100);
         });
     } else {
       setLoading(false);

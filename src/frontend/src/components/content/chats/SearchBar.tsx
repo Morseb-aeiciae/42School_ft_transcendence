@@ -41,13 +41,13 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
         if (response.data) setChat(true);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log("Chats:", err);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       });
   }, [user, chat.id]);
 

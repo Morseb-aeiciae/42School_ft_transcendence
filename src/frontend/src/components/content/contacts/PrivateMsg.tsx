@@ -96,7 +96,7 @@ const FetchChat = (props: any) => {
         setChat(response.data);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log(`Chat ${props.chatId}:`, err);
@@ -161,14 +161,14 @@ const PrivateMsg = (props: any) => {
               console.log("PrivateMsg:", err);
               setTimeout(function () {
                 setLoading(false);
-              }, 500);
+              }, 200);
             });
         } else {
           setChat(response.data.id);
         }
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((e: any) => {
         console.log("PrivateMsg", e);

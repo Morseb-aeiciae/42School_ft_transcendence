@@ -93,13 +93,13 @@ const Users = (props: any) => {
         setUsers(response.data);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log("AdminPanel:", err);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       });
   }, [reload]);
 

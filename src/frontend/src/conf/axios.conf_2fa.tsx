@@ -4,13 +4,13 @@ import axios, { AxiosResponse } from "axios";
 
 const configHeaders = {
   "Access-Control-Allow-Origin": "*",
-  // "content-type": "application/json",
-  // Accept: "*/*",
-  // "Access-Control-Max-Age": 12,
-  // "Access-Control-Allow-Headers":
-  //   "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
-  // "Access-Control-Allow-Credentials": "true",
-  // "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+  "content-type": "application/json",
+  Accept: "*/*",
+  "Access-Control-Max-Age": 12,
+  "Access-Control-Allow-Headers":
+    "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
+  "Access-Control-Allow-Credentials": "true",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
 export const api2fa = axios.create({

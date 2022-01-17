@@ -317,7 +317,7 @@ const UpdatePwd = (props: any) => {
         });
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
@@ -339,7 +339,7 @@ const UpdatePwd = (props: any) => {
         console.log("Chats:", err);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
         action.setSubmitting(false);
       });
   };
@@ -497,7 +497,7 @@ const ManageUsersChat = (props: any) => {
         console.log("Chat:", err);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       });
 
     apiChat

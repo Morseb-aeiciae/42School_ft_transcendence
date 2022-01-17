@@ -9,7 +9,7 @@ const Duel = (props: any) => {
   useEffect(() => {
     setTimeout(function () {
       setLoading(false);
-    }, 500);
+    }, 200);
   }, []);
 
   if (isLoading) {

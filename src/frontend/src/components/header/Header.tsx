@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Status from "./Status";
 import AuthContext from "../../context";
 import { SignInModal, SignOutModal } from "../auth";
+import { apiAuth } from "../../conf/axios.conf_auth";
 
 const Header = () => {
   const context = useContext(AuthContext);
@@ -9,16 +10,18 @@ const Header = () => {
 
   useEffect(() => {
     if (logout) {
+      //   apiAuth
+      //     .get("/logout")
+      //     .then((response: any) => {
       localStorage.clear();
       setLogout(false);
-      context.updateToken("");
-      // apiAuth
-      //   .get("/logout")
-      //   .then((response: any) => {
-      //   })
-      //   .catch((err: any) => {
-      //     console.log("Auth:", err);
-      //   });
+      setTimeout(() => {
+        context.updateToken("");
+      }, 100);
+      //     })
+      //     .catch((err: any) => {
+      //       console.log("Auth:", err);
+      //     });
     }
   }, [logout, context]);
 

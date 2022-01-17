@@ -52,13 +52,13 @@ const UsersRegister = (props: any) => {
         setUsers(response.data);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
         setTimeout(function () {
           setLoading(false);
-        }, 500);
+        }, 200);
       });
   }, []);
 
