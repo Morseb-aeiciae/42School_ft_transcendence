@@ -1,5 +1,5 @@
-import { send_score } from '.';
-import { change_ball_color } from '.';
+// import { send_score } from '.';
+// import { change_ball_color } from '.';
 
 var positions = {
 	paddle_l_pos_z : 0,
@@ -137,7 +137,7 @@ export function update_ball()
 
 			if (positions.ball_speed < positions.SpeedLimit)
 				positions.ball_speed += positions.SpeedIncrease;
-			change_ball_color(0);
+			// change_ball_color(0);
 		}
 		positions.RightHit = 0;
 	}
@@ -165,7 +165,7 @@ export function update_ball()
 
 		if (positions.ball_speed < positions.SpeedLimit)
 			positions.ball_speed += positions.SpeedIncrease;
-		change_ball_color(1);
+		// change_ball_color(1);
 		}
 		positions.LeftHit = 0;
 	}
@@ -184,14 +184,14 @@ export function update_ball()
 	if (positions.ball_pos_x <= positions.arena_left_pos)
 	{
 		positions.RightScore += 1;
-		send_score(positions.LeftScore, positions.RightScore);
+		// send_score(positions.LeftScore, positions.RightScore);
 		resetParams(0);
 	}
 
 	if (positions.ball_pos_x >= positions.arena_right_pos)
 	{
 		positions.LeftScore += 1;
-		send_score(positions.LeftScore, positions.RightScore);
+		// send_score(positions.LeftScore, positions.RightScore);
 		resetParams(1);
 	}
 };
