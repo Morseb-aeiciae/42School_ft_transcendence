@@ -234,11 +234,30 @@ const onKeyDown = function ( event: any )
 	switch ( event.code )
 	{
 		case 'KeyW':
-			controls.Wkey = true;
-			break;
+			{
+				if (controls.Wkey == false)
+				{
+					if (controls.Skey == false)
+						socket.emit('up_paddle');
+					else
+					socket.emit('stop_paddle');
+
+					controls.Wkey = true;
+				}
+				break;
+			}
 		case 'KeyS':
-			controls.Skey = true;
-			break;
+			{
+				if (controls.Skey == false)
+				{
+					if (controls.Wkey == false)
+						socket.emit('down_paddle');
+					else
+						socket.emit('stop_paddle');
+					controls.Skey = true;
+				}
+				break;
+			}
 		case 'ArrowUp':
 			controls.UpArrow = true;
 			break;
@@ -262,12 +281,23 @@ const onKeyUp = function ( event: any )
 	switch ( event.code )
 	{
 		case 'KeyW':
-			controls.Wkey = false;
-			break;
+			{
+				if (controls.Skey == false)
+					socket.emit('stop_paddle');
+				else
+					socket.emit('down_paddle');
+				controls.Wkey = false;
+				break;
+			}
 		case 'KeyS':
-			controls.Skey = false;
-			break;
-
+			{	
+				if (controls.Wkey == false)
+					socket.emit('stop_paddle');
+				else
+					socket.emit('up_paddle');
+				controls.Skey = false;
+				break;
+			}
 		case 'ArrowUp':
 			controls.UpArrow = false;
 			break;
@@ -413,11 +443,17 @@ const animate = function ()
 	if (controls.UpArrow == true)
 		treat_input_up_r_bar();	
 	if (controls.Wkey == true)
+	{
 		treat_input_up_l_bar();
+		// socket.emit('W_press');
+	}
 	if (controls.DownArrow == true)
 		treat_input_down_r_bar();
 	if (controls.Skey == true)
+	{
+		// socket.emit('S_press');
 		treat_input_down_l_bar();
+	}
 
 	bloomComposer.render();
 	finalComposer.render();

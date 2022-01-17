@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
 import { createUserDTO } from 'src/models/user.models';
 import { UserService } from 'src/user/user.service';
@@ -20,6 +20,8 @@ export interface RegistrationStatus {
   success: boolean;
   message: string;
 }
+
+var compt = 0;
 
 @Controller('auth')
 export class AuthController {
@@ -36,15 +38,28 @@ export class AuthController {
   }
 
   @Get('redirec')
-  @UseGuards(SchoolAuthGuard)
+//   @UseGuards(SchoolAuthGuard)
   async redirectSchool(
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
   ) {
+
+	let username, mail;
+
+	username = "user_" + compt;
+	mail = "mail_" + compt + "@gmail.com";
+	
+	compt += 1;
+	
     return await this.authService.login(
-      req.user['username'],
-      req.user['email'],
-    );
+		username,
+		mail,
+	  );
+	
+    // return await this.authService.login(
+    //   req.user['username'],
+    //   req.user['email'],
+    // );
   }
 
   @UseGuards(JwtAuthGuard)

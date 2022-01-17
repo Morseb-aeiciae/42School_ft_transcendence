@@ -14,9 +14,30 @@ const Auth = () => {
   const [Twofa, set2fa] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
+//   useEffect(() => {
+//     apiAuth
+//       .get(`/redirec`)
+//       .then((response: any) => {
+//         setUp(true);
+//         // if (response.data.isBan) {
+//         //   setBan(true);
+//         // } else {
+//         //   setBan(false);
+//         context.updateToken(response.data.token.accessToken);
+//         context.updateUser(true, response.data.user);
+//         // }
+//       })
+//       .catch((err: any) => {
+//         setDown(true);
+//         console.log("Auth:", err);
+//       });
+//   }, [code, context, ban]);
+
+
   useEffect(() => {
     apiAuth
-      .get(`/redirec${code}`)
+	  .get(`/redirec`)
+	//   .get(`/redirec${code}`)
       .then((response: any) => {
         setUp(true);
         setLoading(false);
