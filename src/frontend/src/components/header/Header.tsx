@@ -15,9 +15,8 @@ const Header = () => {
       //     .then((response: any) => {
       localStorage.clear();
       setLogout(false);
-      setTimeout(() => {
-        context.updateToken("");
-      }, 100);
+      context.updateToken("");
+      context.updateUser(false, null);
       //     })
       //     .catch((err: any) => {
       //       console.log("Auth:", err);
@@ -52,10 +51,7 @@ const Header = () => {
               <i
                 className="fas fa-sign-out-alt"
                 onClick={() => {
-                  context.updateUser(false, null);
-                  context.changeContent("");
                   setLogout(true);
-                  // return <Redirect to={"/home"} />;
                 }}
               ></i>
             </>

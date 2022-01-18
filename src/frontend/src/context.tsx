@@ -4,13 +4,13 @@ import { AppState } from "./App";
 const initialContext: AppState = {
   auth: { isLoggedIn: false, user: null },
   users: [],
-  changeContent: (string) => {},
-  changeStatus: (string) => {},
-  changeRender: (number) => {},
   updateUser: (b, user) => {},
   status: "noConnected",
+  changeStatus: (string) => {},
   content: "none",
-  switchRender: 0,
+  changeContent: (string) => {},
+  // switchRender: 0,
+  // changeRender: (number) => {},
   token: "",
   updateToken: (token) => {},
 };
