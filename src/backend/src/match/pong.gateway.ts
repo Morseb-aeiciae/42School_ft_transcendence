@@ -35,13 +35,10 @@ export class PongGateway
 
 	handleConnection(client: Socket)
 	{
-		// client.join(client.id);
 		users_in_matchmaking.push(client);
 		console.log (client.id + " has join the matchmaking");
 		users_key_status.set(client.id, 0);
 		return;
-		//Changer le status de l'user pour chercher une game
-		//Le recontacter quand une autre personne est disponible
 	};
 	  
 	handleDisconnect(client: Socket)
@@ -69,25 +66,22 @@ export class PongGateway
 	async up_paddle(client: Socket)
 	{
 		users_key_status.set(client.id, 1);
-		// console.log(client.id + users_key_status.get(client.id));
 	}
 
 	@SubscribeMessage('down_paddle')
 	async down_paddle(client: Socket)
 	{
 		users_key_status.set(client.id, -1);
-		// console.log(client.id + users_key_status.get(client.id));
 	}
 
 	@SubscribeMessage('stop_paddle')
 	async stop_paddle(client: Socket)
 	{
 		users_key_status.set(client.id, 0);
-		// console.log(client.id + users_key_status.get(client.id));
 	}
 
 	@SubscribeMessage('launch_game')
-	async launch_game(client: Socket)
+	async launch_game(client: Socket, config)
 	{
 		console.log(client.id + " trys to launch game");
 		if (users_in_matchmaking.length >= 2)
@@ -106,8 +100,6 @@ export class PongGateway
 
 			players[0].join(client.id);
 			players[1].join(client.id);
-			
-			this.server.to(client.id).emit("launch_game");
 
 
 			var positions = {
@@ -135,142 +127,128 @@ export class PongGateway
 				LeftScore : 0
 			}
 
-			positions.paddle_l_pos_z = 0;
-			positions.paddle_r_pos_z = 0;
-			positions.paddle_l_pos_x = - (80 / 2 - 5);
-			positions.paddle_r_pos_x = 80 / 2 - 5;
-			positions.paddle_h_2 = 5;
-			positions.arena_top_pos = - 25 + 1;
-			positions.arena_bot_pos = 25 - 1;
-			positions.arena_left_pos = -40 + 1;
-			positions.arena_right_pos = 40 - 1;
+			positions.paddle_l_pos_x = config.plx;
+			positions.paddle_r_pos_x = config.prx;
+			positions.paddle_h_2 = config.ph_2;
+			positions.arena_top_pos = config.at;
+			positions.arena_bot_pos = config.ab;
+			positions.arena_left_pos = config.al;
+			positions.arena_right_pos = config.ar;
 
-			// players[0].emit("launch_game");
-			// players[1].emit("launch_game");
-
-		while (1)
-		{
-			await sleep(10);
-			//Update paddle pos according to players imput
-			if (users_key_status.get(players[1].id) == 1 && positions.paddle_r_pos_z - positions.paddle_h_2 > positions.arena_top_pos + 0.1)
+			while (1)
 			{
-				positions.paddle_r_pos_z -= 0.5;
-			}
-
-			else if (users_key_status.get(players[1].id) == -1 && positions.paddle_r_pos_z + positions.paddle_h_2 < positions.arena_bot_pos - 0.1)
-			{
-				positions.paddle_r_pos_z += 0.5;
-			}
-
-			if (users_key_status.get(players[0].id) == 1 && positions.paddle_l_pos_z - positions.paddle_h_2 > positions.arena_top_pos + 0.1)
-			{
-				positions.paddle_l_pos_z -= 0.5;
-			}
-
-			else if (users_key_status.get(players[0].id) == -1 && positions.paddle_l_pos_z + positions.paddle_h_2 < positions.arena_bot_pos - 0.1)
-			{
-				positions.paddle_l_pos_z += 0.5;
-			}
-
-			positions.ball_pos_x += Math.cos(positions.ball_angle) * positions.ball_speed;
-			positions.ball_pos_z += (Math.sin(positions.ball_angle) * -1) * positions.ball_speed;
-		
-			this.server.to(client.id).emit("update_positions", {bpx: positions.ball_pos_x, bpz: positions.ball_pos_z, lpz: positions.paddle_l_pos_z, rpz: positions.paddle_r_pos_z})
-
-			positions.PosDiff = 0;
-		
-			if (positions.ball_pos_x >= positions.paddle_l_pos_x - 1 && positions.ball_pos_x <= positions.paddle_l_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_l_pos_z + positions.paddle_h_2 && positions.ball_pos_z + 0.5 >= positions.paddle_l_pos_z - positions.paddle_h_2))
-			{
-				if (positions.LeftHit == 0)
+				await sleep(10);
+				//Update paddle pos according to players imput
+				if (users_key_status.get(players[1].id) == 1 && positions.paddle_r_pos_z - positions.paddle_h_2 > positions.arena_top_pos + 0.1)
 				{
-					positions.LeftHit = 1;
-					positions.PosDiff = positions.ball_pos_z - positions.paddle_l_pos_z;
+					positions.paddle_r_pos_z -= 0.5;
+				}
+
+				else if (users_key_status.get(players[1].id) == -1 && positions.paddle_r_pos_z + positions.paddle_h_2 < positions.arena_bot_pos - 0.1)
+				{
+					positions.paddle_r_pos_z += 0.5;
+				}
+
+				if (users_key_status.get(players[0].id) == 1 && positions.paddle_l_pos_z - positions.paddle_h_2 > positions.arena_top_pos + 0.1)
+				{
+					positions.paddle_l_pos_z -= 0.5;
+				}
+
+				else if (users_key_status.get(players[0].id) == -1 && positions.paddle_l_pos_z + positions.paddle_h_2 < positions.arena_bot_pos - 0.1)
+				{
+					positions.paddle_l_pos_z += 0.5;
+				}
+
+				positions.ball_pos_x += Math.cos(positions.ball_angle) * positions.ball_speed;
+				positions.ball_pos_z += (Math.sin(positions.ball_angle) * -1) * positions.ball_speed;
 		
-					positions.ball_angle = Math.PI - positions.ball_angle;
+				this.server.to(client.id).emit("update_positions", {bpx: positions.ball_pos_x, bpz: positions.ball_pos_z, lpz: positions.paddle_l_pos_z, rpz: positions.paddle_r_pos_z})
+
+				positions.PosDiff = 0;
+		
+				if (positions.ball_pos_x >= positions.paddle_l_pos_x - 1 && positions.ball_pos_x <= positions.paddle_l_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_l_pos_z + positions.paddle_h_2 && positions.ball_pos_z + 0.5 >= positions.paddle_l_pos_z - positions.paddle_h_2))
+				{
+					if (positions.LeftHit == 0)
+					{
+						positions.LeftHit = 1;
+						positions.PosDiff = positions.ball_pos_z - positions.paddle_l_pos_z;
+					
+						positions.ball_angle = Math.PI - positions.ball_angle;
+						if (positions.ball_angle > PI_s.M_2PI)
+							positions.ball_angle -= PI_s.M_2PI;
+						else if (positions.ball_angle < 0)
+							positions.ball_angle += PI_s.M_2PI;
+						if (positions.ball_angle - (positions.PosDiff/30) < PI_s.M_PI_2 || positions.ball_angle - (positions.PosDiff/30) > PI_s.M_3PI_2)
+							positions.ball_angle -= positions.PosDiff/30;
+					
+						if (positions.ball_angle > PI_s.M_PI_2 - 0.15 && positions.ball_angle < PI_s.M_3PI_2 - 0.5)
+							positions.ball_angle = PI_s.M_PI_2 - 0.15
+						else if (positions.ball_angle < PI_s.M_3PI_2 + 0.15 && positions.ball_angle > PI_s.M_PI_2 + 0.5)
+							positions.ball_angle = PI_s.M_3PI_2 + 0.15
+					
+						if (positions.ball_speed < positions.SpeedLimit)
+							positions.ball_speed += positions.SpeedIncrease;
+							this.server.to(client.id).emit("change_ball_color", 0);
+					}
+					positions.RightHit = 0;
+				}
+		
+				//Hit right bar
+				if (positions.ball_pos_x >= positions.paddle_r_pos_x - 1 && positions.ball_pos_x <= positions.paddle_r_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_r_pos_z + positions.paddle_h_2 && positions.ball_pos_z + 0.5 >= positions.paddle_r_pos_z - positions.paddle_h_2))
+				{
+					if (positions.RightHit == 0)
+					{
+					positions.RightHit = 1;
+					positions.PosDiff = positions.ball_pos_z - positions.paddle_r_pos_z;
+					
+					positions.ball_angle = PI_s.M_PI - positions.ball_angle;
 					if (positions.ball_angle > PI_s.M_2PI)
 						positions.ball_angle -= PI_s.M_2PI;
 					else if (positions.ball_angle < 0)
 						positions.ball_angle += PI_s.M_2PI;
-					if (positions.ball_angle - (positions.PosDiff/30) < PI_s.M_PI_2 || positions.ball_angle - (positions.PosDiff/30) > PI_s.M_3PI_2)
-						positions.ball_angle -= positions.PosDiff/30;
-		
-					if (positions.ball_angle > PI_s.M_PI_2 - 0.15 && positions.ball_angle < PI_s.M_3PI_2 - 0.5)
-						positions.ball_angle = PI_s.M_PI_2 - 0.15
-					else if (positions.ball_angle < PI_s.M_3PI_2 + 0.15 && positions.ball_angle > PI_s.M_PI_2 + 0.5)
-						positions.ball_angle = PI_s.M_3PI_2 + 0.15
-		
+					if (positions.ball_angle + (positions.PosDiff/30) > PI_s.M_PI_2 && positions.ball_angle + (positions.PosDiff/30) < PI_s.M_3PI_2)
+						positions.ball_angle += positions.PosDiff/30;
+					
+					if (positions.ball_angle < PI_s.M_PI_2 + 0.15)
+						positions.ball_angle = PI_s.M_PI_2 + 0.15;
+					else if (positions.ball_angle > PI_s.M_3PI_2 - 0.15)
+						positions.ball_angle = PI_s.M_3PI_2 - 0.15;
+					
 					if (positions.ball_speed < positions.SpeedLimit)
 						positions.ball_speed += positions.SpeedIncrease;
-						this.server.to(client.id).emit("change_ball_color", 0);
+						this.server.to(client.id).emit("change_ball_color", 1);
+					}
+					positions.LeftHit = 0;
 				}
-				positions.RightHit = 0;
-			}
-		
-			//Hit right bar
-			if (positions.ball_pos_x >= positions.paddle_r_pos_x - 1 && positions.ball_pos_x <= positions.paddle_r_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_r_pos_z + positions.paddle_h_2 && positions.ball_pos_z + 0.5 >= positions.paddle_r_pos_z - positions.paddle_h_2))
-			{
-				if (positions.RightHit == 0)
+
+				//Top and bot hit conditions
+				if (positions.ball_pos_z <= positions.arena_top_pos || positions.ball_pos_z >= positions.arena_bot_pos)
 				{
-				positions.RightHit = 1;
-				positions.PosDiff = positions.ball_pos_z - positions.paddle_r_pos_z;
-		
-				positions.ball_angle = PI_s.M_PI - positions.ball_angle;
-				if (positions.ball_angle > PI_s.M_2PI)
-					positions.ball_angle -= PI_s.M_2PI;
-				else if (positions.ball_angle < 0)
-					positions.ball_angle += PI_s.M_2PI;
-				if (positions.ball_angle + (positions.PosDiff/30) > PI_s.M_PI_2 && positions.ball_angle + (positions.PosDiff/30) < PI_s.M_3PI_2)
-					positions.ball_angle += positions.PosDiff/30;
-		
-				if (positions.ball_angle < PI_s.M_PI_2 + 0.15)
-					positions.ball_angle = PI_s.M_PI_2 + 0.15;
-				else if (positions.ball_angle > PI_s.M_3PI_2 - 0.15)
-					positions.ball_angle = PI_s.M_3PI_2 - 0.15;
-		
-				if (positions.ball_speed < positions.SpeedLimit)
-					positions.ball_speed += positions.SpeedIncrease;
-					this.server.to(client.id).emit("change_ball_color", 1);
+					positions.ball_angle = PI_s.M_2PI - positions.ball_angle;
+					if (positions.ball_angle > PI_s.M_2PI)
+						positions.ball_angle -= PI_s.M_2PI;
+					else if (positions.ball_angle < 0)
+						positions.ball_angle += PI_s.M_2PI;
 				}
-				positions.LeftHit = 0;
-			}
-
-			//Top and bot hit conditions
-			if (positions.ball_pos_z <= positions.arena_top_pos || positions.ball_pos_z >= positions.arena_bot_pos)
-			{
-				positions.ball_angle = PI_s.M_2PI - positions.ball_angle;
-				if (positions.ball_angle > PI_s.M_2PI)
-					positions.ball_angle -= PI_s.M_2PI;
-				else if (positions.ball_angle < 0)
-					positions.ball_angle += PI_s.M_2PI;
-			}
 		
-			//Goal conditions
-			if (positions.ball_pos_x <= positions.arena_left_pos)
-			{
-				positions.RightScore += 1;
-				// send_score(positions.LeftScore, positions.RightScore);
-				this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
-				resetParams(0, positions);
-				// resetParams(0);
-			}
+				//Goal conditions
+				if (positions.ball_pos_x <= positions.arena_left_pos)
+				{
+					positions.RightScore += 1;
+					this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
+					resetParams(0, positions);
+				}
 		
-			if (positions.ball_pos_x >= positions.arena_right_pos)
-			{
-				positions.LeftScore += 1;
-				// send_score(positions.LeftScore, positions.RightScore);
-				this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
-				resetParams(1, positions);
-				// resetParams(1);
-			}
-
-			//Recupération input : users_key_status.get(players[0]);			
-			//Lancer la game ICI
+				if (positions.ball_pos_x >= positions.arena_right_pos)
+				{
+					positions.LeftScore += 1;
+					this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
+					resetParams(1, positions);
+				}
 			}
 		}
-	}
-
-
-}
+	};
+};
 
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
