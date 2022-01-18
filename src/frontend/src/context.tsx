@@ -9,8 +9,6 @@ const initialContext: AppState = {
   changeStatus: (string) => {},
   content: "none",
   changeContent: (string) => {},
-  // switchRender: 0,
-  // changeRender: (number) => {},
   token: "",
   updateToken: (token) => {},
 };

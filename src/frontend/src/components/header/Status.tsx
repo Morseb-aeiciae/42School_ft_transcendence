@@ -10,8 +10,8 @@ export default class Header extends Component<Props> {
     let content: JSX.Element | React.ComponentClass;
 
     switch (this.context.status) {
-      case "noConnected": {
-        content = <div>noConnected</div>;
+      case "offline": {
+        content = <div>offline</div>;
         break;
       }
       case "idle": {
@@ -27,7 +27,7 @@ export default class Header extends Component<Props> {
         break;
       }
       default: {
-        content = <div>noConnected</div>;
+        content = <div>offline</div>;
       }
     }
 

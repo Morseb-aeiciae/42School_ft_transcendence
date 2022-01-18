@@ -88,15 +88,6 @@ export default class CreateChat extends Component<Props> {
               {errors.name && touched.name ? (
                 <div className="text-danger">{errors.name}</div>
               ) : null}
-              {/* <select
-                name="type"
-                className="mr-2 form-control w-25"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              >
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-              </select> */}
             </div>
             <div className="d-flex flex-row p-1">
               <div className="d-flex flex-row flex-grow-1 align-items-end justify-content-evenly">

@@ -29,21 +29,3 @@ const ChatPeek = (props: any) => {
 };
 
 export default ChatPeek;
-/*
-
- apiAdmin
-    .post("/giveChatRights", { userId: actionUser.id })
-    .then((response: any) => {})
-    .catch((err: any) => {
-      console.log("AdminPanel:", err);
-    });
-
-    
-apiAdmin
-    .post("/removeChatRights", { userId: actionUser.id })
-    .then((response: any) => {})
-    .catch((err: any) => {
-      console.log("AdminPanel:", err);
-    });   
-
-*/

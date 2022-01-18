@@ -1,6 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-// import { useContext } from "react";
-// import AuthContext from "../context";
 
 const configHeaders = {
   "content-type": "application/json",

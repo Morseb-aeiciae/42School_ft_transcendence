@@ -50,7 +50,6 @@ const displayChatCard = (props: any) => {
 };
 
 const Chats = (props: any) => {
-  // console.log("Admin panel : user ", props);
 
   const [chats, setChats] = useState([]);
   const [isLoading, setLoading] = useState(true);

@@ -58,8 +58,6 @@ export interface AppState {
   changeStatus: (newStatus: string) => any;
   content: string;
   changeContent: (newStatus: string) => any;
-  // switchRender: number;
-  // changeRender: (newStatus: number) => any;
   token: string;
   updateToken: (token: string) => any;
 }
@@ -81,8 +79,6 @@ class AppV1 extends React.Component<AppProps> {
       changeStatus: this.changeStatus,
       content: "",
       changeContent: this.changeContent,
-      // switchRender: 0,
-      // changeRender: this.changeRender,
       token: "",
       updateToken: this.updateToken,
     };
@@ -119,22 +115,6 @@ class AppV1 extends React.Component<AppProps> {
   };
 
   render() {
-    // if (this.state.switchRender === 1) {
-    //   return (
-    //     <Router>
-    //       <div className="App d-flex flex-column">
-    //         <AuthContext.Provider value={this.state}>
-    //           <Header />
-    //           <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
-    //             <SignInErr />
-    //           </div>
-    //           <Footer />
-    //         </AuthContext.Provider>
-    //       </div>
-    //     </Router>
-    //   );
-    // } else
-    // if (this.state.switchRender === 0) {
     return (
       <Router>
         <div className="App d-flex flex-column">
@@ -154,7 +134,6 @@ class AppV1 extends React.Component<AppProps> {
                   }}
                 />
                 <Route path="/home" sensitive={true} component={Home} />
-                {/* <Route path="/login" sensitive={true} component={Login} /> */}
                 <Route path="/auth" sensitive={true} component={Auth} />
                 <Route path="/2fa" sensitive={true} component={TwoFA} />
                 <ProtectedRoute
@@ -199,8 +178,6 @@ const App = () => {
       apiUser
         .get("/findUserToken")
         .then((response: any) => {
-          console.log("aa");
-
           setLog(true);
           setData(response.data);
           setTimeout(function () {
