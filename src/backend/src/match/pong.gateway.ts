@@ -55,6 +55,12 @@ export class PongGateway
 		// delete users_in_matchmaking[index_of_client];
 	};
 
+	@SubscribeMessage('send_username')
+	async get_username(client: Socket, user_id)
+	{
+		console.log("USER ID = " + user_id);
+	}
+
 	@SubscribeMessage('up_paddle')
 	async up_paddle(client: Socket)
 	{
@@ -77,8 +83,6 @@ export class PongGateway
 	async launch_game(client: Socket, config)
 	{
 		console.log(client.id + " trys to launch game");
-		console.log(config.token);
-		// console.log("cookie : " + client.handshake.headers.cookie);
 		if (users_in_matchmaking.length >= 2)
 		{
 			var players: Socket[];

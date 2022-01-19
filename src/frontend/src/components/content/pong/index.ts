@@ -26,35 +26,6 @@ import * as io from 'socket.io-client';
 
 import { apiUser } from "./../../../conf/axios.conf";
 
-var token = localStorage.getItem("token");
-
-console.log(token);
-
-var login: any;
-
-async function get_login ()
-{
-	// var user: any = await apiUser.get("/findUserToken");
-
-
-	var user: any = apiUser.get("/findUserToken", {
-	  headers: {
-		Authorization: "Bearer " + token,
-	  },})
-	 .then((response: any) => {
-		console.log("Login ok")
-	 })
-	 .catch((err: any) => {
-	   console.log("Login fail");
-	 });
-
-	console.log(user.data.login);
-
-	return (user.data.login);
-};
-
-login = get_login();
-
 let socket: any;
 
 socket = io.connect('http://localhost:3001/', {withCredentials: true});
@@ -67,6 +38,33 @@ socket.on("connect", () => {
 socket.on("disconnect", () => {
   console.log("Disconnected to newsocket game ");
 });
+
+var token = localStorage.getItem("token");
+
+console.log(token);
+
+var login: any;
+
+async function get_login ()
+{
+	var user: any = await apiUser.get("/findUserToken");
+
+	// var user: any = await apiUser.get("/findUserToken")
+	//  .then((response: any) => {
+	// 	console.log("Login ok");
+	// 	socket.emit('send_username', user.data.login);
+	//  })
+	//  .catch((err: any) => {
+	//    console.log("Login fail");
+	//  });
+
+	// console.log(user.data.login);
+	
+	socket.emit('send_username', user.data.login);
+	return (user.data.login);
+};
+
+login = get_login();
 
 var config = {
 	arena_w : 100,
@@ -83,7 +81,7 @@ config.paddle_h_2 = config.paddle_h / 2;
 config.arena_h_2 = config.arena_h / 2;
 config.arena_w_2 = config.arena_w / 2;
 
-socket.emit('launch_game', {token: token, plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
+socket.emit('launch_game', {plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
 							ab: config.arena_h_2 - 1, al: - config.arena_w_2 + 1, ar: config.arena_w_2 - 1});
 
 var canResetCam = false;
