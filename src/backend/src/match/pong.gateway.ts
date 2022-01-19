@@ -2,8 +2,6 @@ import { SerializeOptions } from "@nestjs/common";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from "socket.io";
 
-let game_room = "placeHolder";
-
 var users_in_matchmaking : Socket [];
 
 const users_key_status = new Map();
@@ -38,9 +36,10 @@ export class PongGateway
 		users_in_matchmaking.push(client);
 		console.log (client.id + " has join the matchmaking");
 		users_key_status.set(client.id, 0);
+
 		return;
 	};
-	  
+
 	handleDisconnect(client: Socket)
 	{
 		let index_of_client: number;
@@ -49,18 +48,12 @@ export class PongGateway
 		// client.leave(client.id);
 		index_of_client = users_in_matchmaking.indexOf(client);
 
-		users_in_matchmaking.splice(index_of_client, 1); 
+		if (index_of_client != -1)
+			users_in_matchmaking.splice(index_of_client, 1); 
 		console.log(users_in_matchmaking.length);
 		return;	
 		// delete users_in_matchmaking[index_of_client];
 	};
-	  
-	@SubscribeMessage('back_test')
-	async testFct()
-	{
-		console.log("Back function CALLED");
-	};
-
 
 	@SubscribeMessage('up_paddle')
 	async up_paddle(client: Socket)
@@ -84,6 +77,8 @@ export class PongGateway
 	async launch_game(client: Socket, config)
 	{
 		console.log(client.id + " trys to launch game");
+		console.log(config.token);
+		// console.log("cookie : " + client.handshake.headers.cookie);
 		if (users_in_matchmaking.length >= 2)
 		{
 			var players: Socket[];
@@ -102,7 +97,8 @@ export class PongGateway
 			players[1].join(client.id);
 
 
-			var positions = {
+			var positions = 
+			{
 				paddle_l_pos_z : 0,
 				paddle_r_pos_z : 0,
 				paddle_l_pos_x : 0,
@@ -250,9 +246,10 @@ export class PongGateway
 	};
 };
 
-function sleep(ms) {
+function sleep(ms)
+{
 	return new Promise(resolve => setTimeout(resolve, ms));
-  }
+}
 
 function resetParams(x : number, positions: any)
 {

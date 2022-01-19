@@ -37,7 +37,7 @@ performance: {
     maxAssetSize: 512000
 },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.tsx'],
   },
   output: {
     filename: 'bundle.js',
