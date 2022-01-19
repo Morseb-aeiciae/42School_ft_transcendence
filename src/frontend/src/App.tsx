@@ -10,6 +10,7 @@ import {
   ProtectedRoute,
   Loading,
   Auth,
+  Ban,
 } from "./components";
 import AuthContext from "./context";
 import { User } from "./Interfaces";
@@ -23,7 +24,6 @@ import {
 import { RouteComponentProps } from "react-router-dom";
 import { apiUser } from "./conf/axios.conf";
 import TwoFA from "./components/utils/Pages/TwoFA";
-
 //***************************************************** */
 type TParams = { username: string };
 
@@ -136,6 +136,7 @@ class AppV1 extends React.Component<AppProps> {
                 <Route path="/home" sensitive={true} component={Home} />
                 <Route path="/auth" sensitive={true} component={Auth} />
                 <Route path="/2fa" sensitive={true} component={TwoFA} />
+                <Route path="/ban" sensitive={true} component={Ban} />
                 <ProtectedRoute
                   path="/:username"
                   sensitive={true}

@@ -52,7 +52,7 @@ const UserOfChat = (props: any) => {
           adminId: targetId,
         })
         .then((response: any) => {
-          console.log("setAdminResponse", response);
+          // console.log("setAdminResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -69,7 +69,7 @@ const UserOfChat = (props: any) => {
           adminId: targetId,
         })
         .then((response: any) => {
-          console.log("removeAdminResponse", response);
+          // console.log("removeAdminResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -86,7 +86,7 @@ const UserOfChat = (props: any) => {
           adminId: props.userId,
         })
         .then((response: any) => {
-          console.log("muteUserResponse", response);
+          // console.log("muteUserResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -103,7 +103,7 @@ const UserOfChat = (props: any) => {
           adminId: props.userId,
         })
         .then((response: any) => {
-          console.log("unmuteUserResponse", response);
+          // console.log("unmuteUserResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -120,7 +120,7 @@ const UserOfChat = (props: any) => {
           adminId: props.userId,
         })
         .then((response: any) => {
-          console.log("banUserResponse", response);
+          // console.log("banUserResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -137,7 +137,7 @@ const UserOfChat = (props: any) => {
           adminId: props.userId,
         })
         .then((response: any) => {
-          console.log("unbanUserResponse", response);
+          // console.log("unbanUserResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -150,7 +150,7 @@ const UserOfChat = (props: any) => {
       apiChat
         .post("/leaveChat", { userId: targetId, chatId: props.chatId })
         .then((response: any) => {
-          console.log("kickAdmin", response);
+          // console.log("kickAdmin", response);
           props.r(Math.random());
         })
         .catch((err: any) => {

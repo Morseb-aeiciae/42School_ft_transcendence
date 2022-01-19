@@ -7,6 +7,7 @@ import { apiAuth } from "../../conf/axios.conf_auth";
 const Header = () => {
   const context = useContext(AuthContext);
   const [logout, setLogout] = useState(false);
+  const [r, setR] = useState(false);
 
   useEffect(() => {
     if (logout) {
@@ -20,12 +21,14 @@ const Header = () => {
          .then((response: any) => {
           localStorage.clear();
           setLogout(false);
-          context.updateToken("");
           context.updateUser(false, null);
-         })
-         .catch((err: any) => {
-           console.log("Auth:", err);
-         });
+          setTimeout(() => {
+            context.updateToken("");
+          }, 200);
+        })
+        .catch((err: any) => {
+          console.log("Auth:", err);
+        });
     }
   }, [logout, context]);
 

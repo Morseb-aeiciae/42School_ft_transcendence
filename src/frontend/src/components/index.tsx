@@ -5,5 +5,6 @@ export { default as Footer } from "./footer/Footer";
 export { default as Home } from "./utils/Pages/Home";
 export { default as Auth } from "./utils/Pages/Auth";
 export { default as PageNotFound } from "./utils/Pages/PageNotFound";
+export { default as Ban } from "./utils/Pages/Ban";
 export { default as Loading } from "./utils/Loading";
 export { default as ProtectedRoute } from "./utils/ProtectedRoute";

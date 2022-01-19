@@ -33,9 +33,11 @@ export class AuthController {
   ) {}
 
   @Get('login')
-  @UseGuards(SchoolAuthGuard)
-  login() {
-    return;
+  // @UseGuards(SchoolAuthGuard)
+  login(@Res({ passthrough: true }) res: Response) {
+  res.redirect("https://api.intra.42.fr/oauth/authorize?client_id=4b246ff59cfa4b2fa13f340cb680a2eb8c6428afcaf81a92d544f1537680741c&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2F&response_type=code";)
+
+  return;
   }
 
   @Get('redirec')
