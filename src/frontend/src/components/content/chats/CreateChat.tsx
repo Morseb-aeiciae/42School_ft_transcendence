@@ -36,14 +36,9 @@ export default class CreateChat extends Component<Props> {
 
   submit = (values: any, action: any) => {
     const setState = this.props.props;
-    const token = this.context.token;
 
     apiChat
-      .post("/createChat", values, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
+      .post("/createChat", values)
       .then(() => {
         action.setSubmitting(false);
         setTimeout(function () {

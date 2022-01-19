@@ -27,6 +27,12 @@ export class UserService {
   }
 
   async updateUser(data: UpdateUserDTO) {
+    const users = await getRepository(UserEntity)
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username: data.username })
+      .getOne();
+
+    if (users != undefined) return false;
     const user = await this.userRepo.findOne(data.userId);
     return this.userRepo.save({ ...user, ...data });
   }
