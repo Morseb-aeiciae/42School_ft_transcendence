@@ -20,7 +20,6 @@ export interface RegistrationStatus {
   success: boolean;
   message: string;
 }
-import passport from 'passport';
 
 @Controller('auth')
 export class AuthController {
@@ -32,12 +31,12 @@ export class AuthController {
 
   @Get('login')
   // @UseGuards(SchoolAuthGuard)
-  login() {
-    passport.authenticate('local', {
-      successRedirect: 'http://localhost:3000/2fa',
-      // 'https://api.intra.42.fr/oauth/authorize?client_id=4b246ff59cfa4b2fa13f340cb680a2eb8c6428afcaf81a92d544f1537680741c&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2F&response_type=code',
-      failureRedirect: 'http://localhost:3000/auth',
-    });
+  login(@Res({ passthrough: true }) res: Response) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.redirect(
+      'https://api.intra.42.fr/oauth/authorize?client_id=4b246ff59cfa4b2fa13f340cb680a2eb8c6428afcaf81a92d544f1537680741c&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2F&response_type=code',
+    );
+
     return;
   }
 
@@ -62,7 +61,7 @@ export class AuthController {
   @Get('logout')
   @UseGuards(JwtAuthGuard)
   logout(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
-    req.logout();
+    // req.logout();
     res.redirect('/');
     return;
   }
