@@ -28,6 +28,14 @@ export class FriendsService {
     }
 
     async sendFriendInvite(data: SendFriendInviteDTO) {
+        const friends = await getRepository(FriendsEntity)
+        .createQueryBuilder("friend")
+        .where("friend.targetId = :targetId", {targetId: data.targetId})
+        .andWhere("friend.userId = :userId", {userId: data.userId})
+        .getOne()
+        console.log("ICI   ", friends);
+        if (friends != undefined)
+            return false;
         const friend = this.FriendsRepo.create(data);
         if (await this.setBothFriends(data) == true)
             friend.is_friend = true;

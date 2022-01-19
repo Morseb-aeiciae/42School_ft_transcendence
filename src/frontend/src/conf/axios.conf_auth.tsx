@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 const configHeaders = {
+   withCredentials: true, 
   "content-type": "application/json",
   Accept: "*/*",
   "Access-Control-Max-Age": 12,

@@ -170,7 +170,6 @@ const App = () => {
   const [fetchData, setData] = useState(init);
 
   let user: User | null = null;
-
   useEffect(() => {
     const loggedInToken = localStorage.getItem("token");
 

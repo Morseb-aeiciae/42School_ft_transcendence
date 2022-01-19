@@ -10,17 +10,22 @@ const Header = () => {
 
   useEffect(() => {
     if (logout) {
-      // apiAuth
-      //   .get("/logout")
-      //   .then((response: any) => {
+      let token = localStorage.getItem("token");
+      apiAuth
+        .get("/logout", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+         .then((response: any) => {
           localStorage.clear();
           setLogout(false);
           context.updateToken("");
           context.updateUser(false, null);
-        // })
-        // .catch((err: any) => {
-        //   console.log("Auth:", err);
-        // });
+         })
+         .catch((err: any) => {
+           console.log("Auth:", err);
+         });
     }
   }, [logout, context]);
 
