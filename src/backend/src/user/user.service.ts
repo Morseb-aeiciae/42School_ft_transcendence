@@ -4,6 +4,7 @@ import { UserEntity } from '../entities/user.entity';
 import { getRepository, Repository } from 'typeorm';
 import { UpdateUserDTO } from '../models/user.models';
 import { Role } from 'src/admin/Role/role.enum';
+import { Status } from 'src/status.enum';
 
 @Injectable()
 export class UserService {
@@ -75,5 +76,12 @@ export class UserService {
     return this.userRepo.update(userId, {
       isTwoFactorAuthenticationEnabled: false,
     });
+  }
+
+  async changeStatus(userId: number, status: Status) {
+    const user = await this.findById(userId);
+    user.status = status;
+    user.save();
+    return ;
   }
 }

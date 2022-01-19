@@ -7,6 +7,7 @@ import { toFileStream } from 'qrcode';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthService } from '../auth.service';
+import { Status } from 'src/status.enum';
 
 @Injectable()
 export class TwoFactorAuthenticationService {
@@ -49,6 +50,7 @@ export class TwoFactorAuthenticationService {
     user.save();
     const token = this.authService.getCookieWithJwtAccessToken(user.id, false);
     const ret = {token, user};
+    this.usersService.changeStatus(user.id, Status.Online);
     return ret;
   }
 }
