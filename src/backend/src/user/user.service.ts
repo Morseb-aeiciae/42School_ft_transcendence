@@ -28,14 +28,14 @@ export class UserService {
   }
 
   async updateUser(data: UpdateUserDTO) {
-    const users = await getRepository(UserEntity)
-		.createQueryBuilder("user")
-		.where("user.username = :username", {username: data.username})
-		.getOne();
-
-    if (users != undefined)
-      return false;
     const user = await this.userRepo.findOne(data.userId);
+    const users = await getRepository(UserEntity)
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username: data.username })
+      .getOne();
+    if (user.username == data.username)
+      return this.userRepo.save({ ...user, ...data });
+    if (users != undefined) return false;
     return this.userRepo.save({ ...user, ...data });
   }
 
@@ -64,7 +64,7 @@ export class UserService {
     });
   }
 
-  async findUserToken(userId: number ): Promise<any> {
+  async findUserToken(userId: number): Promise<any> {
     const user = await this.findById(userId);
     if (!user) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
@@ -82,6 +82,6 @@ export class UserService {
     const user = await this.findById(userId);
     user.status = status;
     user.save();
-    return ;
+    return;
   }
 }

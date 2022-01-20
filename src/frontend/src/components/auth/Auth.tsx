@@ -17,8 +17,8 @@ const Auth = () => {
       apiAuth
         .get(`/redirec${code}`)
         .then((response: any) => {
+          console.log(response.data.user);
           setLoading(false);
-
           if (response.data.isBan) {
             setBan(true);
           } else {
