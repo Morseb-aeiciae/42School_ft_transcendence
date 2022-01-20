@@ -83,7 +83,6 @@ const display = (chats: any, props: any) => {
 const CurrentChats = (props: any) => {
   const [isLoading, setLoading] = useState(true);
   const [fetchData, setChats] = useState([]);
-  const [owner, setOwner] = useState(1);
   const [ownerCantLeave, setOwnerLeave] = useState(0);
   const id = props.userId;
 
@@ -115,17 +114,45 @@ const CurrentChats = (props: any) => {
         console.log("Chats:", err);
         setLoading(false);
       });
-  }, [id, props.props.state, props.userId]);
+  }, [id, props.userId]);
 
   useEffect(() => {
+    let len = 0;
+
     if (props.props.leave > 0) {
       apiChat
         .post("/leaveChat", { userId: id, chatId: props.props.leave })
         .then((response: any) => {
-          if (response.data.status === 409) setOwner(-owner);
-          else {
+          if (response.data.status === 409) {
+            apiChat
+              .get(`/getUsersOfChat/${props.props.leave}`)
+              .then((response: any) => {
+                len = response.data.length;
+                if (len === 1) {
+                  apiChatAdmin
+                    .post("/deleteChat", {
+                      userId: id,
+                      chatId: props.props.leave,
+                    })
+                    .then((response: any) => {
+                      console.log("owner delete a chat", response.data);
+                      props.props.leaveChats(-1);
+                      props.props.setState(-1);
+                    })
+                    .catch((err: any) => {
+                      console.log("Chats:", err);
+                      setLoading(false);
+                    });
+                } else {
+                  setOwnerLeave(1);
+                }
+              })
+              .catch((err: any) => {
+                console.log("Chat:", err);
+              });
+          } else {
             console.log("user leave a chat", response.data);
-            props.props.leaveChats(0);
+            props.props.leaveChats(-1);
           }
         })
         .catch((err: any) => {
@@ -133,36 +160,7 @@ const CurrentChats = (props: any) => {
           setLoading(false);
         });
     }
-  }, [id, props.props.leave, owner, props.props]);
-
-  useEffect(() => {
-    let len = 0;
-
-    if (props.props.leave > 0)
-      apiChat
-        .get(`/getUsersOfChat/${props.props.leave}`)
-        .then((response: any) => {
-          len = response.data.length;
-          if (len === 1) {
-            apiChatAdmin
-              .post("/deleteChat", { userId: id, chatId: props.props.leave })
-              .then((response: any) => {
-                console.log("owner delete a chat", response.data);
-                // props.props.setState(Math.random());
-                props.props.leaveChats(0);
-              })
-              .catch((err: any) => {
-                console.log("Chats:", err);
-                setLoading(false);
-              });
-          } else {
-            setOwnerLeave(1);
-          }
-        })
-        .catch((err: any) => {
-          console.log("Chat:", err);
-        });
-  }, [owner, id, props.props]);
+  }, [id, props.props.leave, props.props]);
 
   if (isLoading) {
     return <Loading />;

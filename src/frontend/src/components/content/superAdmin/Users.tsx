@@ -147,7 +147,7 @@ const Users = (props: any) => {
       });
       setTimeout(function () {
         setReload(!reload);
-      }, 100);
+      }, 200);
     }
   }, [actionUser, reload]);
 
