@@ -17,13 +17,9 @@ interface AppState {
 const initialContext: AppState = {
   auth: { isLoggedIn: false, user: null },
   users: [],
-  changeContent: (string) => {},
-  changeStatus: (string) => {},
-  changeRender: (number) => {},
   updateUser: (b, user) => {},
-  status: "noConnected",
   content: "none",
-  switchRender: 0,
+  changeContent: (string) => {},
   token: "",
   updateToken: (token) => {},
 };

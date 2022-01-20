@@ -11,6 +11,8 @@ export default class NavLeft extends Component<NavLeftProps> {
 
   render() {
     const user: string = `/${this.props.username}/`;
+    const role: string = this.context.auth.user.role;
+
     return (
       <>
         {this.context.auth.isLoggedIn ? (
@@ -45,12 +47,14 @@ export default class NavLeft extends Component<NavLeftProps> {
                 onClick={() => this.context.changeContent("chats")}
               ></i>
             </NavLink>
-            <NavLink to={`${user}superAdmin`}>
-              <i
-                className="fas fa-users-cog fs-2 py-2"
-                onClick={() => this.context.changeContent("superAdmin")}
-              ></i>
-            </NavLink>
+            {role === "admin" ? (
+              <NavLink to={`${user}superAdmin`}>
+                <i
+                  className="fas fa-users-cog fs-2 py-2"
+                  onClick={() => this.context.changeContent("superAdmin")}
+                ></i>
+              </NavLink>
+            ) : null}
           </div>
         ) : null}
       </>

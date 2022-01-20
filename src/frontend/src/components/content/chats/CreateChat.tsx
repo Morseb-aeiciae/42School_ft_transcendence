@@ -36,19 +36,12 @@ export default class CreateChat extends Component<Props> {
 
   submit = (values: any, action: any) => {
     const setState = this.props.props;
-    const token = this.context.token;
 
     apiChat
-      .post("/createChat", values, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
+      .post("/createChat", values)
       .then(() => {
         action.setSubmitting(false);
-        setTimeout(function () {
-          setState(Math.random());
-        }, 100);
+        setState(Math.random());
       })
       .catch((err: any) => {
         console.log("creating chats", err);
@@ -88,15 +81,6 @@ export default class CreateChat extends Component<Props> {
               {errors.name && touched.name ? (
                 <div className="text-danger">{errors.name}</div>
               ) : null}
-              {/* <select
-                name="type"
-                className="mr-2 form-control w-25"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              >
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-              </select> */}
             </div>
             <div className="d-flex flex-row p-1">
               <div className="d-flex flex-row flex-grow-1 align-items-end justify-content-evenly">

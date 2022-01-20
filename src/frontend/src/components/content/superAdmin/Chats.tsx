@@ -50,8 +50,6 @@ const displayChatCard = (props: any) => {
 };
 
 const Chats = (props: any) => {
-  // console.log("Admin panel : user ", props);
-
   const [chats, setChats] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [actionChat, setActionChat] = useState({ id: -1, action: 0 });
@@ -62,15 +60,11 @@ const Chats = (props: any) => {
       .get("/getAllChats")
       .then((response: any) => {
         setChats(response.data);
-        setTimeout(function () {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("AdminPanel:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       });
   }, [reload]);
 
@@ -98,9 +92,12 @@ const Chats = (props: any) => {
     return <ManageUsersChat chatId={actionChat.id} />;
   } else if (actionChat.action === 2) {
     return (
-      <div className="flex-fill border p-2 m-1 bg-darK">
-        <ChatPeek chatId={actionChat.id} />
-      </div>
+      <>
+        <h4>Chat history : </h4>
+        <div className="flex-fill border p-2 m-1 bg-darK">
+          <ChatPeek chatId={actionChat.id} />
+        </div>
+      </>
     );
   } else if (chats.length > 0) {
     return (

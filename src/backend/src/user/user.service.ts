@@ -4,6 +4,7 @@ import { UserEntity } from '../entities/user.entity';
 import { getRepository, Repository } from 'typeorm';
 import { UpdateUserDTO } from '../models/user.models';
 import { Role } from 'src/admin/Role/role.enum';
+import { Status } from 'src/status.enum';
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,13 @@ export class UserService {
 
   async updateUser(data: UpdateUserDTO) {
     const user = await this.userRepo.findOne(data.userId);
+    const users = await getRepository(UserEntity)
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username: data.username })
+      .getOne();
+    if (user.username == data.username)
+      return this.userRepo.save({ ...user, ...data });
+    if (users != undefined) return false;
     return this.userRepo.save({ ...user, ...data });
   }
 
@@ -68,5 +76,12 @@ export class UserService {
     return this.userRepo.update(userId, {
       isTwoFactorAuthenticationEnabled: false,
     });
+  }
+
+  async changeStatus(userId: number, status: Status) {
+    const user = await this.findById(userId);
+    user.status = status;
+    user.save();
+    return;
   }
 }

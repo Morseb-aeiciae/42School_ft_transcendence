@@ -1,7 +1,18 @@
 import axios, { AxiosResponse } from "axios";
 
+const configHeaders = {
+  "content-type": "application/json",
+  Accept: "*/*",
+  "Access-Control-Max-Age": 12,
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Credentials": "true",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+};
+
 export const apiChatAdmin = axios.create({
   baseURL: "http://localhost:3001/chat/admin",
+  headers: configHeaders,
   timeout: 3000,
 });
 

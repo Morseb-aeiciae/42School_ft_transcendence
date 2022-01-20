@@ -11,11 +11,15 @@ import {
 import { JwtService } from '@nestjs/jwt';
 // import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
+import passport from 'passport';
+import { takeWhile } from 'rxjs';
 import { createUserDTO } from 'src/models/user.models';
+import { Status } from 'src/status.enum';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { SchoolAuthGuard } from './guard/42.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import JwtTwoFactorGuard from './guard/jwt.TwoAuth.guard';
 export interface RegistrationStatus {
   success: boolean;
   message: string;
@@ -32,25 +36,17 @@ export class AuthController {
   ) {}
 
   @Get('login')
-  @UseGuards(SchoolAuthGuard)
-  login() {
-    return;
+  // @UseGuards(SchoolAuthGuard)
+  login(@Res({ passthrough: true }) res: Response) {
+    const api42 =
+      'https://api.intra.42.fr/oauth/authorize?client_id=4b246ff59cfa4b2fa13f340cb680a2eb8c6428afcaf81a92d544f1537680741c&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2F&response_type=code';
+
+    return api42;
   }
 
   @Get('redirec')
-//   @UseGuards(SchoolAuthGuard)
-  async redirectSchool(
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ) {
-
-	let username, mail;
-
-	username = "user_" + compt;
-	mail = "mail_" + compt + "@gmail.com";
-	
-	compt += 1;
-	
+  @UseGuards(SchoolAuthGuard)
+  async redirectSchool(@Req() req: Request) {
     return await this.authService.login(
 		username,
 		mail,
@@ -61,17 +57,18 @@ export class AuthController {
     //   req.user['email'],
     // );
   }
-
+  /*
   @UseGuards(JwtAuthGuard)
   @Get('profile/:username')
   async status(@Param('username') username: string) {
     return this.userService.findByUsername(username);
-  }
+  }*/
 
   @Get('logout')
-  @UseGuards(JwtAuthGuard)
-  logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie('access_token');
+  @UseGuards(JwtTwoFactorGuard)
+  logout(@Res({ passthrough: true }) response: Response, @Req() req) {
+    this.userService.changeStatus(req.user.id, Status.Offline);
+    response.redirect('/');
     return;
   }
 }

@@ -40,7 +40,7 @@ const ContactElements = (props: any) => {
             />
           </div>
 
-          <br />
+          <p>{props.target.status}</p>
 
           <button
             onClick={() => {

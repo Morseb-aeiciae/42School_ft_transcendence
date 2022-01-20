@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, ValidationPipe } from '@nestjs/common';
+import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 import { BanUserDTO, DeleteChatDTO, SetAdminDTO } from 'src/models/chat.admin.models';
 import { ChatAdminService } from './admin.service';
 
 @Controller('chat/admin')
+@UseGuards(JwtTwoFactorGuard)
 export class ChatAdminController {
 	constructor(private AdminService: ChatAdminService) {}
 

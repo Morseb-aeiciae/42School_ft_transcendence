@@ -1,6 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-// import { useContext } from "react";
-// import AuthContext from "../context";
 
 const configHeaders = {
   "content-type": "application/json",
@@ -34,6 +32,11 @@ export default apiUsers;
 /**********************************************/
 //  interceptors request
 /**********************************************/
+apiLocal3001.interceptors.request.use((req) => {
+  let token = localStorage.getItem("token");
+  req.headers["Authorization"] = "Bearer " + token;
+  return req;
+});
 
 apiUsers.interceptors.request.use((req) => {
   let token = localStorage.getItem("token");

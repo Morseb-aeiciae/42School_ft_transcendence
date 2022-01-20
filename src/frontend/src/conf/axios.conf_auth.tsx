@@ -1,13 +1,11 @@
 import axios, { AxiosResponse } from "axios";
-// import { useContext } from "react";
-// import AuthContext from "../context";
 
 const configHeaders = {
+   withCredentials: true, 
   "content-type": "application/json",
   Accept: "*/*",
   "Access-Control-Max-Age": 12,
   "Access-Control-Allow-Origin": "*",
-  // "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Headers":
     "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
   "Access-Control-Allow-Credentials": "true",
@@ -17,7 +15,7 @@ const configHeaders = {
 export const apiAuth = axios.create({
   baseURL: "http://localhost:3001/auth",
   headers: configHeaders,
-  timeout: 5000,
+  timeout: 10000,
 });
 
 /**********************************************/

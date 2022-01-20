@@ -50,15 +50,11 @@ const UsersRegister = (props: any) => {
       .get("/profiles")
       .then((response: any) => {
         setUsers(response.data);
-        setTimeout(function () {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       });
   }, []);
 

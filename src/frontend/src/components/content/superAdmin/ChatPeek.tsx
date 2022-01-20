@@ -8,9 +8,9 @@ const ChatPeek = (props: any) => {
     apiChat
       .get(`getMessageOfChat/${props.chatId}`)
       .then((response: any) => {
-        setTimeout(function () {
+        setTimeout(() => {
           setMsg(response.data);
-        }, 100);
+        }, 200);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
@@ -29,21 +29,3 @@ const ChatPeek = (props: any) => {
 };
 
 export default ChatPeek;
-/*
-
- apiAdmin
-    .post("/giveChatRights", { userId: actionUser.id })
-    .then((response: any) => {})
-    .catch((err: any) => {
-      console.log("AdminPanel:", err);
-    });
-
-    
-apiAdmin
-    .post("/removeChatRights", { userId: actionUser.id })
-    .then((response: any) => {})
-    .catch((err: any) => {
-      console.log("AdminPanel:", err);
-    });   
-
-*/

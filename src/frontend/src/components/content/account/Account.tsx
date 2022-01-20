@@ -3,7 +3,9 @@ import AuthContext from "../../../context";
 import { Formik, FormikHelpers } from "formik";
 import { apiUser } from "../../../conf/axios.conf";
 import * as Yup from "yup";
-import TwoFA from "../../utils/Pages/TwoFA";
+import { TwoFA } from "../../";
+import { api2fa } from "../../../conf/axios.conf_2fa";
+import { Redirect } from "react-router-dom";
 
 /******************************************/
 //  Error msg from form (Yup)
@@ -24,9 +26,10 @@ const errEmail = () => {
 
 const Account = () => {
   const context = useContext(AuthContext);
-  let wrongPwd = false;
   const [twofa, set2fa] = useState(0);
   const [twoFA, settwoFA] = useState(false);
+  const [nameUsed, setnameUsed] = useState(false);
+  const [auth, setAuth] = useState("");
   const user: any = context.auth.user;
   const username = user.username;
   const email = user.email;
@@ -45,7 +48,11 @@ const Account = () => {
         username: values.username,
       })
       .then((response: any) => {
-        context.updateUser(true, response.data);
+        if (response.data) {
+          setnameUsed(false);
+          setAuth(response.data.username);
+          context.updateUser(true, response.data);
+        } else if (values.username !== username) setnameUsed(true);
       })
       .catch((err: any) => {
         console.log("Err updateUser \n", err);
@@ -69,13 +76,11 @@ const Account = () => {
         settwoFA(true);
         break;
       case 2:
-        apiUser
+        api2fa
           .get("/turnOffTwoFa")
           .then((response: any) => {
-            context.updateUser(true, {
-              ...user,
-              isTwoFactorAuthenticationEnabled: false,
-            });
+            localStorage.setItem("token", response.data.token.accessToken);
+            context.updateUser(true, response.data.user);
           })
           .catch((err: any) => {
             console.log("AdminPanel:", err);
@@ -83,15 +88,15 @@ const Account = () => {
         break;
     }
     set2fa(0);
-  }, [twofa]);
+  }, [twofa, context, user]);
 
-  // console.log("account :: ", user);
+  if (auth) return <Redirect to={"/" + auth} />;
 
   if (twoFA) return <TwoFA />;
   return (
     <div className="container-fluid">
-      <h1 className="border-bottom  pb-3 mb-3">MY ACCOUNT</h1>
-      <p className="border-bottom  pb-3 mb-3">
+      <h1 className="border-bottom pb-3 mb-3">MY ACCOUNT</h1>
+      <p className="border-bottom pb-3 mb-3">
         {user.isTwoFactorAuthenticationEnabled ? (
           <button
             type="submit"
@@ -188,9 +193,8 @@ const Account = () => {
                   </div>
 
                   <p className="border-bottom pb-3 mb-3"></p>
-
-                  {wrongPwd ? (
-                    <p className="text-danger">Wrong password</p>
+                  {nameUsed ? (
+                    <div className="text-danger">username already used !</div>
                   ) : null}
                   <button
                     type="submit"
@@ -199,6 +203,10 @@ const Account = () => {
                   >
                     Edit
                   </button>
+                  <p className="fs-6">
+                    If success editing your informations, you will be send back
+                    to your home page
+                  </p>
                 </form>
               </>
             )}

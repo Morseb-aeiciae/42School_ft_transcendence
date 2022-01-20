@@ -24,7 +24,6 @@ const Contacts = () => {
       .get(`getListOfFriends/${user}`)
       .then((response: any) => {
         const contacts = response.data;
-
         setContacts(contacts);
         setLoading(true);
       })
@@ -34,7 +33,13 @@ const Contacts = () => {
   }, [refresh, user]);
 
   if (display === 1) {
-    return <UsersRegister userId={user} setDisplay={setDisplay} setTarget={setTarget}/>;
+    return (
+      <UsersRegister
+        userId={user}
+        setDisplay={setDisplay}
+        setTarget={setTarget}
+      />
+    );
   } else if (display === 2) {
     return <PrivateMsg targetId={target} userId={user} />;
   } else if (display === 3) {

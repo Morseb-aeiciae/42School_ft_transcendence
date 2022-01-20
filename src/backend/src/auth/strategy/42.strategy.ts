@@ -29,6 +29,7 @@ export class SchoolStrategy extends PassportStrategy(Strategy, '42') {
       username: username,
       email: emails[0].value,
     };
+    done(null, details);
     return details;
   }
 }

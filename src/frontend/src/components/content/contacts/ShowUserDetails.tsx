@@ -9,6 +9,7 @@ const ShowUserDetails = (props: any) => {
   const [friend, setFriend] = useState(false);
   const [content, setContent] = useState("");
   const [R, setR] = useState(0);
+  const [add, setAdd] = useState(false);
   const target = props.target;
   const userId = props.userId;
 
@@ -21,12 +22,13 @@ const ShowUserDetails = (props: any) => {
       .catch((err: any) => {
         console.log("isFriends:", err);
       });
-  }, [userId, target.id, friend]);
+  }, [R, userId, target.id, friend]);
 
   useEffect(() => {
     apiChat
       .get(`/getBlockedUsers/${userId}`)
       .then((response: any) => {
+        setBlocked(false);
         const blockedUsers = response.data;
         blockedUsers.map((u: any) => {
           if (u.id === target.id) {
@@ -34,15 +36,11 @@ const ShowUserDetails = (props: any) => {
           }
           return null;
         });
-        setTimeout(function () {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("ShowUserDetails:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       });
   }, [R, target.id, userId]);
 
@@ -55,7 +53,8 @@ const ShowUserDetails = (props: any) => {
           targetId: target.id,
         })
         .then((response: any) => {
-          console.log("setAdminResponse", response);
+          // console.log("setAdminResponse", response);
+          if (!response.data) setAdd(true);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -71,7 +70,7 @@ const ShowUserDetails = (props: any) => {
           targetId: target.id,
         })
         .then((response: any) => {
-          console.log("removeAdminResponse", response);
+          // console.log("removeAdminResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -87,7 +86,7 @@ const ShowUserDetails = (props: any) => {
           targetId: target.id,
         })
         .then((response: any) => {
-          console.log("unblockUserResponse", response);
+          // console.log("unblockUserResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -103,7 +102,7 @@ const ShowUserDetails = (props: any) => {
           targetId: target.id,
         })
         .then((response: any) => {
-          console.log("blockUserResponse", response);
+          // console.log("blockUserResponse", response);
           setR(Math.random());
         })
         .catch((err: any) => {
@@ -197,6 +196,9 @@ const ShowUserDetails = (props: any) => {
               </button>
             )}
           </div>
+          {add ? (
+            <p>Request already sent, waiting user to add you too</p>
+          ) : null}
         </div>
       </section>
     );

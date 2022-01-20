@@ -4597,20 +4597,6 @@
   dependencies:
     "passport-oauth2" "^1.4.0"
 
-"passport-google-oauth2@^0.2.0":
-  "integrity" "sha512-62EdPtbfVdc55nIXi0p1WOa/fFMM8v/M8uQGnbcXA4OexZWCnfsEi3wo2buag+Is5oqpuHzOtI64JpHk0Xi5RQ=="
-  "resolved" "https://registry.npmjs.org/passport-google-oauth2/-/passport-google-oauth2-0.2.0.tgz"
-  "version" "0.2.0"
-  dependencies:
-    "passport-oauth2" "^1.1.2"
-
-"passport-google-oauth20@^2.0.0":
-  "integrity" "sha512-KSk6IJ15RoxuGq7D1UKK/8qKhNfzbLeLrG3gkLZ7p4A6DBCcv7xpyQwuXtWdpyR0+E0mwkpjY1VfPOhxQrKzdQ=="
-  "resolved" "https://registry.npmjs.org/passport-google-oauth20/-/passport-google-oauth20-2.0.0.tgz"
-  "version" "2.0.0"
-  dependencies:
-    "passport-oauth2" "1.x.x"
-
 "passport-jwt@^4.0.0":
   "integrity" "sha512-BwC0n2GP/1hMVjR4QpnvqA61TxenUMlmfNjYNgK0ZAs0HK4SOQkHcSv4L328blNTLtHq7DbmvyNJiH+bn6C5Mg=="
   "resolved" "https://registry.npmjs.org/passport-jwt/-/passport-jwt-4.0.0.tgz"
@@ -4619,14 +4605,7 @@
     "jsonwebtoken" "^8.2.0"
     "passport-strategy" "^1.0.0"
 
-"passport-local@^1.0.0":
-  "integrity" "sha1-H+YyaMkudWBmJkN+O5BmYsFbpu4="
-  "resolved" "https://registry.npmjs.org/passport-local/-/passport-local-1.0.0.tgz"
-  "version" "1.0.0"
-  dependencies:
-    "passport-strategy" "1.x.x"
-
-"passport-oauth2@^1.1.2", "passport-oauth2@^1.4.0", "passport-oauth2@1.x.x":
+"passport-oauth2@^1.4.0":
   "integrity" "sha512-ZbV43Hq9d/SBSYQ22GOiglFsjsD1YY/qdiptA+8ej+9C1dL1TVB+mBE5kDH/D4AJo50+2i8f4bx0vg4/yDDZCQ=="
   "resolved" "https://registry.npmjs.org/passport-oauth2/-/passport-oauth2-1.6.1.tgz"
   "version" "1.6.1"

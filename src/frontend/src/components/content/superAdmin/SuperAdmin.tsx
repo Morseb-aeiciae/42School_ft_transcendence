@@ -18,7 +18,8 @@ const SuperAdmin = () => {
           <i className="fas fa-angle-double-down px-2"></i>
           <br />- ban user
           <i className="fas fa-door-closed px-2"></i>or unban them
-          <i className="fas fa-door-open px-2"></i>
+          <i className="fas fa-door-open px-2"></i> (you can't ban moderator,
+          demote them before)
           <br />- manage users rights for chat channels
           <i className="fas fa-tasks px-2"></i>
           <br />- see chats wihtout joining

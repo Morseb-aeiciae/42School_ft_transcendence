@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./App.css";
 import {
   Header,
@@ -6,12 +6,12 @@ import {
   Content,
   NavLeft,
   Home,
-  Login,
   PageNotFound,
   ProtectedRoute,
   Loading,
-  SignInErr,
   Auth,
+  TwoFA,
+  Ban,
 } from "./components";
 import AuthContext from "./context";
 import { User } from "./Interfaces";
@@ -24,14 +24,17 @@ import {
 } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import { apiUser } from "./conf/axios.conf";
-
 //***************************************************** */
 type TParams = { username: string };
 
 const ComponentUserConnected = ({
   match,
 }: RouteComponentProps<TParams>): JSX.Element => {
-  const user: string = `${match.params.username}`;
+  const context = useContext(AuthContext);
+  let user;
+  if (context.auth.user) user = context.auth.user?.username;
+  else user = `${match.params.username}`;
+
   return (
     <>
       <NavLeft username={user} />
@@ -51,12 +54,8 @@ export interface AppState {
   auth: { isLoggedIn: boolean; user: User | null };
   users: Array<User>;
   updateUser: (b: boolean, user: User | null) => any;
-  changeContent: (newStatus: string) => any;
-  changeStatus: (newStatus: string) => any;
-  changeRender: (newStatus: number) => any;
-  status: string;
   content: string;
-  switchRender: number;
+  changeContent: (newContent: string) => any;
   token: string;
   updateToken: (token: string) => any;
 }
@@ -74,12 +73,8 @@ class AppV1 extends React.Component<AppProps> {
       },
       users: [],
       updateUser: this.updateUser,
-      changeContent: this.changeContent,
-      changeRender: this.changeRender,
-      changeStatus: this.changeStatus,
-      status: "idle",
       content: "",
-      switchRender: 0,
+      changeContent: this.changeContent,
       token: "",
       updateToken: this.updateToken,
     };
@@ -94,11 +89,6 @@ class AppV1 extends React.Component<AppProps> {
   changeContent = (newContent: string) => {
     this.setState({
       content: newContent,
-    });
-  };
-  changeStatus = (newStatus: string) => {
-    this.setState({
-      status: newStatus,
     });
   };
   changeRender = (render: number) => {
@@ -116,61 +106,42 @@ class AppV1 extends React.Component<AppProps> {
   };
 
   render() {
-    if (this.state.switchRender === 1) {
-      return (
-        <Router>
-          <div className="App d-flex flex-column">
-            <AuthContext.Provider value={this.state}>
-              <Header />
-              <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
-                <SignInErr />
-              </div>
-              <Footer />
-            </AuthContext.Provider>
-          </div>
-        </Router>
-      );
-    } else if (this.state.switchRender === 0) {
-      return (
-        <Router>
-          <div className="App d-flex flex-column">
-            <AuthContext.Provider value={this.state}>
-              <Header />
-              <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
-                <Switch>
-                  <Route
-                    exact
-                    path="/"
-                    render={() => {
-                      return this.state.auth.isLoggedIn ? (
-                        <Redirect to={`/${this.state.auth.user?.username}`} />
-                      ) : (
-                        <Redirect to="/home" />
-                      );
-                    }}
-                  />
-                  <Route
-                    path="/home"
-                    sensitive={true}
-                    component={withRouter(Home)}
-                  />
-                  <Route path="/login" sensitive={true} component={Login} />
-                  <Route path="/auth" sensitive={true} component={Auth} />
-                  <ProtectedRoute
-                    path="/:username"
-                    sensitive={true}
-                    component={withRouter(ComponentUserConnected)}
-                    auth={this.state.auth}
-                  />
-                  <Route component={PageNotFound} />
-                </Switch>
-              </div>
-              <Footer />
-            </AuthContext.Provider>
-          </div>
-        </Router>
-      );
-    }
+    return (
+      <Router>
+        <div className="App d-flex flex-column">
+          <AuthContext.Provider value={this.state}>
+            <Header />
+            <div className="d-flex flex-row flex-grow-1 overflow-auto bg-dark text-light">
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => {
+                    return this.state.auth.isLoggedIn ? (
+                      <Redirect to={`/${this.state.auth.user?.username}`} />
+                    ) : (
+                      <Redirect to="/home" />
+                    );
+                  }}
+                />
+                <Route path="/home" sensitive={true} component={Home} />
+                <Route path="/auth" sensitive={true} component={Auth} />
+                <Route path="/2fa" sensitive={true} component={TwoFA} />
+                <Route path="/ban" sensitive={true} component={Ban} />
+                <ProtectedRoute
+                  path="/:username"
+                  sensitive={true}
+                  component={withRouter(ComponentUserConnected)}
+                  auth={this.state.auth}
+                />
+                <Route component={PageNotFound} />
+              </Switch>
+            </div>
+            <Footer />
+          </AuthContext.Provider>
+        </div>
+      </Router>
+    );
   }
 }
 
@@ -190,7 +161,6 @@ const App = () => {
   const [fetchData, setData] = useState(init);
 
   let user: User | null = null;
-
   useEffect(() => {
     const loggedInToken = localStorage.getItem("token");
 
@@ -200,16 +170,12 @@ const App = () => {
         .then((response: any) => {
           setLog(true);
           setData(response.data);
-          setTimeout(function () {
-            setLoading(false);
-          }, 500);
+          setLoading(false);
         })
         .catch((err: any) => {
           localStorage.clear();
           setLog(false);
-          setTimeout(function () {
-            setLoading(false);
-          }, 500);
+          setLoading(false);
         });
     } else {
       setLoading(false);
