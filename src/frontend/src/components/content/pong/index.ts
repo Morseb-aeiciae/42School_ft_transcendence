@@ -48,18 +48,6 @@ var login: any;
 async function get_login ()
 {
 	var user: any = await apiUser.get("/findUserToken");
-
-	// var user: any = await apiUser.get("/findUserToken")
-	//  .then((response: any) => {
-	// 	console.log("Login ok");
-	// 	socket.emit('send_username', user.data.login);
-	//  })
-	//  .catch((err: any) => {
-	//    console.log("Login fail");
-	//  });
-
-	// console.log(user.data.login);
-	
 	socket.emit('send_username', user.data.login);
 	return (user.data.login);
 };
