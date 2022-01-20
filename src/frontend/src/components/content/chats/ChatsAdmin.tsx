@@ -315,9 +315,7 @@ const UpdatePwd = (props: any) => {
           }
           return null;
         });
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
@@ -337,9 +335,7 @@ const UpdatePwd = (props: any) => {
       })
       .catch((err: any) => {
         console.log("Chats:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
         action.setSubmitting(false);
       });
   };

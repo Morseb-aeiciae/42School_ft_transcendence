@@ -109,15 +109,11 @@ const CurrentChats = (props: any) => {
           return chat;
         });
         setChats(chats);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("Chats:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       });
   }, [id, props.props.state, props.userId]);
 
@@ -134,9 +130,7 @@ const CurrentChats = (props: any) => {
         })
         .catch((err: any) => {
           console.log("Chats:", err);
-          setTimeout(function () {
-            setLoading(false);
-          }, 200);
+          setLoading(false);
         });
     }
   }, [id, props.props.leave, owner, props.props]);
@@ -159,9 +153,7 @@ const CurrentChats = (props: any) => {
               })
               .catch((err: any) => {
                 console.log("Chats:", err);
-                setTimeout(function () {
-                  setLoading(false);
-                }, 200);
+                setLoading(false);
               });
           } else {
             setOwnerLeave(1);

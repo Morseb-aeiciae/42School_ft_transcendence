@@ -60,15 +60,11 @@ const Chats = (props: any) => {
       .get("/getAllChats")
       .then((response: any) => {
         setChats(response.data);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("AdminPanel:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       });
   }, [reload]);
 

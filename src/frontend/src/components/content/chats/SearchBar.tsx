@@ -39,15 +39,11 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
       .post("/isUserOnChat", { userId: user, chatId: chat.id })
       .then((response: any) => {
         if (response.data) setChat(true);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("Chats:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       });
   }, [user, chat.id]);
 
@@ -69,9 +65,7 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
         })
         .catch((err: any) => {
           console.log("Chats:", err);
-          setTimeout(function () {
-            setLoading(false);
-          }, 200);
+          setLoading(false);
         });
   }, [user, chat.id, join, pwd, resetChat, reload]);
 
@@ -97,9 +91,7 @@ const DisplayChatCard = (chat: any, user: any, reload: any, resetChat: any) => {
         })
         .catch((err: any) => {
           console.log("Chats:", err);
-          setTimeout(function () {
-            setLoading(false);
-          }, 200);
+          setLoading(false);
           action.setSubmitting(false);
         });
   };

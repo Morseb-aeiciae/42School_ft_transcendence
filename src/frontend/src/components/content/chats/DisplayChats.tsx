@@ -221,24 +221,18 @@ const FetchChat = (props: any) => {
           }
           return null;
         });
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       });
 
     apiChat
       .get(`/getChat/${props.chatId}`)
       .then((response: any) => {
         setChat(response.data);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log(`Chat ${props.chatId}:`, err);

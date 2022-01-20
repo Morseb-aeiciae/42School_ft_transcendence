@@ -170,16 +170,12 @@ const App = () => {
         .then((response: any) => {
           setLog(true);
           setData(response.data);
-          setTimeout(function () {
-            setLoading(false);
-          }, 100);
+          setLoading(false);
         })
         .catch((err: any) => {
           localStorage.clear();
           setLog(false);
-          setTimeout(function () {
-            setLoading(false);
-          }, 100);
+          setLoading(false);
         });
     } else {
       setLoading(false);

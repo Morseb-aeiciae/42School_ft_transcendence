@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context";
-import { SignInModal, SignOutModal } from "../auth";
+import { SignInModal } from "../auth";
 import { apiAuth } from "../../conf/axios.conf_auth";
+import { Loading } from "..";
 
 const Header = () => {
+  let code = window.location.pathname;
   const context = useContext(AuthContext);
   const [logout, setLogout] = useState(false);
   const [status, setStatus] = useState("");
@@ -37,6 +39,9 @@ const Header = () => {
   let path: string;
   if (context.auth.isLoggedIn) path = `/${context.auth.user?.username}/`;
   else path = "/home";
+
+  if (logout) return <Loading />;
+
   return (
     <header className="navbar navbar-expand-lg bg-dark navbar-dark">
       <div className="container-fluid">
@@ -50,28 +55,33 @@ const Header = () => {
         >
           {status}
         </div>
-
-        <button
-          className="btn fs-2 btn-dark text-light"
-          data-bs-toggle="modal"
-          data-bs-target="#log"
-        >
-          {context.auth.isLoggedIn ? (
-            <>
-              <i
-                className="fas fa-sign-out-alt"
-                onClick={() => {
-                  setLogout(true);
-                }}
-              ></i>
-            </>
-          ) : (
-            <>
-              <i className="fas fa-sign-in-alt"></i>
-            </>
-          )}
-        </button>
-        {context.auth.isLoggedIn ? <SignOutModal /> : <SignInModal />}
+        {code === "/auth/" ? null : (
+          <>
+            {context.auth.isLoggedIn ? (
+              <>
+                <button className="btn fs-2 btn-dark text-light">
+                  <i
+                    className="fas fa-sign-out-alt"
+                    onClick={() => {
+                      setLogout(true);
+                    }}
+                  ></i>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="btn fs-2 btn-dark text-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#log"
+                >
+                  <i className="fas fa-sign-in-alt"></i>
+                </button>
+              </>
+            )}
+            {context.auth.isLoggedIn ? null : <SignInModal />}
+          </>
+        )}
       </div>
     </header>
   );

@@ -53,13 +53,13 @@ export class AuthService {
     const token = this.getCookieWithJwtAccessToken(user.id);
 
     const isBan: Boolean = false;
+    if (user.isTwoFactorAuthenticationEnabled == true) user = undefined;
+    if (isBan == false && user != undefined)
+      this.userService.changeStatus(user.id, Status.Online);
     const tab = { user, token, isBan };
     tab.user = user;
     tab.token = token;
     tab.isBan = user.isBan;
-    if (user.isTwoFactorAuthenticationEnabled == true) tab.user = undefined;
-    if (isBan == false && tab.user != undefined)
-    this.userService.changeStatus(user.id, Status.Online);
     return tab;
   }
   /*
