@@ -30,8 +30,8 @@ export class FriendsService {
   async sendFriendInvite(data: SendFriendInviteDTO) {
     const friends = await getRepository(FriendsEntity)
       .createQueryBuilder('friend')
-      .where('friend.targetId = :targetId', { targetId: data.userId })
-      .andWhere('friend.userId = :userId', { userId: data.targetId })
+      .where('friend.targetId = :targetId', { targetId: data.targetId })
+      .andWhere('friend.userId = :userId', { userId: data.userId })
       .getOne();
 
     if (friends != undefined) return false;

@@ -11,11 +11,15 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
+import passport from 'passport';
+import { takeWhile } from 'rxjs';
 import { createUserDTO } from 'src/models/user.models';
+import { Status } from 'src/status.enum';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { SchoolAuthGuard } from './guard/42.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import JwtTwoFactorGuard from './guard/jwt.TwoAuth.guard';
 export interface RegistrationStatus {
   success: boolean;
   message: string;
@@ -42,27 +46,24 @@ export class AuthController {
 
   @Get('redirec')
   @UseGuards(SchoolAuthGuard)
-  async redirectSchool(
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ) {
+  async redirectSchool(@Req() req: Request) {
     return await this.authService.login(
       req.user['username'],
       req.user['email'],
     );
   }
-
+  /*
   @UseGuards(JwtAuthGuard)
   @Get('profile/:username')
   async status(@Param('username') username: string) {
     return this.userService.findByUsername(username);
-  }
+  }*/
 
   @Get('logout')
-  @UseGuards(JwtAuthGuard)
-  logout(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
-    // req.logout();
-    res.redirect('/');
+  @UseGuards(JwtTwoFactorGuard)
+  logout(@Res({ passthrough: true }) response: Response, @Req() req) {
+    this.userService.changeStatus(req.user.id, Status.Offline);
+    response.redirect('/');
     return;
   }
 }

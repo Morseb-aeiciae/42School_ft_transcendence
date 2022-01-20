@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { MatchDTO, UpdateMatchDTO } from 'src/models/match.models';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('match')
 export class MatchController {
 	constructor(private MatchService: MatchService) {}

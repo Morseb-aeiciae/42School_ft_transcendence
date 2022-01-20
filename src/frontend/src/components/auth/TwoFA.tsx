@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { api2fa } from "../../../conf/axios.conf_2fa";
-import AuthContext from "../../../context";
+import { api2fa } from "../../conf/axios.conf_2fa";
+import AuthContext from "../../context";
 import { Formik } from "formik";
 import { Redirect } from "react-router-dom";
 

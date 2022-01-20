@@ -1,11 +1,10 @@
 import { AbstractEntity } from './abstract-entity';
-import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { IsBoolean, IsEmail, IsString } from 'class-validator';
-import { classToPlain, Exclude } from 'class-transformer';
-import { hash, compare } from 'bcrypt';
 import { Match_userEntity } from './match-user.entity';
 import { Chat_userEntity } from './chat-user.entity';
 import { Role } from 'src/admin/Role/role.enum';
+import { Status } from 'src/status.enum';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -21,15 +20,17 @@ export class UserEntity extends AbstractEntity {
   @Column({ default: null, nullable: true })
   image: string | null;
 
-  @Column({nullable : true})
-  @Exclude()
-  password: string;
-
   @Column({
     type: "enum",
     enum: Role,
     default: Role.User})
   role: Role;
+
+  @Column({
+    type: "enum",
+    enum: Status,
+    default: Status.Online})
+  status: Status;
 
   @Column({default: false})
   @IsBoolean()
@@ -38,20 +39,6 @@ export class UserEntity extends AbstractEntity {
   @Column({unique: true})
   @IsString()
   login: string;
-
-  @BeforeInsert()
-  async hashPassword() {
-	  if (this.password)
-    	this.password = await hash(this.password, 10);
-  }
-
-  async comparePassword(attempt: string) {
-    return await compare(attempt, this.password);
-  }
-
-  toJSON() {
-    return classToPlain(this);
-  }
 
   @Column({nullable: true})
   public twoFactorAuthenticationSecret?: string;

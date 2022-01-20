@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { response, urlencoded } from 'express';
+import { Status } from 'src/status.enum';
 import { UserService } from 'src/user/user.service';
 import { JwtPayload } from './strategy/jwt.strategy';
 import TokenPayload from './token.payload.interface';
@@ -57,6 +58,8 @@ export class AuthService {
     tab.token = token;
     tab.isBan = user.isBan;
     if (user.isTwoFactorAuthenticationEnabled == true) tab.user = undefined;
+    if (isBan == false && tab.user != undefined)
+    this.userService.changeStatus(user.id, Status.Online);
     return tab;
   }
   /*

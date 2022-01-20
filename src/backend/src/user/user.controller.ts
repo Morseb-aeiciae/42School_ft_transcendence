@@ -9,23 +9,15 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthGuard } from '@nestjs/passport';
-import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDTO } from '../models/user.models';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 import RequestWithUser from 'src/auth/twoFactorAuth/requestWithUser.interface';
+import { Status } from 'src/status.enum';
 
 @UseGuards(JwtTwoFactorGuard)
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
-
-  /*@Get()
-  @UseGuards(AuthGuard())
-  findCurrentUser(@User() { username }: UserEntity) {
-    return this.userService.findByUsername(username);
-  }*/
 
   @Post("updateUser")
   update(@Body(new ValidationPipe()) data: UpdateUserDTO) {
@@ -45,5 +37,10 @@ export class UserController {
   @Get("findUserToken")
   findUserToken(@Req() request: RequestWithUser) { 
     return this.userService.findUserToken(request.user.id);
+  }
+
+  @Get("findUserToken")
+  changeStatus(@Req() request: RequestWithUser) { 
+    return this.userService.changeStatus(request.user.id, Status.Offline);
   }
 }

@@ -10,6 +10,7 @@ import {
   ProtectedRoute,
   Loading,
   Auth,
+  TwoFA,
   Ban,
 } from "./components";
 import AuthContext from "./context";
@@ -23,7 +24,6 @@ import {
 } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import { apiUser } from "./conf/axios.conf";
-import TwoFA from "./components/utils/Pages/TwoFA";
 //***************************************************** */
 type TParams = { username: string };
 
@@ -54,10 +54,8 @@ export interface AppState {
   auth: { isLoggedIn: boolean; user: User | null };
   users: Array<User>;
   updateUser: (b: boolean, user: User | null) => any;
-  status: string;
-  changeStatus: (newStatus: string) => any;
   content: string;
-  changeContent: (newStatus: string) => any;
+  changeContent: (newContent: string) => any;
   token: string;
   updateToken: (token: string) => any;
 }
@@ -75,8 +73,6 @@ class AppV1 extends React.Component<AppProps> {
       },
       users: [],
       updateUser: this.updateUser,
-      status: "idle",
-      changeStatus: this.changeStatus,
       content: "",
       changeContent: this.changeContent,
       token: "",
@@ -93,11 +89,6 @@ class AppV1 extends React.Component<AppProps> {
   changeContent = (newContent: string) => {
     this.setState({
       content: newContent,
-    });
-  };
-  changeStatus = (newStatus: string) => {
-    this.setState({
-      status: newStatus,
     });
   };
   changeRender = (render: number) => {
@@ -151,7 +142,6 @@ class AppV1 extends React.Component<AppProps> {
         </div>
       </Router>
     );
-    // }
   }
 }
 
@@ -171,7 +161,6 @@ const App = () => {
   const [fetchData, setData] = useState(init);
 
   let user: User | null = null;
-
   useEffect(() => {
     const loggedInToken = localStorage.getItem("token");
 

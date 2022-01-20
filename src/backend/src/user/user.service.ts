@@ -4,6 +4,7 @@ import { UserEntity } from '../entities/user.entity';
 import { getRepository, Repository } from 'typeorm';
 import { UpdateUserDTO } from '../models/user.models';
 import { Role } from 'src/admin/Role/role.enum';
+import { Status } from 'src/status.enum';
 
 @Injectable()
 export class UserService {
@@ -28,11 +29,12 @@ export class UserService {
 
   async updateUser(data: UpdateUserDTO) {
     const users = await getRepository(UserEntity)
-      .createQueryBuilder('user')
-      .where('user.username = :username', { username: data.username })
-      .getOne();
+		.createQueryBuilder("user")
+		.where("user.username = :username", {username: data.username})
+		.getOne();
 
-    if (users != undefined) return false;
+    if (users != undefined)
+      return false;
     const user = await this.userRepo.findOne(data.userId);
     return this.userRepo.save({ ...user, ...data });
   }
@@ -62,7 +64,7 @@ export class UserService {
     });
   }
 
-  async findUserToken(userId: number): Promise<any> {
+  async findUserToken(userId: number ): Promise<any> {
     const user = await this.findById(userId);
     if (!user) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
@@ -74,5 +76,12 @@ export class UserService {
     return this.userRepo.update(userId, {
       isTwoFactorAuthenticationEnabled: false,
     });
+  }
+
+  async changeStatus(userId: number, status: Status) {
+    const user = await this.findById(userId);
+    user.status = status;
+    user.save();
+    return ;
   }
 }

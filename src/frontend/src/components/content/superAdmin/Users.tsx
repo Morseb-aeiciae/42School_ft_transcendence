@@ -25,17 +25,44 @@ const displayUserCard = (props: any) => {
             id :{props.u.id}
           </p>
           {props.u.role === "user" ? (
-            <button
-              className="btn btn-secondary mx-2"
-              onClick={() => {
-                props.setActionUser({
-                  id: props.u.id,
-                  action: 1,
-                });
-              }}
-            >
-              <i className="fas fa-angle-double-up fs-1 text-dark"></i>
-            </button>
+            <>
+              <button
+                className="btn btn-secondary mx-2"
+                onClick={() => {
+                  props.setActionUser({
+                    id: props.u.id,
+                    action: 1,
+                  });
+                }}
+              >
+                <i className="fas fa-angle-double-up fs-1 text-dark"></i>
+              </button>
+              {props.u.isBan ? (
+                <button
+                  className="btn btn-success mx-2"
+                  onClick={() => {
+                    props.setActionUser({
+                      id: props.u.id,
+                      action: 3,
+                    });
+                  }}
+                >
+                  <i className="fas fa-door-open fs-1"></i>
+                </button>
+              ) : (
+                <button
+                  className="btn btn-danger mx-2"
+                  onClick={() => {
+                    props.setActionUser({
+                      id: props.u.id,
+                      action: 4,
+                    });
+                  }}
+                >
+                  <i className="fas fa-door-closed fs-1"></i>
+                </button>
+              )}
+            </>
           ) : (
             <button
               className="btn btn-secondary mx-2"
@@ -47,31 +74,6 @@ const displayUserCard = (props: any) => {
               }}
             >
               <i className="fas fa-angle-double-down fs-1 text-dark"></i>
-            </button>
-          )}
-          {props.u.isBan ? (
-            <button
-              className="btn btn-success mx-2"
-              onClick={() => {
-                props.setActionUser({
-                  id: props.u.id,
-                  action: 3,
-                });
-              }}
-            >
-              <i className="fas fa-door-open fs-1"></i>
-            </button>
-          ) : (
-            <button
-              className="btn btn-danger mx-2"
-              onClick={() => {
-                props.setActionUser({
-                  id: props.u.id,
-                  action: 4,
-                });
-              }}
-            >
-              <i className="fas fa-door-closed fs-1"></i>
             </button>
           )}
         </div>
@@ -91,15 +93,11 @@ const Users = (props: any) => {
       .get("/profiles")
       .then((response: any) => {
         setUsers(response.data);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("AdminPanel:", err);
-        setTimeout(function () {
-          setLoading(false);
-        }, 200);
+        setLoading(false);
       });
   }, [reload]);
 

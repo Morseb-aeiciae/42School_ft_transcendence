@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import Status from "./Status";
 import AuthContext from "../../context";
 import { SignInModal, SignOutModal } from "../auth";
 import { apiAuth } from "../../conf/axios.conf_auth";
@@ -7,7 +6,12 @@ import { apiAuth } from "../../conf/axios.conf_auth";
 const Header = () => {
   const context = useContext(AuthContext);
   const [logout, setLogout] = useState(false);
-  const [r, setR] = useState(false);
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    if (context.auth.user) setStatus(context.auth.user.status);
+    else setStatus("offline");
+  }, [context]);
 
   useEffect(() => {
     if (logout) {
@@ -22,9 +26,7 @@ const Header = () => {
           localStorage.clear();
           setLogout(false);
           context.updateUser(false, null);
-          setTimeout(() => {
-            context.updateToken("");
-          }, 200);
+          context.updateToken("");
         })
         .catch((err: any) => {
           console.log("Auth:", err);
@@ -46,7 +48,7 @@ const Header = () => {
           className="w-50 text-center text-light border border-4 rounded-pill fs-2"
           style={{ height: "50px" }}
         >
-          <Status />
+          {status}
         </div>
 
         <button

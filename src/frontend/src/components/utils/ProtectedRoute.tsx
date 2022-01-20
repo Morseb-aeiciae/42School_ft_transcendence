@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { Home } from "..";
-import TwoFA from "./Pages/TwoFA";
+import { Home, TwoFA } from "..";
 
 const ProtectedRoute = ({ component: Component, path, ...rest }: any) => {
   return (

@@ -3,7 +3,7 @@ import AuthContext from "../../../context";
 import { Formik, FormikHelpers } from "formik";
 import { apiUser } from "../../../conf/axios.conf";
 import * as Yup from "yup";
-import TwoFA from "../../utils/Pages/TwoFA";
+import { TwoFA } from "../../";
 import { api2fa } from "../../../conf/axios.conf_2fa";
 import { Redirect } from "react-router-dom";
 

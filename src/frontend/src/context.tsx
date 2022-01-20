@@ -5,8 +5,6 @@ const initialContext: AppState = {
   auth: { isLoggedIn: false, user: null },
   users: [],
   updateUser: (b, user) => {},
-  status: "noConnected",
-  changeStatus: (string) => {},
   content: "none",
   changeContent: (string) => {},
   token: "",

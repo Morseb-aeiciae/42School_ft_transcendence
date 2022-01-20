@@ -1,7 +1,10 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, UseGuards } from '@nestjs/common';
+import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 import { UserService } from '../user.service';
 
+
 @Controller('profiles')
+@UseGuards(JwtTwoFactorGuard)
 export class ProfileController {
   constructor(private userService: UserService) {}
 

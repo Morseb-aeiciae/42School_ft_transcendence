@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
-import { apiAuth } from "../../../conf/axios.conf_auth";
-import AuthContext from "../../../context";
-import Loading from "../Loading";
+import { apiAuth } from "../../conf/axios.conf_auth";
+import AuthContext from "../../context";
+import Loading from "../utils/Loading";
 
 const Auth = () => {
   let code = window.location.search;
@@ -23,12 +23,12 @@ const Auth = () => {
             setBan(true);
           } else {
             setUp(true);
-            context.updateToken(response.data.token.accessToken);
             if (response.data.user)
               context.updateUser(true, response.data.user);
             else {
               context.updateUser(true, null);
             }
+            context.updateToken(response.data.token.accessToken);
           }
         })
         .catch((err: any) => {
@@ -41,10 +41,7 @@ const Auth = () => {
     return <Loading />;
   }
   if (ban) {
-    return (
-        <Redirect to="/ban" />
-
-    );
+    return <Redirect to="/ban" />;
   } else if (up) return <Redirect to="/home" />;
   else if (down) {
     return (

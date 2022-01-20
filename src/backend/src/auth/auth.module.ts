@@ -25,6 +25,7 @@ import { TwoFactorAuthenticationService } from './twoFactorAuth/twoFactorAuthent
 		defaultStrategy: 'jwt',
 		property: 'user',
 		session: false,
+		expiresIn: 10
 	}),
 	JwtModule.register({
 		secret: process.env.JWT_SECRET, signOptions: {
