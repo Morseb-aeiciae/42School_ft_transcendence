@@ -7,7 +7,8 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
 import { init_score } from './score_init';
 import { updateScore } from './score';
@@ -17,15 +18,44 @@ import { init_arena } from './arena_init';
 import { init_audio } from './audio_init';
 import { init_plane } from './plane_init';
 import { moveSun } from './update_sun';
-import { moveBall } from './update_ball';
 import { updateAudioVisualizer } from './update_audio';
 import { updateplane } from './update_plane';
 import { launchFirework } from './fireworks';
 
-//Faire une structure de configuration (longueuer/largeur terrain / barres)
+import * as io from 'socket.io-client';
+
+import { apiUser } from "./../../../conf/axios.conf";
+
+let socket: any;
+
+socket = io.connect('http://localhost:3001/', {withCredentials: true});
+
+socket.on("connect", () => {
+    console.log("Successfully connected to the newsocket game ");
+	//Waiting for another player to connect (enter matchmaking)
+});
+
+socket.on("disconnect", () => {
+  console.log("Disconnected to newsocket game ");
+});
+
+var token = localStorage.getItem("token");
+
+console.log(token);
+
+var login: any;
+
+async function get_login ()
+{
+	var user: any = await apiUser.get("/findUserToken");
+	socket.emit('send_username', user.data.login);
+	return (user.data.login);
+};
+
+login = get_login();
 
 var config = {
-	arena_w : 80,
+	arena_w : 100,
 	arena_w_2 : 0,
 	arena_h : 50,
 	arena_h_2 : 0,
@@ -38,6 +68,9 @@ var config = {
 config.paddle_h_2 = config.paddle_h / 2;
 config.arena_h_2 = config.arena_h / 2;
 config.arena_w_2 = config.arena_w / 2;
+
+socket.emit('launch_game', {plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
+							ab: config.arena_h_2 - 1, al: - config.arena_w_2 + 1, ar: config.arena_w_2 - 1});
 
 var canResetCam = false;
 
@@ -113,7 +146,7 @@ finalComposer.addPass( renderScene );
 finalComposer.addPass( finalPass );
 
 
-//Orbit Control (for spectators only) =====
+//Orbit Control =====
 const controls_mouse = new OrbitControls( camera, renderer.domElement );
 controls_mouse.maxPolarAngle = Math.PI * 0.5;
 controls_mouse.minDistance = 1;
@@ -201,11 +234,30 @@ const onKeyDown = function ( event: any )
 	switch ( event.code )
 	{
 		case 'KeyW':
-			controls.Wkey = true;
-			break;
+			{
+				if (controls.Wkey == false)
+				{
+					if (controls.Skey == false)
+						socket.emit('up_paddle');
+					else
+					socket.emit('stop_paddle');
+
+					controls.Wkey = true;
+				}
+				break;
+			}
 		case 'KeyS':
-			controls.Skey = true;
-			break;
+			{
+				if (controls.Skey == false)
+				{
+					if (controls.Wkey == false)
+						socket.emit('down_paddle');
+					else
+						socket.emit('stop_paddle');
+					controls.Skey = true;
+				}
+				break;
+			}
 		case 'ArrowUp':
 			controls.UpArrow = true;
 			break;
@@ -229,12 +281,23 @@ const onKeyUp = function ( event: any )
 	switch ( event.code )
 	{
 		case 'KeyW':
-			controls.Wkey = false;
-			break;
+			{
+				if (controls.Skey == false)
+					socket.emit('stop_paddle');
+				else
+					socket.emit('down_paddle');
+				controls.Wkey = false;
+				break;
+			}
 		case 'KeyS':
-			controls.Skey = false;
-			break;
-
+			{	
+				if (controls.Wkey == false)
+					socket.emit('stop_paddle');
+				else
+					socket.emit('up_paddle');
+				controls.Skey = false;
+				break;
+			}
 		case 'ArrowUp':
 			controls.UpArrow = false;
 			break;
@@ -246,43 +309,6 @@ const onKeyUp = function ( event: any )
 
 document.addEventListener( 'keydown', onKeyDown );
 document.addEventListener( 'keyup', onKeyUp );
-
-// const pointer = new THREE.Vector2();
-
-// function onPointerMove( event ) {
-
-// 	// if ( selectedObject ) {
-
-// 	// 	selectedObject.material.color.set( '#69f' );
-// 	// 	selectedObject = null;
-
-// 	// }
-
-// 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-// 	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-// 	raycaster.setFromCamera( pointer, camera );
-
-	
-// 	// const intersects = raycaster.intersectObject( group, true );
-
-// 	// if ( intersects.length > 0 ) {
-
-// 	// 	const res = intersects.filter( function ( res ) {
-
-// 	// 		return res && res.object;
-
-// 	// 	} )[ 0 ];
-
-// 	// 	if ( res && res.object ) {
-
-// 	// 		selectedObject = res.object;
-// 	// 		selectedObject.material.color.set( '#f00' );
-
-// 	// 	}
-// 	launchFirework(0 , 0, 0, 20);
-// 	}
-// 	document.addEventListener( 'pointermove', onPointerMove );
 
 //Stars
 const vertices = [];
@@ -309,56 +335,108 @@ const points = new THREE.Points( geometry, material );
 
 scene.add( points );
 
-//Fireworks
+socket.on("change_ball_color", (i: number) => {
+	ball_s.after_reset = 0;
+	if (i == 0)
+	{
+		(ball_s.trainee_msh[0] as any).material = ball_s.trainee_cmat;
+		ball_s.trainee_wmat.color.setHex(paddles_s.left_col);
+		(ball_s.trainee_msh[0] as any).material.color.setHex(paddles_s.left_col);
+		ball_s.ball_outline.material.color.setHex(paddles_s.left_col);
+		ball_s.light.color.setHex(paddles_s.left_col);
+	}
+	else
+	{
+		(ball_s.trainee_msh[0] as any).material = ball_s.trainee_cmat;
+		ball_s.trainee_wmat.color.setHex(paddles_s.right_col);
+		(ball_s.trainee_msh[0] as any).material.color.setHex(paddles_s.right_col);
+		ball_s.ball_outline.material.color.setHex(paddles_s.right_col);
+		ball_s.light.color.setHex(paddles_s.right_col);
+	}
+  });
 
-// var firework_n = 50;
+  socket.on("update_positions", (positions: any) => {
+	//Ball
+	// console.log(positions.bpz + " test");
+	ball_s.ball.position.x = positions.bpx;
+	ball_s.ball.position.z = positions.bpz;
+	ball_s.ball_outline.position.x = ball_s.ball.position.x;
+	ball_s.ball_outline.position.z = ball_s.ball.position.z;
+	ball_s.light.position.x = ball_s.ball.position.x;
+	ball_s.light.position.z = ball_s.ball.position.z;
 
+	//Paddles
+	paddles_s.bar_right.position.z = positions.rpz;
+	paddles_s.bar_right_out.position.z = paddles_s.bar_right.position.z;
+	paddles_s.bar_left.position.z = positions.lpz;
+	paddles_s.bar_left_out.position.z = paddles_s.bar_left.position.z;
 
+	//Trainee
+	ball_s.pos_history_x.unshift(ball_s.ball.position.x);
+	ball_s.pos_history_z.unshift(ball_s.ball.position.z);
+	ball_s.pos_history_x.pop();
+	ball_s.pos_history_z.pop();
 
-//La game loop ======
+	if (ball_s.trainee_msh[ball_s.history_depth] != null)
+	{
+		scene.remove(ball_s.trainee_msh[ball_s.history_depth]);
+		ball_s.trainee_msh.pop();
+	}
+	(ball_s.trainee as any) = new THREE.Shape();
+
+	(ball_s.trainee as any).moveTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] - 0.5);
+	(ball_s.trainee as any).lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] - 0.5);
+	(ball_s.trainee as any).lineTo(ball_s.pos_history_x[1], ball_s.pos_history_z[1] + 0.5);
+	(ball_s.trainee as any).lineTo(ball_s.pos_history_x[0], ball_s.pos_history_z[0] + 0.5);
+
+	ball_s.old_trainee_pos_x = ball_s.pos_history_x[0 + 1];
+	ball_s.old_trainee_pos_z = ball_s.pos_history_z[0 + 1] + 0.25;
+	(ball_s.trainee_geo as any) = new THREE.ShapeGeometry((ball_s.trainee as any));
+
+	if (ball_s.after_reset == 1)
+	{
+		ball_s.trainee_wmat.color.setHex(0xffffff);
+		(ball_s.trainee_msh as any).unshift (new THREE.Mesh((ball_s.trainee_geo as any), ball_s.trainee_wmat));
+	}
+	else
+		(ball_s.trainee_msh as any).unshift (new THREE.Mesh((ball_s.trainee_geo as any), ball_s.trainee_cmat));
+
+	(ball_s.trainee_msh[0] as any).rotation.x += PI_s.M_PI_2;
+	(ball_s.trainee_msh[0] as any).layers.enable( BLOOM_SCENE );
+	scene.add(ball_s.trainee_msh[0]);
+
+});
+
+socket.on("update_score", (scores: any) => {
+
+	score_s.LeftScore = scores.ls;
+	score_s.RightScore = scores.rs;
+	updateScore(score_s);
+	launchFirework(scene, ball_s.ball.position.x + 1,0,ball_s.ball.position.z, 20, 25, ball_s.ball_outline.material.color);
+
+	ball_s.ball_outline.material.color.setHex(0xffffff);
+	ball_s.light.color.setHex(0xffffff);
+	ball_s.pos_history_x.unshift(0);
+	ball_s.pos_history_z.unshift(0);
+	ball_s.pos_history_x.pop();
+	ball_s.pos_history_z.pop();
+
+	ball_s.after_reset = 1;
+});
+
+//The render loop ======
 const animate = function ()
 {
 	canResetCam = true;
 	requestAnimationFrame( animate );
-	moveBall(ball_s, paddles_s, arena_s, score_s, scene, PI_s, config, BLOOM_SCENE);
+
 	updateAudioVisualizer(audio_s);
 	IncreaseBrightness = moveSun(SunMesh, IncreaseBrightness);
 	updateplane(plane_s, audio_s);
 
-	if (controls.UpArrow == true)
-	{
-		if (paddles_s.bar_right.position.z - config.paddle_h_2 > arena_s.top.position.z + 1.1)
-		{
-	    	paddles_s.bar_right.position.z -= 0.5;
-			paddles_s.bar_right_out.position.z = paddles_s.bar_right.position.z;
-		}
-	}
-	if (controls.Wkey == true)
-	{
-		if (paddles_s.bar_left.position.z - config.paddle_h_2 > arena_s.top.position.z + 1.1)
-		{
-	    	paddles_s.bar_left.position.z -= 0.5;
-			paddles_s.bar_left_out.position.z = paddles_s.bar_left.position.z;
-		}
-	}
-	if (controls.DownArrow == true)
-	{
-		if (paddles_s.bar_right.position.z + config.paddle_h_2 < arena_s.bot.position.z - 1.1)
-		{
-			paddles_s.bar_right.position.z += 0.5;
-			paddles_s.bar_right_out.position.z = paddles_s.bar_right.position.z;
-		}
-	}
-	if (controls.Skey == true)
-	{
-		if (paddles_s.bar_left.position.z + config.paddle_h_2 < arena_s.bot.position.z - 1.1)
-		{
-			paddles_s.bar_left.position.z += 0.5;
-			paddles_s.bar_left_out.position.z = paddles_s.bar_left.position.z;
-		}
-	}
-	// launchFirework(scene, 0 , 0, 0, 20, 20);
 	bloomComposer.render();
 	finalComposer.render();
 };
+
+
 animate();

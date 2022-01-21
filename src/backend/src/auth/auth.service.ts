@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { response, urlencoded } from 'express';
+import { UserEntity } from 'src/entities/user.entity';
 import { Status } from 'src/status.enum';
 import { UserService } from 'src/user/user.service';
 import { JwtPayload } from './strategy/jwt.strategy';
@@ -45,17 +46,20 @@ export class AuthService {
 
   async login(username: string, mail: string): Promise<any> {
     // find user in db
-    let user = await this.userService.findByUsername(username);
+    let user : UserEntity = await this.userService.findByUsername(username);
     if (user == undefined) {
       user = await this.userService.createUser(username, mail);
     }
     // generate and sign token
     const token = this.getCookieWithJwtAccessToken(user.id);
-
     const isBan: Boolean = false;
-    if (user.isTwoFactorAuthenticationEnabled == true) user = undefined;
-    if (isBan == false && user != undefined)
-      this.userService.changeStatus(user.id, Status.Online);
+    if (user.isTwoFactorAuthenticationEnabled == true) 
+        user = undefined;
+    if (user.isBan == false && user != undefined)
+    {
+      user.status = Status.Online;
+      user.save();
+    }
     const tab = { user, token, isBan };
     tab.user = user;
     tab.token = token;

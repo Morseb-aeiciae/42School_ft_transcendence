@@ -56,7 +56,9 @@ export function init_ball(scene: THREE.Scene, BLOOM_SCENE: number)
 		SpeedLimit : 1.4,
 
 		LeftHit : 0,
-		RightHit : 0
+		RightHit : 0,
+
+		after_reset : 0
 	}
 	return (ball_s);
 }
