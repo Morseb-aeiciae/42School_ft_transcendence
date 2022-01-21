@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loading } from "../..";
 import { apiAdmin } from "../../../conf/axios.conf_admin";
 import { apiChat } from "../../../conf/axios.conf_chats";
@@ -54,6 +54,7 @@ const Chats = (props: any) => {
   const [isLoading, setLoading] = useState(true);
   const [actionChat, setActionChat] = useState({ id: -1, action: 0 });
   const [reload, setReload] = useState(false);
+  const mounted = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     apiChat
@@ -76,6 +77,7 @@ const Chats = (props: any) => {
         .catch((err: any) => {
           console.log("AdminPanel:", err);
         });
+      if (mounted.current === null) return;
       setActionChat({
         id: -1,
         action: 0,
@@ -101,7 +103,7 @@ const Chats = (props: any) => {
     );
   } else if (chats.length > 0) {
     return (
-      <div className="d-flex flex-wrap">
+      <div ref={mounted} className="d-flex flex-wrap">
         {chats.map((c: any, index: number) => (
           <div key={index}>
             {c.id !== props.userId

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loading } from "../..";
 import { apiLocal3001 } from "../../../conf/axios.conf";
 import { apiAdmin } from "../../../conf/axios.conf_admin";
@@ -87,6 +87,7 @@ const Users = (props: any) => {
   const [isLoading, setLoading] = useState(true);
   const [actionUser, setActionUser] = useState({ id: -1, action: 0 });
   const [reload, setReload] = useState(false);
+  const mounted = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     apiLocal3001
@@ -141,6 +142,7 @@ const Users = (props: any) => {
         break;
     }
     if (actionUser.action) {
+      if (mounted.current === null) return;
       setActionUser({
         id: -1,
         action: 0,
@@ -155,7 +157,7 @@ const Users = (props: any) => {
     return <Loading />;
   } else if (users.length > 1) {
     return (
-      <div className="d-flex flex-wrap">
+      <div ref={mounted} className="d-flex flex-wrap">
         {users.map((u: any, index: number) => (
           <div key={index}>
             {u.id !== props.user.id
