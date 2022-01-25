@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { Formik } from "formik";
@@ -44,12 +44,13 @@ const MessageBar = (props: any) => {
   });
 
   useEffect(() => {
-    setTimeout(function () {
-      setR(Math.random());
-    }, 200);
+    // check if the user is ban of the chat and allow to send msg
+
     apiChatAdmin
       .get(`/getAdminInfo/${props.chatId}`)
       .then((response: any) => {
+        if (props.mounted.current === null) return;
+
         const users = response.data;
         users.map((u: any) => {
           if (u.userId === props.id) {
@@ -57,14 +58,17 @@ const MessageBar = (props: any) => {
           }
           return null;
         });
+        setTimeout(function () {
+          setR(Math.random());
+        }, 200);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
       });
-  }, [r, props.chatId, props.id]);
+  }, [r, props.chatId, props.id, props.mounted]);
 
   const submit = (values: any, action: any) => {
-    if (!currentUser.banned)
+    if (!currentUser.banned && values.message)
       apiChat
         .post("/isUserOnChat", { userId: props.id, chatId: props.chatId })
         .then((response: any) => {
@@ -72,27 +76,37 @@ const MessageBar = (props: any) => {
             apiChat
               .post("/addMessage", values)
               .then((response: any) => {
+                // Clear msg sending bar => too long
+                // (document.getElementById("form") as HTMLFormElement).reset();
+                // values.message = "";
                 action.setSubmitting(false);
               })
               .catch((err: any) => {
-                console.log("creating chats", "err");
+                console.log("chats msg bar", err);
               });
           }
         })
         .catch((err: any) => {
           console.log("Chats:", err);
         });
+    else if (!values.message) action.setSubmitting(false);
   };
 
   return (
     <Formik
+      enableReinitialize={true}
       onSubmit={submit}
-      initialValues={{ chatId: props.chatId, userId: props.id, message: "" }}
+      initialValues={{
+        chatId: props.chatId,
+        userId: props.id,
+        message: "",
+      }}
     >
       {({ handleSubmit, handleChange, handleBlur, isSubmitting }) => (
         <form
           className="d-flex flex-column flex-fill m-2"
           onSubmit={handleSubmit}
+          id="form"
         >
           <div className="d-flex flex-row p-1">
             <div className="d-flex flex-row flex-grow-1 align-items-end justify-content-evenly">
@@ -154,6 +168,7 @@ const Messages = (props: any) => {
     apiChat
       .get(`getMessageOfChat/${props.chatId}`)
       .then((response: any) => {
+        if (props.mounted.current === null) return;
         let msgs = response.data;
         //muted contacts
         muted.map(
@@ -170,7 +185,6 @@ const Messages = (props: any) => {
             }))
         );
         // setMsg(msgs);
-
         setTimeout(function () {
           setMsg(msgs);
         }, 100);
@@ -178,7 +192,7 @@ const Messages = (props: any) => {
       .catch((err: any) => {
         console.log("Chat:", err);
       });
-  }, [props.chatId, props.id, msg, blocked, muted]);
+  }, [props.chatId, props.id, msg, blocked, muted, props.mounted]);
 
   return (
     <>
@@ -209,6 +223,7 @@ const FetchChat = (props: any) => {
   });
   const i = props.uId;
   const [displayAdmin, setdisplayAdmin] = useState(false);
+  const mounted = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     apiChatAdmin
@@ -273,9 +288,9 @@ const FetchChat = (props: any) => {
         ) : null}
         <div className="d-flex border bg-primary text-dark">
           <hr />
-          <div className="flex-fill border p-2 m-1 bg-light">
-            <Messages id={i} chatId={props.chatId} />
-            <MessageBar id={i} chatId={props.chatId} />
+          <div ref={mounted} className="flex-fill border p-2 m-1 bg-light">
+            <Messages id={i} chatId={props.chatId} mounted={mounted} />
+            <MessageBar id={i} chatId={props.chatId} mounted={mounted} />
           </div>
           <div className="m-2">
             <ChatUsers id={props.chatId} showUser={props.showUser} />
