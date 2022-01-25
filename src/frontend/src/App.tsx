@@ -173,6 +173,9 @@ const App = () => {
           setLoading(false);
         })
         .catch((err: any) => {
+          console.log(
+            "The token register in your browser isn't valide anymore. You need to relog"
+          );
           localStorage.clear();
           setLog(false);
           setLoading(false);

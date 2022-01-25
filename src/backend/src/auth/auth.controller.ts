@@ -44,50 +44,39 @@ export class AuthController {
     return api42;
   }
 
+  // @Get('redirec')
+  // @UseGuards(SchoolAuthGuard)
+  // async redirectSchool(
+  //   @Res({ passthrough: true }) res: Response,
+  //   @Req() req: Request,
+  // ) {
 
+  // let username, mail;
 
-  @Get('redirec')
-//   @UseGuards(SchoolAuthGuard)
-  async redirectSchool(
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ) {
+  // username = "user_" + compt;
+  // mail = "mail_" + compt + "@gmail.com";
 
-	let username, mail;
+  // compt += 1;
 
-	username = "user_" + compt;
-	mail = "mail_" + compt + "@gmail.com";
-	
-	compt += 1;
-	
-    return await this.authService.login(
-		username,
-		mail,
-	  );
-	
-    // return await this.authService.login(
-    //   req.user['username'],
-    //   req.user['email'],
-    // );
-  }
+  //   return await this.authService.login(
+  // 	username,
+  // 	mail,
+  //   );
 
+  //   // return await this.authService.login(
+  //   //   req.user['username'],
+  //   //   req.user['email'],
+  //   // );
+  // }
 
-/*
   @Get('redirec')
   @UseGuards(SchoolAuthGuard)
   async redirectSchool(@Req() req: Request) {
-    // return await this.authService.login(
-		// username,
-		// mail,
-	  // );
-	
     return await this.authService.login(
       req.user['username'],
       req.user['email'],
     );
   }
-*/
-
 
   /*
   @UseGuards(JwtAuthGuard)
