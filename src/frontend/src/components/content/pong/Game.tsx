@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Iframe from "react-iframe";
+import AuthContext from "../../../context";
 
 const LaunchGameTraining = () => {
   return (
@@ -46,28 +47,36 @@ const LaunchGameOnline = () => {
 
 const Game = () => {
   const [state, setState] = useState("");
-
+  const context = useContext(AuthContext);
+  if (context.auth.user)
+  {
+	  const userId = context.auth.user.id;
+	  localStorage.setItem("id", userId.toString());
+  }
   if (state === "play") return <LaunchGameOnline />;
   else if (state === "train") return <LaunchGameTraining />;
   else
     return (
       <section className="container">
         <div className="row">
+			<p>You can choose between 2 modes : classical or with bonus </p>
           <button
             className="btn btn-secondary btn-lg p-2 mb-2"
             onClick={() => {
               setState("play");
+			  localStorage.setItem("mode", "0");
             }}
           >
-            Play Online
+            Classic
           </button>
           <button
             className="btn btn-secondary btn-lg p-2"
             onClick={() => {
               setState("train");
+			  localStorage.setItem("mode", "1");
             }}
           >
-            Training
+            Bonus
           </button>
         </div>
       </section>

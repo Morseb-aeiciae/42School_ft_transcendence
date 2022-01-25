@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Loading } from "../..";
+import Game from "../pong/Game";
 
 const Duel = (props: any) => {
   const [isLoading, setLoading] = useState(true);
@@ -9,6 +10,7 @@ const Duel = (props: any) => {
   useEffect(() => {
     setLoading(false);
   }, []);
+  localStorage.setItem("duel", target);
 
   if (isLoading) {
     return <Loading />;
@@ -18,6 +20,7 @@ const Duel = (props: any) => {
         <p>
           Duel : id-{target} VS id-{userId} incomming
         </p>
+		<Game />
       </section>
     );
   }

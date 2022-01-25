@@ -41,6 +41,11 @@ socket.on("disconnect", () => {
 
 var token = localStorage.getItem("token");
 
+const a =  localStorage.getItem("mode");
+const b = localStorage.getItem("id");
+const c = localStorage.getItem("duel");
+console.log("mode : " + a + " id : " + b + " duel : " + c);
+
 console.log(token);
 
 var login: any;
