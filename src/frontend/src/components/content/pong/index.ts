@@ -39,25 +39,21 @@ socket.on("disconnect", () => {
   console.log("Disconnected to newsocket game ");
 });
 
-var token = localStorage.getItem("token");
+// var token = localStorage.getItem("token");
 
-const a =  localStorage.getItem("mode");
-const b = localStorage.getItem("id");
-const c = localStorage.getItem("duel");
-console.log("mode : " + a + " id : " + b + " duel : " + c);
+const GameMode =  localStorage.getItem("mode");
+const UserId = localStorage.getItem("id");
+const DuelId = localStorage.getItem("duel");
+console.log("mode : " + GameMode + " id : " + UserId + " duel : " + DuelId);
 
-console.log(token);
+// console.log(token);
 
-var login: any;
-
-async function get_login ()
-{
-	var user: any = await apiUser.get("/findUserToken");
-	socket.emit('send_username', user.data.login);
-	return (user.data.login);
-};
-
-login = get_login();
+// async function get_login ()
+// {
+// 	var user: any = await apiUser.get("/findUserToken");
+// 	socket.emit('send_username', user.data.login);
+// 	return (user.data.login);
+// };
 
 var config = {
 	arena_w : 100,
@@ -70,11 +66,20 @@ var config = {
 	paddle_h : 10,
 	paddle_h_2 : 0
 }
+
+if (GameMode == "1") //aka bonus game
+{
+	config.arena_w = 110;
+	config.paddle_h = 8;
+	config.arena_h = 45;
+}
+
+
 config.paddle_h_2 = config.paddle_h / 2;
 config.arena_h_2 = config.arena_h / 2;
 config.arena_w_2 = config.arena_w / 2;
 
-socket.emit('launch_game', {plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
+socket.emit('launch_game', {mode: GameMode, login: UserId, duel: DuelId, plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
 							ab: config.arena_h_2 - 1, al: - config.arena_w_2 + 1, ar: config.arena_w_2 - 1});
 
 var canResetCam = false;
