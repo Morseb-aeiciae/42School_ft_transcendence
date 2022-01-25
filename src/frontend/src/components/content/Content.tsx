@@ -4,9 +4,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Game from "./pong/Game";
 
 const Content = (props: any) => {
-	localStorage.removeItem("mode");
-	localStorage.removeItem("duel");
-	localStorage.removeItem("id");
+  localStorage.removeItem("mode");
+  localStorage.removeItem("duel");
+  localStorage.removeItem("id");
+  localStorage.removeItem("spect");
   return (
     <Router>
       <Switch>

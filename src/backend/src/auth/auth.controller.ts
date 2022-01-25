@@ -48,9 +48,10 @@ export class AuthController {
   @UseGuards(SchoolAuthGuard)
   async redirectSchool(@Req() req: Request) {
     // return await this.authService.login(
-	// 	username,
-	// 	mail,
-	//   );
+		// username,
+		// mail,
+	  // );
+	
     return await this.authService.login(
       req.user['username'],
       req.user['email'],

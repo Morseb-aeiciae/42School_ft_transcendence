@@ -6,6 +6,7 @@ import { MatchEntity } from 'src/entities/match.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { MatchDTO, UpdateMatchDTO } from 'src/models/match.models';
 import { createQueryBuilder, getRepository, Repository } from 'typeorm';
+import MatchsInfo from './MatchInfo.interface';
 
 @Injectable()
 export class MatchService {
@@ -67,22 +68,57 @@ export class MatchService {
 	}
 
 	async getMatchsOfUser(id: number) {
-		const matchs = await getRepository(Match_userEntity)
-		.createQueryBuilder("match_user")
-		.where("match_user.userId = :id", {id : id})
-		.getMany();
+        const matchsUser = await this.getAllMatchsOfUser(id);
+        let i : number = 0;
+        let retObject : MatchsInfo[] = [];
+        while (i < matchsUser.length)
+        {
+            const matchs = await getRepository(Match_userEntity)
+            .createQueryBuilder("match_user")
+            .where("match_user.matchId = :id", {id : matchsUser[i].id})
+            .getMany();
+            if (matchs)
+            {
+                let infoObject : MatchsInfo = await this.fillMatchInfo(matchs);
+                retObject.push(infoObject);
+            }
+            i++;
+        }
+        return retObject;
+    }
 
-		let i : number = 0;
-		let arr:number[] = [];
-		while (i < matchs.length) {
-			arr[i] = matchs[i].matchId;
-			i++;
-		}
+    async fillMatchInfo(matchs: Match_userEntity[])
+    {
+        let InfoObject : MatchsInfo;
+        InfoObject = {
+            user_1 : await this.UserRepo.findOne(matchs[0].userId),
+            user_2 : await this.UserRepo.findOne(matchs[1].userId),
+            pts_1 : matchs[0].points,
+            pts_2 : matchs[1].points,
+            winner_1 : matchs[0].winner,
+            winner_2 : matchs[1].winner,
+        };
+        return InfoObject;
+    }
 
-		const matchArray = await getRepository(MatchEntity)
-		.createQueryBuilder("match")
-		.where("match.id IN (:...ids)", {ids: arr,})
-		.getMany();
-		return matchArray;
-	}
+    async getAllMatchsOfUser(id:number ){
+        const matchs = await getRepository(Match_userEntity)
+        .createQueryBuilder("match_user")
+        .where("match_user.userId = :id", {id : id})
+        .getMany();
+
+        let i : number = 0;
+        let arr:number[] = [];
+        while (i < matchs.length) {
+            arr[i] = matchs[i].matchId;
+            i++;
+        }
+
+        const matchArray = await getRepository(MatchEntity)
+        .createQueryBuilder("match")
+        .where("match.id IN (:...ids)", {ids: arr,})
+        .getMany();
+        return matchArray;
+    }
+
 }

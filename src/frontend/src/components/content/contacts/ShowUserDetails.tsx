@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Iframe from "react-iframe";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { apiFriends } from "../../../conf/axios.conf_friends";
@@ -12,6 +13,7 @@ const ShowUserDetails = (props: any) => {
   const [add, setAdd] = useState(false);
   const target = props.target;
   const userId = props.userId;
+  const [watch, setWatch] = useState(false);
 
   useEffect(() => {
     apiFriends
@@ -116,6 +118,16 @@ const ShowUserDetails = (props: any) => {
   }
   // /******************     switch      ****************** */
 
+  if (watch) {
+    <Iframe
+      url="../pong3D.html"
+      position="absolute"
+      width="100%"
+      id="myId"
+      className="pong3D"
+      height="50%"
+    />;
+  }
   if (isLoading) {
     return <Loading />;
   } else {
@@ -196,6 +208,21 @@ const ShowUserDetails = (props: any) => {
               </button>
             )}
           </div>
+          {props.target.status === "ongame" ? (
+            <>
+              <br />
+              <button
+                className="btn-small"
+                onClick={() => {
+                  localStorage.setItem("user", props.target.id);
+                  localStorage.setItem("spect", props.userId);
+                  setWatch(true);
+                }}
+              >
+                watch Match
+              </button>
+            </>
+          ) : null}
           {add ? (
             <p>Request already sent, waiting user to add you too</p>
           ) : null}

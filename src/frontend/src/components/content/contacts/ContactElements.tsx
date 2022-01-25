@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import Iframe from "react-iframe";
 import { apiFriends } from "../../../conf/axios.conf_friends";
 
 const ContactElements = (props: any) => {
   const [rmv, setRmv] = useState(false);
+  const [watch, setWatch] = useState(false);
 
   useEffect(() => {
     if (rmv)
@@ -20,6 +22,16 @@ const ContactElements = (props: any) => {
         });
   }, [props, rmv]);
 
+  if (watch) {
+    <Iframe
+      url="../pong3D.html"
+      position="absolute"
+      width="100%"
+      id="myId"
+      className="pong3D"
+      height="50%"
+    />;
+  }
   return (
     <>
       <div className="d-flex flex-row flex-wrap align-content-start">
@@ -66,6 +78,21 @@ const ContactElements = (props: any) => {
           >
             remove
           </button>
+          {props.target.status === "ongame" ? (
+            <>
+              <br />
+              <button
+                className="btn-small"
+                onClick={() => {
+                  localStorage.setItem("user", props.target.id);
+                  localStorage.setItem("spect", props.userId);
+                  setWatch(true);
+                }}
+              >
+                watch Match
+              </button>
+            </>
+          ) : null}
         </div>
       </div>
     </>
