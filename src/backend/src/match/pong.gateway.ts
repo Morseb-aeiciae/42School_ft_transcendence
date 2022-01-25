@@ -1,12 +1,19 @@
 import { SerializeOptions } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from "socket.io";
 
-var users_in_matchmaking : Socket [];
+var users_in_matchmaking_0 : Socket [];
+var users_in_matchmaking_1 : Socket [];
+
+var	game_rooms : number [];
 
 const users_key_status = new Map();
 
-users_in_matchmaking = [];
+const users_id = new Map();
+
+users_in_matchmaking_0 = [];
+users_in_matchmaking_1 = [];
 
 var PI_s = 
 {
@@ -33,26 +40,36 @@ export class PongGateway
 
 	handleConnection(client: Socket)
 	{
-		users_in_matchmaking.push(client);
 		console.log (client.id + " has join the matchmaking");
 		users_key_status.set(client.id, 0);
-
+		users_id.set(client.id, -1);
 		return;
 	};
 
 	handleDisconnect(client: Socket)
 	{
-		let index_of_client: number;
+		let index_of_client_0: number;
+		let index_of_client_1: number;
 
 		console.log (client.id + " has left the matchmaking");
 		// client.leave(client.id);
-		index_of_client = users_in_matchmaking.indexOf(client);
+		index_of_client_0 = users_in_matchmaking_0.indexOf(client);
+		index_of_client_1 = users_in_matchmaking_1.indexOf(client);
 
-		if (index_of_client != -1)
-			users_in_matchmaking.splice(index_of_client, 1); 
-		console.log(users_in_matchmaking.length);
+		if (index_of_client_0 != -1)
+		{
+			users_in_matchmaking_0.splice(index_of_client_0, 1);
+			console.log("users in classic matchmaking : " + users_in_matchmaking_0.length);
+		}
+		else if (index_of_client_1 != -1)
+		{
+			users_in_matchmaking_1.splice(index_of_client_1, 1);
+			console.log("users in bonus matchmaking : " + users_in_matchmaking_1.length);
+		}
+		users_id.delete(client.id);
+		users_key_status.delete(client.id);
 		return;	
-		// delete users_in_matchmaking[index_of_client];
+		// delete users_in_matchmaking_0[index_of_client];
 	};
 
 	@SubscribeMessage('send_username')
@@ -82,25 +99,71 @@ export class PongGateway
 	@SubscribeMessage('launch_game')
 	async launch_game(client: Socket, config)
 	{
-		console.log(client.id + " trys to launch game");
-		if (users_in_matchmaking.length >= 2)
+		console.log(client.id + " aka " + config.login + " trys to launch game, gamemode : " + config.mode + " vs " + config.duel);
+		users_id.set(client.id, config.login);
+
+		let launch_game = -1;
+		
+		if (config.duel == null)
 		{
+		if (config.mode == 0)
+			users_in_matchmaking_0.push(client);
+		else
+			users_in_matchmaking_1.push(client);
+		}
+
+		if (users_in_matchmaking_0.length >= 2) // Classic game
+		{
+			if (users_id.get(users_in_matchmaking_0[0].id) == users_id.get(users_in_matchmaking_0[1].id))
+			{
+				console.log("User allready registered !");
+				users_in_matchmaking_0.pop();
+				return ;
+			}
+			launch_game = 0;
 			var players: Socket[];
 			players = [];
 
-			players[0] = users_in_matchmaking[0];
+			players[0] = users_in_matchmaking_0[0];
 			players[1] = client;
 
-			users_in_matchmaking = [];
+			users_in_matchmaking_0 = [];
 
-			console.log(users_in_matchmaking.length);
+			console.log(users_in_matchmaking_0.length);
 
-			console.log("2 Users or more are looking for a game");
+			console.log("2 Users or more are looking for a Classic game");
 
 			players[0].join(client.id);
 			players[1].join(client.id);
+		}
 
+		else if (users_in_matchmaking_1.length >= 2) // Bonus game
+		{
+			if (users_id.get(users_in_matchmaking_1[0].id) == users_id.get(users_in_matchmaking_1[1].id))
+			{
+				console.log("User allready registered !");
+				users_in_matchmaking_1.pop();
+				return ;
+			}
+			launch_game = 1;
+			var players: Socket[];
+			players = [];
 
+			players[0] = users_in_matchmaking_1[0];
+			players[1] = client;
+
+			users_in_matchmaking_1 = [];
+
+			console.log(users_in_matchmaking_1.length);
+
+			console.log("2 Users or more are looking for a Bonus game");
+
+			players[0].join(client.id);
+			players[1].join(client.id);
+		}
+
+		if (launch_game != -1) //if launch_game == 0 -> Classic game else if == 1 -> Bonus game
+		{
 			var positions = 
 			{
 				paddle_l_pos_z : 0,
@@ -135,7 +198,10 @@ export class PongGateway
 			positions.arena_left_pos = config.al;
 			positions.arena_right_pos = config.ar;
 
-			while (1)
+			let win = 0;
+			let score_limit = 7;
+
+			while (win == 0)
 			{
 				await sleep(10);
 				//Update paddle pos according to players imput
@@ -235,6 +301,8 @@ export class PongGateway
 				if (positions.ball_pos_x <= positions.arena_left_pos)
 				{
 					positions.RightScore += 1;
+					if (positions.RightScore == score_limit)
+						win = 1;
 					this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					resetParams(0, positions);
 				}
@@ -242,6 +310,8 @@ export class PongGateway
 				if (positions.ball_pos_x >= positions.arena_right_pos)
 				{
 					positions.LeftScore += 1;
+					if (positions.LeftScore == score_limit)
+						win = 1;
 					this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					resetParams(1, positions);
 				}
