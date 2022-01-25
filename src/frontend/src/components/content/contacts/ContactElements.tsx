@@ -23,6 +23,7 @@ const ContactElements = (props: any) => {
   }, [props, rmv]);
 
   if (watch) {
+	  return (
     <Iframe
       url="../pong3D.html"
       position="absolute"
@@ -30,7 +31,8 @@ const ContactElements = (props: any) => {
       id="myId"
       className="pong3D"
       height="50%"
-    />;
+    />
+	);
   }
   return (
     <>

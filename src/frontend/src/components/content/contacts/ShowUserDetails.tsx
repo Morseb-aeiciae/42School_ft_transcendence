@@ -119,6 +119,7 @@ const ShowUserDetails = (props: any) => {
   // /******************     switch      ****************** */
 
   if (watch) {
+	  return (
     <Iframe
       url="../pong3D.html"
       position="absolute"
@@ -126,7 +127,7 @@ const ShowUserDetails = (props: any) => {
       id="myId"
       className="pong3D"
       height="50%"
-    />;
+    />);
   }
   if (isLoading) {
     return <Loading />;

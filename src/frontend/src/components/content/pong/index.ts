@@ -42,9 +42,15 @@ socket.on("disconnect", () => {
 // var token = localStorage.getItem("token");
 
 const GameMode =  localStorage.getItem("mode");
-const UserId = localStorage.getItem("id");
+let UserId = localStorage.getItem("id");
 const DuelId = localStorage.getItem("duel");
 console.log("mode : " + GameMode + " id : " + UserId + " duel : " + DuelId);
+
+const user_to_watch = localStorage.getItem("user");
+console.log(user_to_watch);
+
+if (user_to_watch != null)
+	UserId = localStorage.getItem("spect");
 
 // console.log(token);
 
@@ -74,12 +80,26 @@ if (GameMode == "1") //aka bonus game
 	config.arena_h = 45;
 }
 
+socket.on("test", (i:number) =>
+{
+	console.log("front sucesfully called");
+});
+
+// socket.on("change_mode", (i: number) => 
+// {
+// 	config.arena_w = 110;
+// 	config.paddle_h = 8;
+// 	config.arena_h = 45;
+
+// 	arena_s.top.remove();
+// 	arena_s.bot.remove();
+// });
 
 config.paddle_h_2 = config.paddle_h / 2;
 config.arena_h_2 = config.arena_h / 2;
 config.arena_w_2 = config.arena_w / 2;
 
-socket.emit('launch_game', {mode: GameMode, login: UserId, duel: DuelId, plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
+socket.emit('launch_game', {spec: user_to_watch, mode: GameMode, login: UserId, duel: DuelId, plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
 							ab: config.arena_h_2 - 1, al: - config.arena_w_2 + 1, ar: config.arena_w_2 - 1});
 
 var canResetCam = false;

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 0f39d7bcbf66dbbc2d6c5f1574ac4ea7b122a38c
 import React from "react";
 import { AppState } from "./App";
 

@@ -11,6 +11,7 @@ var	game_rooms : number [];
 const users_key_status = new Map();
 
 const users_id = new Map();
+const socket_id = new Map();
 
 users_in_matchmaking_0 = [];
 users_in_matchmaking_1 = [];
@@ -101,8 +102,18 @@ export class PongGateway
 	{
 		console.log(client.id + " aka " + config.login + " trys to launch game, gamemode : " + config.mode + " vs " + config.duel);
 		users_id.set(client.id, config.login);
+		socket_id.set(config.login, client.id);
 
 		let launch_game = -1;
+
+		console.log(config.spec);
+		if (config.spec != null)
+		{
+			console.log(client.id + " is willing to watch a game " + socket_id.get(config.spec));
+			client.join(socket_id.get(config.spec));
+
+			return ;
+		}
 		
 		if (config.duel == null)
 		{
@@ -133,8 +144,14 @@ export class PongGateway
 
 			console.log("2 Users or more are looking for a Classic game");
 
-			players[0].join(client.id);
-			players[1].join(client.id);
+			// console.log("Rooms : " + client.id + " room 2 = " + players[0].id);
+			players[0].join(players[0].id);
+			players[1].join(players[0].id);
+
+			socket_id.set(config.login, players[0].id);
+
+			// players[0].join(players[0].id);
+			// players[1].join(players[0].id);
 		}
 
 		else if (users_in_matchmaking_1.length >= 2) // Bonus game
@@ -158,8 +175,10 @@ export class PongGateway
 
 			console.log("2 Users or more are looking for a Bonus game");
 
-			players[0].join(client.id);
-			players[1].join(client.id);
+			players[0].join(players[0].id);
+			players[1].join(players[0].id);
+
+			socket_id.set(config.login, players[0].id);
 		}
 
 		if (launch_game != -1) //if launch_game == 0 -> Classic game else if == 1 -> Bonus game
@@ -201,7 +220,7 @@ export class PongGateway
 			let win = 0;
 			let score_limit = 7;
 
-			while (win == 0)
+			while (win != 10)
 			{
 				await sleep(10);
 				//Update paddle pos according to players imput
@@ -228,7 +247,7 @@ export class PongGateway
 				positions.ball_pos_x += Math.cos(positions.ball_angle) * positions.ball_speed;
 				positions.ball_pos_z += (Math.sin(positions.ball_angle) * -1) * positions.ball_speed;
 		
-				this.server.to(client.id).emit("update_positions", {bpx: positions.ball_pos_x, bpz: positions.ball_pos_z, lpz: positions.paddle_l_pos_z, rpz: positions.paddle_r_pos_z})
+				this.server.to(players[0].id).emit("update_positions", {bpx: positions.ball_pos_x, bpz: positions.ball_pos_z, lpz: positions.paddle_l_pos_z, rpz: positions.paddle_r_pos_z})
 
 				positions.PosDiff = 0;
 		
@@ -254,7 +273,7 @@ export class PongGateway
 					
 						if (positions.ball_speed < positions.SpeedLimit)
 							positions.ball_speed += positions.SpeedIncrease;
-							this.server.to(client.id).emit("change_ball_color", 0);
+							this.server.to(players[0].id).emit("change_ball_color", 0);
 					}
 					positions.RightHit = 0;
 				}
@@ -282,7 +301,7 @@ export class PongGateway
 					
 					if (positions.ball_speed < positions.SpeedLimit)
 						positions.ball_speed += positions.SpeedIncrease;
-						this.server.to(client.id).emit("change_ball_color", 1);
+						this.server.to(players[0].id).emit("change_ball_color", 1);
 					}
 					positions.LeftHit = 0;
 				}
@@ -303,7 +322,7 @@ export class PongGateway
 					positions.RightScore += 1;
 					if (positions.RightScore == score_limit)
 						win = 1;
-					this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
+					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					resetParams(0, positions);
 				}
 		
@@ -312,7 +331,7 @@ export class PongGateway
 					positions.LeftScore += 1;
 					if (positions.LeftScore == score_limit)
 						win = 1;
-					this.server.to(client.id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
+					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					resetParams(1, positions);
 				}
 			}
