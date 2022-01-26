@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { TwoFA } from "../../";
 import { api2fa } from "../../../conf/axios.conf_2fa";
 import { Redirect } from "react-router-dom";
+import { apiMatch } from "../../../conf/axios.conf_match";
 
 /******************************************/
 //  Error msg from form (Yup)
@@ -33,6 +34,20 @@ const Account = () => {
   const user: any = context.auth.user;
   const username = user.username;
   const email = user.email;
+  const [matches, setMatches] = useState([]);
+
+  useEffect(() => {
+    apiMatch
+      .get(`getMatchsOfUser/${user.id}`)
+      .then((response: any) => {
+        setMatches(response.data);
+      })
+      .catch((err: any) => {
+        console.log("history:", err);
+      });
+  }, [user.id]);
+
+
 
   const userSchema = Yup.object().shape({
     username: Yup.string().min(4, errMinChar(4)).max(10, errMaxChar(10)),
@@ -94,6 +109,8 @@ const Account = () => {
 
   if (twoFA) return <TwoFA />;
   return (
+    <section>
+
     <div className="container-fluid">
       <h1 className="border-bottom pb-3 mb-3">MY ACCOUNT</h1>
       <p className="border-bottom pb-3 mb-3">
@@ -214,6 +231,45 @@ const Account = () => {
         </div>
       </div>
     </div>
+    <div className="border-top pb-3 mb-3">
+
+    {matches ? (
+          <>
+            Match history :
+            {matches.map((m: any, index: number) => (
+              <div
+                key={index}
+                className="d-flex justify-content-between container"
+              >
+                {m.winner_1 ? (
+                  <p className="text-warning">
+                    <i className="fas fa-crown"></i> {m.user_1.username}{" "}
+                    {m.pts_1}
+                  </p>
+                ) : (
+                  <p className="text-info">
+                    {m.user_1.username} {m.pts_1}
+                  </p>
+                )}
+                {m.winner_2 ? (
+                  <p className="text-warning">
+                    {m.user_2.username} {m.pts_2}{" "}
+                    <i className="fas fa-crown"></i>
+                  </p>
+                ) : (
+                  <p className="text-info">
+                    {m.user_2.username} {m.pts_2}
+                  </p>
+                )}
+              </div>
+            ))}
+          </>
+        ) : (
+          <p>No match played yet</p>
+        )}
+
+    </div>
+    </section>
   );
 };
 
