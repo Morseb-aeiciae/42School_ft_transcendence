@@ -9,6 +9,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@seregpie/three.text-sprite": "^3.2.0",
     "axios": "^0.21.4",
     "formik": "^2.2.9",
     "react": "^17.0.2",

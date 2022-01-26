@@ -8,6 +8,7 @@ const Content = (props: any) => {
   localStorage.removeItem("duel");
   localStorage.removeItem("id");
   localStorage.removeItem("spect");
+  localStorage.removeItem("username");
   return (
     <Router>
       <Switch>

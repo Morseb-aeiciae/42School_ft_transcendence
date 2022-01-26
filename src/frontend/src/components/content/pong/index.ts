@@ -1,4 +1,3 @@
-
 import * as THREE from 'three'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -9,6 +8,9 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import TextSprite from '@seregpie/three.text-sprite';
 
 import { init_score } from './score_init';
 import { updateScore } from './score';
@@ -25,6 +27,7 @@ import { launchFirework } from './fireworks';
 import * as io from 'socket.io-client';
 
 import { apiUser } from "./../../../conf/axios.conf";
+import { setTokenSourceMapRange } from 'typescript';
 
 let socket: any;
 
@@ -44,6 +47,7 @@ socket.on("disconnect", () => {
 const GameMode =  localStorage.getItem("mode");
 let UserId = localStorage.getItem("id");
 const DuelId = localStorage.getItem("duel");
+const username = localStorage.getItem("username");
 console.log("mode : " + GameMode + " id : " + UserId + " duel : " + DuelId);
 
 const user_to_watch = localStorage.getItem("user");
@@ -51,15 +55,6 @@ console.log(user_to_watch);
 
 if (user_to_watch != null)
 	UserId = localStorage.getItem("spect");
-
-// console.log(token);
-
-// async function get_login ()
-// {
-// 	var user: any = await apiUser.get("/findUserToken");
-// 	socket.emit('send_username', user.data.login);
-// 	return (user.data.login);
-// };
 
 var config = {
 	arena_w : 100,
@@ -98,9 +93,6 @@ socket.on("test", (i:number) =>
 config.paddle_h_2 = config.paddle_h / 2;
 config.arena_h_2 = config.arena_h / 2;
 config.arena_w_2 = config.arena_w / 2;
-
-socket.emit('launch_game', {spec: user_to_watch, mode: GameMode, login: UserId, duel: DuelId, plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
-							ab: config.arena_h_2 - 1, al: - config.arena_w_2 + 1, ar: config.arena_w_2 - 1});
 
 var canResetCam = false;
 
@@ -364,6 +356,42 @@ const material = new THREE.PointsMaterial( { color: 0x888888 } );
 const points = new THREE.Points( geometry, material );
 
 scene.add( points );
+
+// var Leftcol = 0x0ae0ff;
+// var Rightcol = 0xff13a5;
+
+//=========================User names
+let Left_user = new TextSprite({
+	text: 'Waiting...',
+	alignment: 'left',
+	fontFamily: 'Arial, Helvetica, sans-serif',
+	fontSize: 5,
+	color: '#61e8fa',
+});
+Left_user.position.set(-40,-5,29);
+scene.add(Left_user);
+
+let Right_user = new TextSprite({
+	text: 'Waiting...',
+	alignment: 'right',
+	fontFamily: 'Arial, Helvetica, sans-serif',
+	fontSize: 5,
+	color: '#fc53bc',
+});
+Right_user.position.set(40,-5,29);
+  scene.add(Right_user);
+
+
+socket.emit('launch_game', {spec: user_to_watch, mode: GameMode, login: UserId, username: username, duel: DuelId, plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
+	ab: config.arena_h_2 - 1, al: - config.arena_w_2 + 1, ar: config.arena_w_2 - 1});
+
+	// Right_user.text = "";
+
+socket.on("update_usernames", (names: any) =>
+{
+	Right_user.text = names.right_user;
+	Left_user.text = names.left_user;
+});
 
 socket.on("change_ball_color", (i: number) => {
 	ball_s.after_reset = 0;

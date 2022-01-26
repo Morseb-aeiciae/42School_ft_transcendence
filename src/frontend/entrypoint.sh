@@ -2,6 +2,8 @@
 
 cp -r /app/cache/node_modules/. /app/node_modules/
 
+npm i @seregpie/three.text-sprite
+
 yarn add webpack
 yarn add webpack-cli
 

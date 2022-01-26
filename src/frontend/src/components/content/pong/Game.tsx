@@ -52,6 +52,7 @@ const Game = () => {
   {
 	  const userId = context.auth.user.id;
 	  localStorage.setItem("id", userId.toString());
+	  localStorage.setItem("username", context.auth.user.username);
   }
   if (state === "play") return <LaunchGameOnline />;
   else if (state === "train") return <LaunchGameTraining />;

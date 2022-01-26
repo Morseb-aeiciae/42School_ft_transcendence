@@ -1,6 +1,7 @@
 import { SerializeOptions } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { match } from "assert";
 import { Socket, Server } from "socket.io";
 
 var users_in_matchmaking_0 : Socket [];
@@ -11,11 +12,16 @@ var	game_rooms : number [];
 const users_key_status = new Map();
 
 const users_id = new Map();
+const users_name = new Map();
 const socket_id = new Map();
 
 const duels = new Map();
 const duels_mode = new Map();
 const duels_waiting_room = new Map();
+
+const room_match_info = new Map();
+var	match_info: any [];
+match_info = [];
 
 users_in_matchmaking_0 = [];
 users_in_matchmaking_1 = [];
@@ -77,6 +83,7 @@ export class PongGateway
 
 		users_id.delete(client.id);
 		users_key_status.delete(client.id);
+		users_name.delete(client.id);
 		return;	
 		// delete users_in_matchmaking_0[index_of_client];
 	};
@@ -110,6 +117,7 @@ export class PongGateway
 	{
 		console.log(client.id + " aka " + config.login + " trys to launch game, gamemode : " + config.mode + " vs " + config.duel);
 		users_id.set(client.id, config.login);
+		users_name.set(client.id, config.username);
 		socket_id.set(config.login, client.id);
 
 		let launch_game = -1;
@@ -119,7 +127,9 @@ export class PongGateway
 		{
 			console.log(client.id + " is willing to watch a game " + socket_id.get(config.spec));
 			client.join(socket_id.get(config.spec));
-
+			// console.log(users_name.get(room_match_info.get(socket_id.get(config.spec))[0].id));
+			client.emit("update_usernames", {right_user: room_match_info.get(socket_id.get(config.spec))[1], left_user:  room_match_info.get(socket_id.get(config.spec))[0]});
+			client.emit("update_score", {ls: room_match_info.get(socket_id.get(config.spec))[2], rs: room_match_info.get(socket_id.get(config.spec))[3] });
 			return ;
 		}
 		
@@ -230,6 +240,12 @@ export class PongGateway
 
 		if (launch_game != -1) //if launch_game == 0 -> Classic game else if == 1 -> Bonus game
 		{
+// 			const room_match_info = new Map();
+// var	match_info: any [];
+// match_info = [];
+			this.server.to(players[0].id).emit("update_usernames", {right_user: users_name.get(players[1].id), left_user: users_name.get(players[0].id) });
+			match_info.push(users_name.get(players[0].id), users_name.get(players[1].id), 0, 0);
+			room_match_info.set(players[0].id, match_info);
 			var positions = 
 			{
 				paddle_l_pos_z : 0,
@@ -267,7 +283,7 @@ export class PongGateway
 			let win = 0;
 			let score_limit = 7;
 
-			while (win != 10)
+			while (win != 10)// != 1 pour terminer le match
 			{
 				await sleep(10);
 				//Update paddle pos according to players imput
@@ -370,6 +386,8 @@ export class PongGateway
 					if (positions.RightScore == score_limit)
 						win = 1;
 					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
+					match_info[2] = positions.LeftScore;
+					match_info[3] = positions.RightScore;
 					resetParams(0, positions);
 				}
 		
@@ -379,6 +397,8 @@ export class PongGateway
 					if (positions.LeftScore == score_limit)
 						win = 1;
 					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
+					match_info[2] = positions.LeftScore;
+					match_info[3] = positions.RightScore;
 					resetParams(1, positions);
 				}
 			}

@@ -87,6 +87,7 @@ const ContactElements = (props: any) => {
                 className="btn-small"
                 onClick={() => {
                   localStorage.setItem("user", props.target.id);
+				  localStorage.setItem("username", props.username);
                   localStorage.setItem("spect", props.userId);
                   setWatch(true);
                 }}
