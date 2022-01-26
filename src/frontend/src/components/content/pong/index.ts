@@ -73,12 +73,12 @@ var config = {
 	paddle_h_2 : 0
 }
 
-if (GameMode == "1") //aka bonus game
-{
-	config.arena_w = 110;
-	config.paddle_h = 8;
-	config.arena_h = 45;
-}
+// if (GameMode == "1") //aka bonus game
+// {
+// 	config.arena_w = 110;
+// 	config.paddle_h = 8;
+// 	config.arena_h = 45;
+// }
 
 socket.on("test", (i:number) =>
 {

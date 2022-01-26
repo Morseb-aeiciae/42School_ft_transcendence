@@ -13,6 +13,10 @@ const users_key_status = new Map();
 const users_id = new Map();
 const socket_id = new Map();
 
+const duels = new Map();
+const duels_mode = new Map();
+const duels_waiting_room = new Map();
+
 users_in_matchmaking_0 = [];
 users_in_matchmaking_1 = [];
 
@@ -67,6 +71,10 @@ export class PongGateway
 			users_in_matchmaking_1.splice(index_of_client_1, 1);
 			console.log("users in bonus matchmaking : " + users_in_matchmaking_1.length);
 		}
+		duels.delete(users_id.get(client.id));
+		duels_mode.delete(users_id.get(client.id));
+		duels_waiting_room.delete(users_id.get(client.id));
+
 		users_id.delete(client.id);
 		users_key_status.delete(client.id);
 		return;	
@@ -115,70 +123,109 @@ export class PongGateway
 			return ;
 		}
 		
-		if (config.duel == null)
+		duels.set(config.login, config.duel);
+		duels_mode.set(config.login, config.mode);
+		duels_waiting_room.set(config.login, client);		
+		if (config.duel != null)
 		{
-		if (config.mode == 0)
-			users_in_matchmaking_0.push(client);
+			var duel_game_mode = 0;
+			if (duels.get(config.duel) == config.login)
+			{
+				if (config.mode != duels_mode.get(config.duel))
+				{
+					duel_game_mode = getRandomInt(0, 1);
+				}
+				else
+					duel_game_mode = config.mode;
+				console.log("The other player is willing to FIGHT ! Gamemode : " + duel_game_mode);
+
+				launch_game = duel_game_mode;
+				var players: Socket[];
+				players = [];
+
+				players[0] = duels_waiting_room.get(config.duel);
+				players[1] = client;
+
+				duels.delete(config.login);
+				duels_mode.delete(config.login);
+				duels_waiting_room.delete(config.login);
+
+				duels.delete(config.duel);
+				duels_mode.delete(config.duel);
+				duels_waiting_room.delete(config.duel);
+
+				players[0].join(players[0].id);
+				players[1].join(players[0].id);
+
+				socket_id.set(config.login, players[0].id);
+
+			}
+			else
+			{
+				console.log("Waiting for the other player...");
+			}
+		}
+
 		else
-			users_in_matchmaking_1.push(client);
-		}
-
-		if (users_in_matchmaking_0.length >= 2) // Classic game
 		{
-			if (users_id.get(users_in_matchmaking_0[0].id) == users_id.get(users_in_matchmaking_0[1].id))
+			if (config.mode == 0)
+				users_in_matchmaking_0.push(client);
+			else
+				users_in_matchmaking_1.push(client);
+
+			if (users_in_matchmaking_0.length >= 2) // Classic game
 			{
-				console.log("User allready registered !");
-				users_in_matchmaking_0.pop();
-				return ;
+				if (users_id.get(users_in_matchmaking_0[0].id) == users_id.get(users_in_matchmaking_0[1].id))
+				{
+					console.log("User allready registered !");
+					users_in_matchmaking_0.pop();
+					return ;
+				}
+				launch_game = 0;
+				var players: Socket[];
+				players = [];
+
+				players[0] = users_in_matchmaking_0[0];
+				players[1] = client;
+
+				users_in_matchmaking_0 = [];
+
+				console.log(users_in_matchmaking_0.length);
+
+				console.log("2 Users or more are looking for a Classic game");
+
+				players[0].join(players[0].id);
+				players[1].join(players[0].id);
+
+				socket_id.set(config.login, players[0].id);
 			}
-			launch_game = 0;
-			var players: Socket[];
-			players = [];
 
-			players[0] = users_in_matchmaking_0[0];
-			players[1] = client;
-
-			users_in_matchmaking_0 = [];
-
-			console.log(users_in_matchmaking_0.length);
-
-			console.log("2 Users or more are looking for a Classic game");
-
-			// console.log("Rooms : " + client.id + " room 2 = " + players[0].id);
-			players[0].join(players[0].id);
-			players[1].join(players[0].id);
-
-			socket_id.set(config.login, players[0].id);
-
-			// players[0].join(players[0].id);
-			// players[1].join(players[0].id);
-		}
-
-		else if (users_in_matchmaking_1.length >= 2) // Bonus game
-		{
-			if (users_id.get(users_in_matchmaking_1[0].id) == users_id.get(users_in_matchmaking_1[1].id))
+			else if (users_in_matchmaking_1.length >= 2) // Bonus game
 			{
-				console.log("User allready registered !");
-				users_in_matchmaking_1.pop();
-				return ;
+				if (users_id.get(users_in_matchmaking_1[0].id) == users_id.get(users_in_matchmaking_1[1].id))
+				{
+					console.log("User allready registered !");
+					users_in_matchmaking_1.pop();
+					return ;
+				}
+				launch_game = 1;
+				var players: Socket[];
+				players = [];
+
+				players[0] = users_in_matchmaking_1[0];
+				players[1] = client;
+
+				users_in_matchmaking_1 = [];
+
+				console.log(users_in_matchmaking_1.length);
+
+				console.log("2 Users or more are looking for a Bonus game");
+
+				players[0].join(players[0].id);
+				players[1].join(players[0].id);
+
+				socket_id.set(config.login, players[0].id);
 			}
-			launch_game = 1;
-			var players: Socket[];
-			players = [];
-
-			players[0] = users_in_matchmaking_1[0];
-			players[1] = client;
-
-			users_in_matchmaking_1 = [];
-
-			console.log(users_in_matchmaking_1.length);
-
-			console.log("2 Users or more are looking for a Bonus game");
-
-			players[0].join(players[0].id);
-			players[1].join(players[0].id);
-
-			socket_id.set(config.login, players[0].id);
 		}
 
 		if (launch_game != -1) //if launch_game == 0 -> Classic game else if == 1 -> Bonus game
@@ -359,4 +406,11 @@ function resetParams(x : number, positions: any)
 	positions.ball_speed = positions.BaseSpeed;
 	positions.LeftHit = 0;
 	positions.RightHit = 0;
+};
+
+function getRandomInt(min, max)
+{
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
 };
