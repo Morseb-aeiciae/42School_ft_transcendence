@@ -16,14 +16,23 @@ export class MatchDTO {
 export class UpdateMatchDTO {
 
 	@IsBoolean()
-	winner: boolean;
+	winner_0: boolean;
 
 	@IsNumber()
-	points: number;
+	points_0: number;
 
 	@IsNumber()
-	matchId: number;
+	userId_0: number;
+
+	@IsBoolean()
+	winner_1: boolean;
 
 	@IsNumber()
-	userId: number;
+	points_1: number;
+
+	@IsNumber()
+	userId_1: number;
+
+	@IsBoolean()
+	game_mode: boolean;
 }

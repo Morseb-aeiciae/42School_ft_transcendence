@@ -9,7 +9,7 @@ export class MatchController {
 	constructor(private MatchService: MatchService) {}
 
 	@Post('createMatch')
-	async createMatch(@Body(ValidationPipe) matchInfo: MatchDTO) {
+	async createMatch(@Body(ValidationPipe) matchInfo: UpdateMatchDTO) {
 		return this.MatchService.createMatch(matchInfo);
 	}
 
@@ -23,10 +23,10 @@ export class MatchController {
 		return this.MatchService.getMatch(id);
 	}
 
-	@Post('updateMatch')
-	async updateMatch(@Body(ValidationPipe) updateInfo: UpdateMatchDTO) {
-		return this.MatchService.updateMatch(updateInfo);
-	}
+	// @Post('updateMatch')
+	// async updateMatch(@Body(ValidationPipe) updateInfo: UpdateMatchDTO) {
+	// 	return this.MatchService.updateMatch(updateInfo);
+	// }
 
 	@Get('getMatchsOfUser/:id')
 	async getMatchsOfUser(@Param('id') id: number) {

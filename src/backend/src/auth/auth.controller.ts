@@ -44,31 +44,31 @@ export class AuthController {
     return api42;
   }
 
-  // @Get('redirec')
-  // @UseGuards(SchoolAuthGuard)
-  // async redirectSchool(
-  //   @Res({ passthrough: true }) res: Response,
-  //   @Req() req: Request,
-  // ) {
+//   @Get('redirec')
+//   @UseGuards(SchoolAuthGuard)
+//   async redirectSchool(
+//     @Res({ passthrough: true }) res: Response,
+//     @Req() req: Request,
+//   ) {
 
-  // let username, mail;
+//   let username, mail;
 
-  // username = "user_" + compt;
-  // mail = "mail_" + compt + "@gmail.com";
+//   username = "user_" + compt;
+//   mail = "mail_" + compt + "@gmail.com";
 
-  // compt += 1;
+//   compt += 1;
 
-  //   return await this.authService.login(
-  // 	username,
-  // 	mail,
-  //   );
+//     return await this.authService.login(
+//   	username,
+//   	mail,
+//     );
 
-  //   // return await this.authService.login(
-  //   //   req.user['username'],
-  //   //   req.user['email'],
-  //   // );
-  // }
-
+//     // return await this.authService.login(
+//     //   req.user['username'],
+//     //   req.user['email'],
+//     // );
+//   }
+  
   @Get('redirec')
   @UseGuards(SchoolAuthGuard)
   async redirectSchool(@Req() req: Request) {

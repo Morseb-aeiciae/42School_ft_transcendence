@@ -17,24 +17,22 @@ export class MatchService {
     private Match_userRepo: Repository<Match_userEntity>,
   ) {}
 
-  async createMatch(matchInfo: MatchDTO) {
-    const match = this.MatchRepo.create(matchInfo);
+  async createMatch(matchInfo: UpdateMatchDTO) {
+    const match = this.MatchRepo.create({game_mode: matchInfo.game_mode});
     await match.save();
     await this.addUserToMatch(
-      await this.UserRepo.findOne(matchInfo.user1),
-      match,
-    );
+      matchInfo.userId_0, matchInfo.points_0, matchInfo.winner_0, match);
     await this.addUserToMatch(
-      await this.UserRepo.findOne(matchInfo.user2),
-      match,
-    );
+    matchInfo.userId_1, matchInfo.points_1, matchInfo.winner_1, match);
     return match;
   }
 
-  async addUserToMatch(user: UserEntity, match: MatchEntity) {
+  async addUserToMatch(userId: number, points: number, win: boolean, match: MatchEntity) {
     const match_user = this.Match_userRepo.create();
-    match_user.user = user;
+    match_user.user = await this.UserRepo.findOne(userId);
     match_user.match = match;
+    match_user.points = points;
+    match_user.winner = win;
     await match_user.save();
   }
 
@@ -63,17 +61,17 @@ export class MatchService {
     return match;
   }
 
-  async updateMatch(updateInfo: UpdateMatchDTO) {
-    const match_user = await getRepository(Match_userEntity)
-      .createQueryBuilder('match_user')
-      .where('match_user.matchId = :matchId', { matchId: updateInfo.matchId })
-      .andWhere('match_user.userId = :userId', { userId: updateInfo.userId })
-      .getOne();
-    match_user.winner = updateInfo.winner;
-    match_user.points = updateInfo.points;
-    match_user.save();
-    return match_user;
-  }
+//   async updateMatch(updateInfo: UpdateMatchDTO) {
+//     const match_user = await getRepository(Match_userEntity)
+//       .createQueryBuilder('match_user')
+//       .where('match_user.matchId = :matchId', { matchId: updateInfo.matchId })
+//       .andWhere('match_user.userId = :userId', { userId: updateInfo.userId })
+//       .getOne();
+//     match_user.winner = updateInfo.winner;
+//     match_user.points = updateInfo.points;
+//     match_user.save();
+//     return match_user;
+//   }
 
   async getMatchsOfUser(id: number) {
     const matchsUser = await this.getAllMatchsOfUser(id);
