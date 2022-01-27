@@ -346,7 +346,7 @@ export class PongGateway
 			let win = -1;
 			let score_limit = 7;
 
-			while (win == -1 && !match_info[9])// != 1 pour terminer le match
+			while (win == -1 && match_info[9] != 1)// != 1 pour terminer le match
 			{
 				await sleep(10);
 				//Update paddle pos according to players imput
