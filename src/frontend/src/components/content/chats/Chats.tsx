@@ -11,6 +11,8 @@ import PrivateMsg from "../contacts/PrivateMsg";
 import Duel from "../contacts/Duel";
 
 const displayChatCard = (chat: any, setState: any, leave: any) => {
+  console.log("displayedCard", chat);
+
   if (chat.banned) {
     return (
       <>
@@ -35,14 +37,18 @@ const displayChatCard = (chat: any, setState: any, leave: any) => {
           >
             <i className="fas fa-keyboard fs-1 text-dark"></i>
           </button>
-          <button
-            className="btn btn-danger"
-            onClick={() => {
-              leave(chat.id);
-            }}
-          >
-            <i className="fas fa-trash-alt fs-1"></i>
-          </button>
+          {chat.protection !== 2 ? (
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                leave(chat.id);
+              }}
+            >
+              <i className="fas fa-trash-alt fs-1"></i>
+            </button>
+          ) : (
+            <p>private chat, can't leave</p>
+          )}
         </div>
       </>
     );
