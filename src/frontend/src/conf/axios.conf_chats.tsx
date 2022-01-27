@@ -11,7 +11,7 @@ const configHeaders = {
 };
 
 export const apiChat = axios.create({
-  baseURL: "http://localhost:3001/chat",
+  baseURL: 'http://' + "z4r5p7.42lyon.fr:" + "3001/chat",
   headers: configHeaders,
   timeout: 3000,
 });

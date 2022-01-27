@@ -12,7 +12,7 @@ const configHeaders = {
 };
 
 export const api2fa = axios.create({
-  baseURL: "http://localhost:3001/2fa",
+  baseURL: 'http://' + "z4r5p7.42lyon.fr:" + "3001/2fa",
   headers: configHeaders,
   timeout: 3000,
 });

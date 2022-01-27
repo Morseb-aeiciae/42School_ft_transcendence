@@ -13,7 +13,7 @@ const configHeaders = {
 };
 
 export const apiAuth = axios.create({
-  baseURL: "http://localhost:3001/auth",
+  baseURL: "http://z4r5p7.42lyon.fr:3001/auth",
   headers: configHeaders,
   timeout: 10000,
 });

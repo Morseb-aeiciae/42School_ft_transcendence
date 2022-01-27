@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 const configHeaders = {
+	withCredentials: true, 
   "Access-Control-Allow-Origin": "*",
   "content-type": "application/json",
   Accept: "*/*",
@@ -12,7 +13,7 @@ const configHeaders = {
 };
 
 export const apiMatch = axios.create({
-  baseURL: "http://localhost:3001/match",
+  baseURL: 'http://' + "z4r5p7.42lyon.fr:" + "3001/match",
   headers: configHeaders,
   timeout: 3000,
 });

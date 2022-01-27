@@ -11,7 +11,7 @@ const configHeaders = {
 };
 
 export const apiFriends = axios.create({
-  baseURL: "http://localhost:3001/friends",
+  baseURL: "http://" + "z4r5p7.42lyon.fr:" + ":3001/friends",
   headers: configHeaders,
   timeout: 3000,
 });

@@ -163,7 +163,7 @@ const App = () => {
   let user: User | null = null;
   useEffect(() => {
     const loggedInToken = localStorage.getItem("token");
-
+	console.log("la == ", process.env.REACT_APP_IP);
     if (loggedInToken) {
       apiUser
         .get("/findUserToken")

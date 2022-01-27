@@ -3,7 +3,7 @@ import { MatchService } from './match.service';
 import { MatchDTO, UpdateMatchDTO } from 'src/models/match.models';
 import JwtTwoFactorGuard from 'src/auth/guard/jwt.TwoAuth.guard';
 
-// @UseGuards(JwtTwoFactorGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('match')
 export class MatchController {
 	constructor(private MatchService: MatchService) {}

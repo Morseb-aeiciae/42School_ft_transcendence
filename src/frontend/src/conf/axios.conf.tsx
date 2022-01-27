@@ -11,19 +11,19 @@ const configHeaders = {
 };
 
 export const apiLocal3001 = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: 'http://' + "z4r5p7.42lyon.fr:" + "3001/",
   headers: configHeaders,
   timeout: 3000,
 });
 
 export const apiUser = axios.create({
-  baseURL: "http://localhost:3001/user",
+  baseURL: 'http://' + "z4r5p7.42lyon.fr:" + "3001/user",
   headers: configHeaders,
   timeout: 3000,
 });
 
 const apiUsers = axios.create({
-  baseURL: "http://localhost:3001/users",
+  baseURL: 'http://' + "z4r5p7.42lyon.fr:" + "3001/users",
   headers: configHeaders,
   timeout: 3000,
 });

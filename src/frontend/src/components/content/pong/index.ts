@@ -31,7 +31,7 @@ import { setTokenSourceMapRange } from 'typescript';
 
 let socket: any;
 
-socket = io.connect('http://localhost:3001/', {withCredentials: true});
+socket = io.connect('http://' + "z4r5p7.42lyon.fr" + ":3001/", {withCredentials: true});
 
 socket.on("connect", () => {
     console.log("Successfully connected to the newsocket game ");
@@ -515,7 +515,7 @@ socket.on("End_of_match", (winner: any) =>
 	ft_ending_fireworks(winner.pos, winner.color);
 });
 
-async function ft_ending_fireworks(pos, color)
+async function ft_ending_fireworks(pos: any, color: any)
 {
 	while (ball_s.trainee_msh.length > 0)
 	{
@@ -558,14 +558,14 @@ const animate = function ()
 
 animate();
 
-function getRandomInt(min, max)
+function getRandomInt(min: number, max: number)
 {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min)) + min;
 };
 
-function sleep(ms)
+function sleep(ms: number)
 {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }

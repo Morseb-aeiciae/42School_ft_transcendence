@@ -12,7 +12,7 @@ const configHeaders = {
 };
 
 export const apiAdmin = axios.create({
-  baseURL: "http://localhost:3001/admin",
+  baseURL: 'http://' + "z4r5p7.42lyon.fr:" + ":3001/admin",
   headers: configHeaders,
   timeout: 3000,
 });

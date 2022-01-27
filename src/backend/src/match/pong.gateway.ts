@@ -91,7 +91,7 @@ export class PongGateway
 			{
 				var game_room: string;
 
-				room_match_info.get(socket_id.get(users_id.get(client.id)))[9] == 1;
+				room_match_info.get(socket_id.get(users_id.get(client.id)))[9] = 1;
 				game_room = socket_id.get(users_id.get(client.id));
 				console.log("Game socket = " + game_room);
 				room_match_info.get(socket_id.get(users_id.get(client.id)));
