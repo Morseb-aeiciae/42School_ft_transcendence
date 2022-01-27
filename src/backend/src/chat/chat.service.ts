@@ -326,9 +326,6 @@ export class ChatService {
 			.createQueryBuilder("msg")
 			.where("msg.chatId = :id", {id: chatId})
 			.getMany()
-			
-			return msg;
-		
 		} catch (error) {
 			return error;
 		}

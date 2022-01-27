@@ -19,8 +19,8 @@ import { AdminService } from './admin.service';
 import { Role } from './Role/role.enum';
 import RoleGuard from './Role/roles.guard';
 
-@UseGuards(RoleGuard(Role.Admin))
-@UseGuards(JwtTwoFactorGuard)
+//@UseGuards(RoleGuard(Role.Admin))
+//@UseGuards(JwtTwoFactorGuard)
 @Controller('admin')
 export class AdminController {
   constructor(private adminService: AdminService) {}

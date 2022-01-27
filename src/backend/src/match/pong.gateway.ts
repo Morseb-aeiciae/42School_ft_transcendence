@@ -91,7 +91,7 @@ export class PongGateway
 			{
 				var game_room: string;
 
-				room_match_info.get(socket_id.get(users_id.get(client.id)))[9] == 1;
+				room_match_info.get(socket_id.get(users_id.get(client.id)))[9] = 1;
 				game_room = socket_id.get(users_id.get(client.id));
 				console.log("Game socket = " + game_room);
 				room_match_info.get(socket_id.get(users_id.get(client.id)));
@@ -126,13 +126,6 @@ export class PongGateway
 				room_match_info.delete(socket_id.get(users_id.get(client.id)));
 			}
 		}
-		/*
-		let return_tab: UpdateMatchDTO = {winner_0: win_0, points_0: positions.LeftScore, userId_0: users_id.get(players[0].id),
-			winner_1 : win_1, points_1: positions.RightScore, userId_1: users_id.get(players[1].id), game_mode: config.mode};
-
-			this.MatchService.createMatch(return_tab);
-		*/
-
 
 		duels.delete(users_id.get(client.id));
 		duels_mode.delete(users_id.get(client.id));
@@ -142,7 +135,6 @@ export class PongGateway
 		users_key_status.delete(client.id);
 		users_name.delete(client.id);
 		return;
-		// delete users_in_matchmaking_0[index_of_client];
 	};
 
 	@SubscribeMessage('send_username')
