@@ -17,7 +17,7 @@ export class ChatController {
 	async getAllChats() {
 		return this.ChatService.getAllChats();
 	}
-	
+
 	@Post('createChat')
 	async createChat(@Body(ValidationPipe) chatInfo: ChatDTO) {
 		return this.ChatService.createChat(chatInfo);
