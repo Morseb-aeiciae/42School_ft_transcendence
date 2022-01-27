@@ -87,10 +87,11 @@ export class PongGateway
 		else if (room_match_info.get(socket_id.get(users_id.get(client.id))))
 		{
 			console.log("OUI ON PASSE PAR LA  " + room_match_info.get(socket_id.get(users_id.get(client.id))));
-			if (!room_match_info.get(socket_id.get(users_id.get(client.id)))[9]) //Le joeur était en game
+			if (room_match_info.get(socket_id.get(users_id.get(client.id)))[9] != 1) //Le joeur était en game
 			{
 				var game_room: string;
 
+				room_match_info.get(socket_id.get(users_id.get(client.id)))[9] == 1;
 				game_room = socket_id.get(users_id.get(client.id));
 				console.log("Game socket = " + game_room);
 				room_match_info.get(socket_id.get(users_id.get(client.id)));
@@ -306,7 +307,7 @@ export class PongGateway
 			match_info = [];
 
 			this.server.to(players[0].id).emit("update_usernames", {right_user: users_name.get(players[1].id), left_user: users_name.get(players[0].id) });
-			match_info.push(users_name.get(players[0].id), users_name.get(players[1].id), 0, 0, players[0], players[1], users_id.get(players[0].id), users_id.get(players[1].id), launch_game);
+			match_info.push(users_name.get(players[0].id), users_name.get(players[1].id), 0, 0, players[0], players[1], users_id.get(players[0].id), users_id.get(players[1].id), launch_game, 0);
 			room_match_info.set(players[0].id, match_info);
 			var positions = 
 			{
@@ -465,8 +466,9 @@ export class PongGateway
 				}
 			}
 
-			if (!match_info[9])
+			if (match_info[9] != 1)
 			{
+				match_info[9] = 1;
 				let win_0 = false;
 				let win_1 = false;
 				if (win == 0)
