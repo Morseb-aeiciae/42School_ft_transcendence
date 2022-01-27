@@ -2,6 +2,7 @@ import { SerializeOptions } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { match } from "assert";
+import { ColdObservable } from "rxjs/internal/testing/ColdObservable";
 import { Socket, Server } from "socket.io";
 import { UpdateMatchDTO } from "src/models/match.models";
 import { Status } from "src/status.enum";
@@ -9,13 +10,8 @@ import { Status } from "src/status.enum";
 import { UserService } from "src/user/user.service";
 import { MatchService } from './match.service';
 
-
-let matchservice: MatchService;
-
 var users_in_matchmaking_0 : Socket [];
 var users_in_matchmaking_1 : Socket [];
-
-var	game_rooms : number [];
 
 const users_key_status = new Map();
 
@@ -28,8 +24,6 @@ const duels_mode = new Map();
 const duels_waiting_room = new Map();
 
 const room_match_info = new Map();
-var	match_info: any [];
-match_info = [];
 
 users_in_matchmaking_0 = [];
 users_in_matchmaking_1 = [];
@@ -82,13 +76,62 @@ export class PongGateway
 		{
 			users_in_matchmaking_0.splice(index_of_client_0, 1);
 			console.log("users in classic matchmaking : " + users_in_matchmaking_0.length);
+			await this.userService.changeStatus(users_id.get(client.id), Status.Online);
 		}
 		else if (index_of_client_1 != -1)
 		{
 			users_in_matchmaking_1.splice(index_of_client_1, 1);
 			console.log("users in bonus matchmaking : " + users_in_matchmaking_1.length);
+			await this.userService.changeStatus(users_id.get(client.id), Status.Online);
 		}
-		await this.userService.changeStatus(users_id.get(client.id), Status.Online);
+		else if (room_match_info.get(socket_id.get(users_id.get(client.id))))
+		{
+			console.log("OUI ON PASSE PAR LA  " + room_match_info.get(socket_id.get(users_id.get(client.id))));
+			if (!room_match_info.get(socket_id.get(users_id.get(client.id)))[9]) //Le joeur était en game
+			{
+				var game_room: string;
+
+				game_room = socket_id.get(users_id.get(client.id));
+				console.log("Game socket = " + game_room);
+				room_match_info.get(socket_id.get(users_id.get(client.id)));
+				this.server.to(socket_id.get(users_id.get(client.id))).emit("User_disconected", users_name.get(client.id));
+
+				console.log("A user LEFT A RUNNING MATCH");
+
+
+				console.log(room_match_info.get(socket_id.get(users_id.get(client.id)))[4]);
+
+				let data_picker = socket_id.get(users_id.get(client.id));
+				//Remettre le deux user Online
+				await this.userService.changeStatus(room_match_info.get(data_picker)[6], Status.Online);
+				await this.userService.changeStatus(room_match_info.get(data_picker)[7], Status.Online);
+
+				let win_0 = false;
+				let win_1 = false;
+
+				if (room_match_info.get(data_picker)[4].id == client.id)
+					win_1 = true;
+				else
+					win_0 = true;
+
+				room_match_info.get(data_picker).push(1);
+
+				let return_tab: UpdateMatchDTO = {winner_0: win_0, points_0: room_match_info.get(data_picker)[2], userId_0: room_match_info.get(data_picker)[6],
+					winner_1 : win_1, points_1: room_match_info.get(data_picker)[3], userId_1: room_match_info.get(data_picker)[7], game_mode: room_match_info.get(data_picker)[8]};
+				this.MatchService.createMatch(return_tab);
+			}
+			else
+			{
+				room_match_info.delete(socket_id.get(users_id.get(client.id)));
+			}
+		}
+		/*
+		let return_tab: UpdateMatchDTO = {winner_0: win_0, points_0: positions.LeftScore, userId_0: users_id.get(players[0].id),
+			winner_1 : win_1, points_1: positions.RightScore, userId_1: users_id.get(players[1].id), game_mode: config.mode};
+
+			this.MatchService.createMatch(return_tab);
+		*/
+
 
 		duels.delete(users_id.get(client.id));
 		duels_mode.delete(users_id.get(client.id));
@@ -259,8 +302,11 @@ export class PongGateway
 
 			console.log(await this.userService.findById(users_id.get(players[0].id)));
 
+			var	match_info: any []; //user_name_0, user_name_1, score_0, score_1, socket_0, socket_1, id_0, id_1, game_mode
+			match_info = [];
+
 			this.server.to(players[0].id).emit("update_usernames", {right_user: users_name.get(players[1].id), left_user: users_name.get(players[0].id) });
-			match_info.push(users_name.get(players[0].id), users_name.get(players[1].id), 0, 0);
+			match_info.push(users_name.get(players[0].id), users_name.get(players[1].id), 0, 0, players[0], players[1], users_id.get(players[0].id), users_id.get(players[1].id), launch_game);
 			room_match_info.set(players[0].id, match_info);
 			var positions = 
 			{
@@ -299,7 +345,7 @@ export class PongGateway
 			let win = -1;
 			let score_limit = 7;
 
-			while (win == -1)// != 1 pour terminer le match
+			while (win == -1 && !match_info[9])// != 1 pour terminer le match
 			{
 				await sleep(10);
 				//Update paddle pos according to players imput
@@ -418,16 +464,26 @@ export class PongGateway
 					resetParams(1, positions);
 				}
 			}
-			let win_0 = false;
-			let win_1 = false;
-			if (win == 0)
-				win_0 = true;
-			else
-				win_1 = true;
-			let return_tab: UpdateMatchDTO = {winner_0: win_0, points_0: positions.LeftScore, userId_0: users_id.get(players[0].id),
-			winner_1 : win_1, points_1: positions.RightScore, userId_1: users_id.get(players[1].id), game_mode: config.mode};
 
-			this.MatchService.createMatch(return_tab);
+			if (!match_info[9])
+			{
+				let win_0 = false;
+				let win_1 = false;
+				if (win == 0)
+				{
+					win_0 = true;
+					this.server.to(players[0].id).emit("End_of_match", {name :users_name.get(players[0].id), pos: "left"});
+				}
+				else
+				{
+					win_1 = true;
+					this.server.to(players[0].id).emit("End_of_match", {name: users_name.get(players[1].id), pos : "right"});
+				}
+				let return_tab: UpdateMatchDTO = {winner_0: win_0, points_0: positions.LeftScore, userId_0: users_id.get(players[0].id),
+				winner_1 : win_1, points_1: positions.RightScore, userId_1: users_id.get(players[1].id), game_mode: config.mode};
+
+				this.MatchService.createMatch(return_tab);
+			}
 			// console.log(await this.MatchService.getMatchsOfUser(users_id.get(players[1].id)));
 		}
 	};

@@ -361,26 +361,14 @@ scene.add( points );
 // var Rightcol = 0xff13a5;
 
 //=========================User names
-let Left_user = new TextSprite({
-	text: 'Waiting...',
-	alignment: 'left',
+let vs_text = new TextSprite({
+	text: 'VS',
 	fontFamily: 'Arial, Helvetica, sans-serif',
 	fontSize: 5,
-	color: '#61e8fa',
+	color: '#ffffff',
 });
-Left_user.position.set(-40,-5,29);
-scene.add(Left_user);
-
-let Right_user = new TextSprite({
-	text: 'Waiting...',
-	alignment: 'right',
-	fontFamily: 'Arial, Helvetica, sans-serif',
-	fontSize: 5,
-	color: '#fc53bc',
-});
-Right_user.position.set(40,-5,29);
-  scene.add(Right_user);
-
+vs_text.position.set(0,-5,29);
+scene.add(vs_text);
 
 socket.emit('launch_game', {spec: user_to_watch, mode: GameMode, login: UserId, username: username, duel: DuelId, plx: - (config.arena_w / 2 - 5), prx: (config.arena_w / 2 - 5), ph_2: config.paddle_h_2, at: - config.arena_h_2 + 1,
 	ab: config.arena_h_2 - 1, al: - config.arena_w_2 + 1, ar: config.arena_w_2 - 1});
@@ -389,8 +377,25 @@ socket.emit('launch_game', {spec: user_to_watch, mode: GameMode, login: UserId, 
 
 socket.on("update_usernames", (names: any) =>
 {
-	Right_user.text = names.right_user;
-	Left_user.text = names.left_user;
+	let Left_user = new TextSprite({
+		text: names.left_user,
+		alignment: 'left',
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		fontSize: 5,
+		color: '#61e8fa',
+	});
+	Left_user.position.set(-40,-5,29);
+	scene.add(Left_user);
+	
+	let Right_user = new TextSprite({
+		text: names.right_user,
+		alignment: 'right',
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		fontSize: 5,
+		color: '#fc53bc',
+	});
+	Right_user.position.set(40,-5,29);
+	  scene.add(Right_user);
 });
 
 socket.on("change_ball_color", (i: number) => {
@@ -482,6 +487,60 @@ socket.on("update_score", (scores: any) => {
 	ball_s.after_reset = 1;
 });
 
+socket.on("User_disconected", (name: string) =>
+{
+	let deco_text = new TextSprite({
+		text: name + " left the match...",
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		fontSize: 5,
+		color: '#ffffff',
+
+	});
+	deco_text.position.set(0,+10,0);
+	scene.add(deco_text);
+});
+
+socket.on("End_of_match", (winner: any) =>
+{
+	let winner_text = new TextSprite({
+		text: winner.name + " won the match !",
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		fontSize: 5,
+		color: '#ffffff',
+
+	});
+	winner_text.position.set(0,+10,0);
+	scene.add(winner_text);
+
+	ft_ending_fireworks(winner.pos, winner.color);
+});
+
+async function ft_ending_fireworks(pos, color)
+{
+	while (ball_s.trainee_msh.length > 0)
+	{
+		scene.remove(ball_s.trainee_msh[ball_s.trainee_msh.length - 1]);
+		ball_s.trainee_msh.pop();
+		await sleep(10);
+	}
+
+	if (pos == "left")
+		color = paddles_s.left_col;
+	else
+		color = paddles_s.right_col;
+	
+	let rdX: number;
+	let rdZ: number;
+
+	while (1)
+	{
+		rdX = getRandomInt(-60, 60);
+		rdZ = getRandomInt(-30, 40);
+		launchFirework(scene, rdX,0, rdZ, 20, 25, color);
+		await sleep(getRandomInt(1500, 2000));
+	}
+};
+
 //The render loop ======
 const animate = function ()
 {
@@ -498,3 +557,17 @@ const animate = function ()
 
 
 animate();
+
+function getRandomInt(min, max)
+{
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
+};
+
+function sleep(ms)
+{
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
