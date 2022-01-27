@@ -83,6 +83,7 @@ const Chats = (props: any) => {
         action: 0,
       });
       setTimeout(function () {
+      if (mounted.current === null) return;
         setReload(!reload);
       }, 100);
     }

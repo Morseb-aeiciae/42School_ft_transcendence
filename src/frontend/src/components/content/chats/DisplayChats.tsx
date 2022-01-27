@@ -50,10 +50,10 @@ const MessageBar = (props: any) => {
       .get(`/getAdminInfo/${props.chatId}`)
       .then((response: any) => {
         if (props.mounted.current === null) return;
-
         const users = response.data;
         users.map((u: any) => {
           if (u.userId === props.id) {
+            if (props.mounted.current === null) return 0;
             setCurrentUser(u);
           }
           return null;
@@ -186,6 +186,7 @@ const Messages = (props: any) => {
         );
         // setMsg(msgs);
         setTimeout(function () {
+          if (props.mounted.current === null) return;
           setMsg(msgs);
         }, 100);
       })
@@ -197,7 +198,10 @@ const Messages = (props: any) => {
   return (
     <>
       {msg.map((m: any, index: number) => (
-        <div key={index}>
+        <div
+          key={index}
+          className="d-flex align-items-start justify-content-start"
+        >
           {m.userId} : {m.message}
         </div>
       ))}

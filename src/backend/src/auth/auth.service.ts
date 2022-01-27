@@ -97,7 +97,7 @@ export class AuthService {
     const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
     const accessToken = this.jwtService.sign(payload);
     return {
-      expiresIn: 3600,
+      expiresIn: 36000,
       accessToken,
     };
   }

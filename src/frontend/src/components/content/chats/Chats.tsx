@@ -11,8 +11,6 @@ import PrivateMsg from "../contacts/PrivateMsg";
 import Duel from "../contacts/Duel";
 
 const displayChatCard = (chat: any, setState: any, leave: any) => {
-  console.log("displayedCard", chat);
-
   if (chat.banned) {
     return (
       <>

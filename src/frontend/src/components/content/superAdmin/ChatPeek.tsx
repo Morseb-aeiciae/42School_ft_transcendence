@@ -11,6 +11,7 @@ const ChatPeek = (props: any) => {
       .then((response: any) => {
         if (mounted.current === null) return;
         setTimeout(() => {
+        if (mounted.current === null) return;
           setMsg(response.data);
         }, 200);
       })
