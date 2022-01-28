@@ -307,12 +307,17 @@ export class PongGateway
 				paddle_r_pos_z : 0,
 				paddle_l_pos_x : 0,
 				paddle_r_pos_x : 0,
-				paddle_h_2 : 0,
+				paddle_l_h_2: 0,
+				paddle_r_h_2 : 0,
+				bonus_owner: -1,
+
 				arena_top_pos : 0,
 				arena_bot_pos : 0,
+				arena_bot_pos_2 : 0,
 			
 				arena_left_pos : 0,
 				arena_right_pos : 0,
+				arena_right_pos_2 : 0,
 				ball_pos_x : 0,
 				ball_pos_z : 0,
 				ball_speed : 0.5,
@@ -324,16 +329,27 @@ export class PongGateway
 				RightHit : 0,
 				LeftHit : 0,
 				RightScore : 0,
-				LeftScore : 0
+				LeftScore : 0,
+
+				bonus_state: 0,
+				bonus_type: 0,
+				bonus_pos_x: 0,
+				bonus_pos_z: 0,
+				bonus_counter: 0
 			}
 
 			positions.paddle_l_pos_x = config.plx;
 			positions.paddle_r_pos_x = config.prx;
-			positions.paddle_h_2 = config.ph_2;
+			positions.paddle_l_h_2 = config.ph_2;
+			positions.paddle_r_h_2 = config.ph_2;
 			positions.arena_top_pos = config.at;
 			positions.arena_bot_pos = config.ab;
+			positions.arena_bot_pos_2 = config.ab/2;
 			positions.arena_left_pos = config.al;
 			positions.arena_right_pos = config.ar;
+			positions.arena_right_pos_2 = config.ar/2;
+
+			positions.bonus_counter = getRandomInt(500, 1000);
 
 			let win = -1;
 			let score_limit = 7;
@@ -341,23 +357,24 @@ export class PongGateway
 			while (win == -1 && match_info[9] != 1)// != 1 pour terminer le match
 			{
 				await sleep(10);
+				positions.bonus_counter--;
 				//Update paddle pos according to players imput
-				if (users_key_status.get(players[1].id) == 1 && positions.paddle_r_pos_z - positions.paddle_h_2 > positions.arena_top_pos + 0.1)
+				if (users_key_status.get(players[1].id) == 1 && positions.paddle_r_pos_z - positions.paddle_r_h_2  > positions.arena_top_pos + 0.1)
 				{
 					positions.paddle_r_pos_z -= 0.5;
 				}
 
-				else if (users_key_status.get(players[1].id) == -1 && positions.paddle_r_pos_z + positions.paddle_h_2 < positions.arena_bot_pos - 0.1)
+				else if (users_key_status.get(players[1].id) == -1 && positions.paddle_r_pos_z + positions.paddle_r_h_2  < positions.arena_bot_pos - 0.1)
 				{
 					positions.paddle_r_pos_z += 0.5;
 				}
 
-				if (users_key_status.get(players[0].id) == 1 && positions.paddle_l_pos_z - positions.paddle_h_2 > positions.arena_top_pos + 0.1)
+				if (users_key_status.get(players[0].id) == 1 && positions.paddle_l_pos_z - positions.paddle_l_h_2  > positions.arena_top_pos + 0.1)
 				{
 					positions.paddle_l_pos_z -= 0.5;
 				}
 
-				else if (users_key_status.get(players[0].id) == -1 && positions.paddle_l_pos_z + positions.paddle_h_2 < positions.arena_bot_pos - 0.1)
+				else if (users_key_status.get(players[0].id) == -1 && positions.paddle_l_pos_z + positions.paddle_l_h_2  < positions.arena_bot_pos - 0.1)
 				{
 					positions.paddle_l_pos_z += 0.5;
 				}
@@ -369,7 +386,8 @@ export class PongGateway
 
 				positions.PosDiff = 0;
 		
-				if (positions.ball_pos_x >= positions.paddle_l_pos_x - 1 && positions.ball_pos_x <= positions.paddle_l_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_l_pos_z + positions.paddle_h_2 && positions.ball_pos_z + 0.5 >= positions.paddle_l_pos_z - positions.paddle_h_2))
+				//Hit left bar
+				if (positions.ball_pos_x >= positions.paddle_l_pos_x - 1 && positions.ball_pos_x <= positions.paddle_l_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_l_pos_z + positions.paddle_l_h_2  && positions.ball_pos_z + 0.5 >= positions.paddle_l_pos_z - positions.paddle_l_h_2 ))
 				{
 					if (positions.LeftHit == 0)
 					{
@@ -392,12 +410,25 @@ export class PongGateway
 						if (positions.ball_speed < positions.SpeedLimit)
 							positions.ball_speed += positions.SpeedIncrease;
 							this.server.to(players[0].id).emit("change_ball_color", 0);
+							positions.bonus_owner = 0;
+
+						if (launch_game == 1 && positions.bonus_state == 0 && positions.bonus_counter <= 0)
+						{
+							positions.bonus_counter = getRandomInt(500, 1000);
+							positions.bonus_state = 1;
+							positions.bonus_type = getRandomInt(0, 10);
+							console.log("Bonus type = " + positions.bonus_type);
+							positions.bonus_pos_x = getRandomInt(-positions.arena_right_pos_2, positions.arena_right_pos_2);
+							positions.bonus_pos_z = getRandomInt(-positions.arena_bot_pos_2, positions.arena_bot_pos_2);
+							positions.bonus_pos_z = 0;//Debug
+							this.server.to(players[0].id).emit("spawn_bonus", {isbonus: positions.bonus_type, bx: positions.bonus_pos_x, bz: positions.bonus_pos_z});
+						}
 					}
 					positions.RightHit = 0;
 				}
 		
 				//Hit right bar
-				if (positions.ball_pos_x >= positions.paddle_r_pos_x - 1 && positions.ball_pos_x <= positions.paddle_r_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_r_pos_z + positions.paddle_h_2 && positions.ball_pos_z + 0.5 >= positions.paddle_r_pos_z - positions.paddle_h_2))
+				else if (positions.ball_pos_x >= positions.paddle_r_pos_x - 1 && positions.ball_pos_x <= positions.paddle_r_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.paddle_r_pos_z + positions.paddle_r_h_2 && positions.ball_pos_z + 0.5 >= positions.paddle_r_pos_z - positions.paddle_r_h_2 ))
 				{
 					if (positions.RightHit == 0)
 					{
@@ -420,10 +451,46 @@ export class PongGateway
 					if (positions.ball_speed < positions.SpeedLimit)
 						positions.ball_speed += positions.SpeedIncrease;
 						this.server.to(players[0].id).emit("change_ball_color", 1);
+						positions.bonus_owner = 1;
+					}
+					if (launch_game == 1 && positions.bonus_state == 0 && positions.bonus_counter <= 0)
+					{
+						positions.bonus_counter = getRandomInt(500, 1000);
+						positions.bonus_state = 1;
+						positions.bonus_type = getRandomInt(0, 10);
+						console.log("Bonus type = " + positions.bonus_type);
+						positions.bonus_pos_x = getRandomInt(-positions.arena_right_pos_2, positions.arena_right_pos_2);
+						positions.bonus_pos_z = getRandomInt(-positions.arena_bot_pos_2, positions.arena_bot_pos_2);
+						positions.bonus_pos_z = 0;//Debug
+						this.server.to(players[0].id).emit("spawn_bonus", {isbonus: positions.bonus_type, bx: positions.bonus_pos_x, bz: positions.bonus_pos_z});
 					}
 					positions.LeftHit = 0;
 				}
 
+				//Bonus Hit condition
+				else if (positions.bonus_state == 1 && positions.bonus_owner != -1 && positions.ball_pos_x + 0.5 >= positions.bonus_pos_x - 1 && positions.ball_pos_x - 0.5 <= positions.bonus_pos_x + 1 && (positions.ball_pos_z - 0.5 <= positions.bonus_pos_z + 1 && positions.ball_pos_z + 0.5 >= positions.bonus_pos_z - 1 ))
+				{
+					positions.bonus_state = 0;
+					if (positions.bonus_owner == 0)
+					{
+						if (positions.bonus_type < 5)//Le joueur prend un malus
+						{
+							positions.paddle_l_h_2 = config.ph_2 / 2;
+						}
+						else
+							positions.paddle_l_h_2 = config.ph_2 + config.ph_2 / 2;
+					}
+					else
+					{
+						if (positions.bonus_type < 5)
+						{
+							positions.paddle_r_h_2 = config.ph_2 / 2;
+						}
+						else
+							positions.paddle_r_h_2 = config.ph_2 + config.ph_2 / 2;
+					}
+					this.server.to(players[0].id).emit("bonus_taken", {taker: positions.bonus_owner, bx: positions.bonus_pos_x, bz: positions.bonus_pos_z});
+				}
 				//Top and bot hit conditions
 				if (positions.ball_pos_z <= positions.arena_top_pos || positions.ball_pos_z >= positions.arena_bot_pos)
 				{
@@ -443,10 +510,10 @@ export class PongGateway
 					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					match_info[2] = positions.LeftScore;
 					match_info[3] = positions.RightScore;
-					resetParams(0, positions);
+					resetParams(0, positions, config);
 				}
 		
-				if (positions.ball_pos_x >= positions.arena_right_pos)
+				else if (positions.ball_pos_x >= positions.arena_right_pos)
 				{
 					positions.LeftScore += 1;
 					if (positions.LeftScore == score_limit)
@@ -454,7 +521,7 @@ export class PongGateway
 					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					match_info[2] = positions.LeftScore;
 					match_info[3] = positions.RightScore;
-					resetParams(1, positions);
+					resetParams(1, positions, config);
 				}
 			}
 
@@ -488,13 +555,16 @@ function sleep(ms)
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function resetParams(x : number, positions: any)
+function resetParams(x : number, positions: any, config: any)
 {
 	positions.ball_pos_x = 0;
 	positions.ball_pos_z = 0;
 
 	positions.paddle_l_pos_z = 0;
 	positions.paddle_r_pos_z = 0;
+
+	positions.paddle_l_h_2 = config.ph_2;
+	positions.paddle_r_h_2 = config.ph_2;
 
 	if (x == 0)
 		positions.ball_angle = Math.PI;
@@ -503,6 +573,7 @@ function resetParams(x : number, positions: any)
 	positions.ball_speed = positions.BaseSpeed;
 	positions.LeftHit = 0;
 	positions.RightHit = 0;
+	positions.bonus_owner = -1;
 };
 
 function getRandomInt(min, max)
