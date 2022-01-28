@@ -557,6 +557,30 @@ socket.on("bonus_taken", (infos: any) =>
 	bonus_s.bonus_outline.material.color.setHex(0x0000ff);
 });
 
+socket.on("update_paddles_size", (infos: any) =>
+{
+	if (infos.lp == 1)
+	{
+		paddles_s.bar_left.scale.set(1, 1, 1.5);
+		paddles_s.bar_left_out.scale.set(1, 1, 1.5);
+	}
+	else if (infos.lp == -1)
+	{
+		paddles_s.bar_left.scale.set(1, 1, 0.5);
+		paddles_s.bar_left_out.scale.set(1, 1, 0.5);
+	}
+	if (infos.rp == 1)
+	{
+		paddles_s.bar_right.scale.set(1, 1, 1.5);
+		paddles_s.bar_right_out.scale.set(1, 1, 1.5);
+	}
+	else if (infos.rp == -1)
+	{
+		paddles_s.bar_right.scale.set(1, 1, 0.5);
+		paddles_s.bar_right_out.scale.set(1, 1, 0.5);
+	}
+});
+
 socket.on("update_score", (scores: any) => {
   score_s.LeftScore = scores.ls;
   score_s.RightScore = scores.rs;

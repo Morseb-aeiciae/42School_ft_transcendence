@@ -179,6 +179,7 @@ export class PongGateway
 			// console.log(users_name.get(room_match_info.get(socket_id.get(config.spec))[0].id));
 			client.emit("update_usernames", {right_user: room_match_info.get(socket_id.get(config.spec))[1], left_user:  room_match_info.get(socket_id.get(config.spec))[0]});
 			client.emit("update_score", {ls: room_match_info.get(socket_id.get(config.spec))[2], rs: room_match_info.get(socket_id.get(config.spec))[3] });
+			client.emit("update_paddles_size", {lp: room_match_info.get(socket_id.get(config.spec))[10], rp: room_match_info.get(socket_id.get(config.spec))[11] });
 			return ;
 		}
 		
@@ -295,11 +296,12 @@ export class PongGateway
 
 			console.log(await this.userService.findById(users_id.get(players[0].id)));
 
-			var	match_info: any []; //user_name_0, user_name_1, score_0, score_1, socket_0, socket_1, id_0, id_1, game_mode
+			var	match_info: any []; //user_name_0, user_name_1, score_0, score_1, socket_0, socket_1, id_0, id_1, game_mode, is_game_ended, paddle_l_size, paddle_r_size -> 0 = normal -1 = small 1 = huge
 			match_info = [];
 
 			this.server.to(players[0].id).emit("update_usernames", {right_user: users_name.get(players[1].id), left_user: users_name.get(players[0].id) });
-			match_info.push(users_name.get(players[0].id), users_name.get(players[1].id), 0, 0, players[0], players[1], users_id.get(players[0].id), users_id.get(players[1].id), launch_game, 0);
+			match_info.push(users_name.get(players[0].id), users_name.get(players[1].id), 0, 0, players[0], players[1],
+			users_id.get(players[0].id), users_id.get(players[1].id), launch_game, 0, 0, 0);
 			room_match_info.set(players[0].id, match_info);
 			var positions = 
 			{
@@ -476,18 +478,26 @@ export class PongGateway
 						if (positions.bonus_type < 5)//Le joueur prend un malus
 						{
 							positions.paddle_l_h_2 = config.ph_2 / 2;
+							match_info[10] = -1;
 						}
 						else
+						{
 							positions.paddle_l_h_2 = config.ph_2 + config.ph_2 / 2;
+							match_info[10] = 1;
+						}
 					}
 					else
 					{
 						if (positions.bonus_type < 5)
 						{
 							positions.paddle_r_h_2 = config.ph_2 / 2;
+							match_info[11] = -1;
 						}
 						else
+						{
 							positions.paddle_r_h_2 = config.ph_2 + config.ph_2 / 2;
+							match_info[11] = 1;
+						}
 					}
 					this.server.to(players[0].id).emit("bonus_taken", {taker: positions.bonus_owner, bx: positions.bonus_pos_x, bz: positions.bonus_pos_z});
 				}
@@ -510,7 +520,7 @@ export class PongGateway
 					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					match_info[2] = positions.LeftScore;
 					match_info[3] = positions.RightScore;
-					resetParams(0, positions, config);
+					resetParams(0, positions, config, match_info);
 				}
 		
 				else if (positions.ball_pos_x >= positions.arena_right_pos)
@@ -521,7 +531,7 @@ export class PongGateway
 					this.server.to(players[0].id).emit("update_score", {ls: positions.LeftScore, rs: positions.RightScore});
 					match_info[2] = positions.LeftScore;
 					match_info[3] = positions.RightScore;
-					resetParams(1, positions, config);
+					resetParams(1, positions, config, match_info);
 				}
 			}
 
@@ -555,7 +565,7 @@ function sleep(ms)
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function resetParams(x : number, positions: any, config: any)
+function resetParams(x : number, positions: any, config: any, match_info: any)
 {
 	positions.ball_pos_x = 0;
 	positions.ball_pos_z = 0;
@@ -565,6 +575,8 @@ function resetParams(x : number, positions: any, config: any)
 
 	positions.paddle_l_h_2 = config.ph_2;
 	positions.paddle_r_h_2 = config.ph_2;
+	match_info[10] = 0;
+	match_info[11] = 1;
 
 	if (x == 0)
 		positions.ball_angle = Math.PI;
