@@ -24,6 +24,7 @@ import { TwoFactorAuthenticationCodeDto } from 'src/models/TwoFactorAuthenticati
 import { AuthService } from 'src/auth/auth.service';
 import { authenticator } from 'otplib';
 import JwtTwoFactorGuard from '../guard/jwt.TwoAuth.guard';
+import { Status } from 'src/status.enum';
 
 @Controller('2fa')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -64,6 +65,8 @@ export class TwoFactorAuthenticationController {
       request.user.id,
       true,
     );
+    request.user.status = Status.Online;
+    request.user.save();
     const user = request.user;
     const tab = { user, accessToken };
     return tab;

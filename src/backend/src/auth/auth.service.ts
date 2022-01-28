@@ -53,9 +53,8 @@ export class AuthService {
     // generate and sign token
     const token = this.getCookieWithJwtAccessToken(user.id);
     const isBan: Boolean = false;
-    if (user.isTwoFactorAuthenticationEnabled == true) 
-        user = undefined;
-    if (user.isBan == false && user != undefined)
+    console.log("LA    = ", user.isBan);
+    if (user.isTwoFactorAuthenticationEnabled == false && user.isBan == false)
     {
       user.status = Status.Online;
       user.save();
@@ -64,6 +63,8 @@ export class AuthService {
     tab.user = user;
     tab.token = token;
     tab.isBan = user.isBan;
+    if (user.isTwoFactorAuthenticationEnabled == true) 
+      tab.user = undefined;
     return tab;
   }
   /*

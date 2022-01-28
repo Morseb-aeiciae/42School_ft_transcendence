@@ -26,7 +26,8 @@ const SuperAdmin = () => {
           <i className="far fa-eye px-2"></i>
           <br />- destroy chats
           <i className="fas fa-trash-alt px-2"></i>
-          <br />
+          <br />- For demote ask site owner
+          <br></br>
         </p>
       </div>
       <h1 className="border-bottom border-top">USERS</h1>

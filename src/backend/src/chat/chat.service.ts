@@ -321,11 +321,13 @@ export class ChatService {
 		try {
 			const chat = await this.ChatRepo.findOne(chatId);
 			if (!chat)
-				throw new ConflictException('chat doesnt exist');
+				return [];
 			const msg = await getRepository(MessageEntity)
 			.createQueryBuilder("msg")
 			.where("msg.chatId = :id", {id: chatId})
 			.getMany()
+			console.log(msg[0].user);
+			return msg;
 		} catch (error) {
 			return error;
 		}

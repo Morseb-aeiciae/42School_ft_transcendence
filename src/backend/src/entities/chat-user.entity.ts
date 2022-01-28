@@ -13,10 +13,10 @@ export class Chat_userEntity extends AbstractEntity {
 	@Column()
 	userId: number;
 
-	@ManyToOne(() => ChatEntity, ChatEntity => ChatEntity.chat_user)
+	@ManyToOne(() => ChatEntity, ChatEntity => ChatEntity.chat_user, { onDelete: 'CASCADE' })
 	chat: ChatEntity;
 
-	@ManyToOne(() => UserEntity, UserEntity => UserEntity.chat_user)
+	@ManyToOne(() => UserEntity, UserEntity => UserEntity.chat_user, { onDelete: 'CASCADE' })
 	user: UserEntity;
 
 	@Column({default: 3})

@@ -52,6 +52,7 @@ const MessageBar = (props: any) => {
 
 const Messages = (props: any) => {
   const [msg, setMsg] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     apiChat
@@ -59,12 +60,16 @@ const Messages = (props: any) => {
       .then((response: any) => {
         let msgs = response.data;
         setMsg(msgs);
+        setLoading(false);
+        console.log(response);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
       });
   }, [props.chatId, props.id, msg]);
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <>
       {msg.map((m: any, index: number) => (

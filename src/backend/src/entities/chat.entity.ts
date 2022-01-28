@@ -31,9 +31,9 @@ export class ChatEntity extends AbstractEntity {
 	@Column({nullable: true})
 	ownerId: number;
 
-	@ManyToOne(() => UserEntity, {nullable: true})
+	@ManyToOne(() => UserEntity, {nullable: true, onDelete: 'CASCADE'}, )
 	owner: UserEntity;
 
-	@OneToMany(() => Chat_userEntity, Chat_userEntity => Chat_userEntity.chat)
+	@OneToMany(() => Chat_userEntity, Chat_userEntity => Chat_userEntity.chat ,{ onDelete: 'CASCADE' })
 	chat_user: Chat_userEntity[];
 }

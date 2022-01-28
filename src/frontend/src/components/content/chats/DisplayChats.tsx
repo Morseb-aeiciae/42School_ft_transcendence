@@ -77,8 +77,8 @@ const MessageBar = (props: any) => {
               .post("/addMessage", values)
               .then((response: any) => {
                 // Clear msg sending bar => too long
-                // (document.getElementById("form") as HTMLFormElement).reset();
-                // values.message = "";
+                (document.getElementById("form") as HTMLFormElement).reset();
+                values.message = "";
                 action.setSubmitting(false);
               })
               .catch((err: any) => {
