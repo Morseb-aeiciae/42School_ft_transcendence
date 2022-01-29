@@ -4,7 +4,7 @@ import { apiFriends } from "../../../conf/axios.conf_friends";
 
 const ContactElements = (props: any) => {
   const [rmv, setRmv] = useState(false);
-  const [watch, setWatch] = useState(false);
+  //const [watch, setWatch] = useState(false);
 
   useEffect(() => {
     if (rmv)
@@ -22,7 +22,7 @@ const ContactElements = (props: any) => {
         });
   }, [props, rmv]);
 
-  if (watch) {
+ /* if (watch) {
 	  return (
     <Iframe
       url="../pong3D.html"
@@ -33,7 +33,7 @@ const ContactElements = (props: any) => {
       height="50%"
     />
 	);
-  }
+  }*/
   return (
     <>
       <div className="d-flex flex-row flex-wrap align-content-start">
@@ -89,7 +89,8 @@ const ContactElements = (props: any) => {
                   localStorage.setItem("user", props.target.id);
 				  localStorage.setItem("username", props.username);
                   localStorage.setItem("spect", props.userId);
-                  setWatch(true);
+                  props.setDisplay(4);
+                //  setWatch(true);
                 }}
               >
                 watch Match

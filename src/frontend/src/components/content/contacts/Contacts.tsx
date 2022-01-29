@@ -7,6 +7,8 @@ import AuthContext from "../../../context";
 import { apiFriends } from "../../../conf/axios.conf_friends";
 import PrivateMsg from "./PrivateMsg";
 import Duel from "./Duel";
+import Game from "../pong/Game";
+import Iframe from "react-iframe";
 
 const Contacts = () => {
   const context = useContext(AuthContext);
@@ -44,6 +46,15 @@ const Contacts = () => {
     return <PrivateMsg targetId={target} userId={user} />;
   } else if (display === 3) {
     return <Duel targetId={target} userId={user} />;
+  } else if (display === 4) {
+      return( <Iframe
+      url="../pong3D.html"
+      position="absolute"
+      width="100%"
+      id="myId"
+      className="pong3D"
+      height="50%"
+    />);
   }
   return (
     <>

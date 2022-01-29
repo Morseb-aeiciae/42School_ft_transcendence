@@ -14,6 +14,4 @@ export class FriendsEntity extends AbstractEntity {
     @Column({default: false})
     is_friend: boolean;
 
-
-
 }

@@ -17,8 +17,8 @@ export class FriendsService {
   async setBothFriends(data: SendFriendInviteDTO) {
     const friend = await getRepository(FriendsEntity)
       .createQueryBuilder('friend')
-      .where('friend.targetId = :targetId', { targetId: data.targetId })
-      .andWhere('friend.userId = :userId', { userId: data.userId })
+      .where('friend.targetId = :targetId', { targetId: data.userId })
+      .andWhere('friend.userId = :userId', { userId: data.targetId })
       .getOne();
 
     if (friend == undefined) return false;
@@ -34,7 +34,8 @@ export class FriendsService {
       .andWhere('friend.userId = :userId', { userId: data.userId })
       .getOne();
 
-    if (friends != undefined) return false;
+    if (friends != undefined) 
+    return false;
 
     const friend = this.FriendsRepo.create(data);
     if ((await this.setBothFriends(data)) == true) friend.is_friend = true;
@@ -46,8 +47,9 @@ export class FriendsService {
       .createQueryBuilder('friend')
       .where('friend.targetId = :targetId', { targetId: data.targetId })
       .andWhere('friend.userId= :userId', { userId: data.userId })
-      .getOne();
-    if (friend == undefined || friend.is_friend == false) return false;
+      .getMany();
+    if (friend[1] == undefined || friend[1].is_friend == false) 
+    return false;
     else return true;
   }
 

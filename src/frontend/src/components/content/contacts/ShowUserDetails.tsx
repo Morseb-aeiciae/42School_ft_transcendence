@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Iframe from "react-iframe";
+import { createSolutionBuilderHost } from "typescript";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { apiFriends } from "../../../conf/axios.conf_friends";
@@ -32,6 +33,7 @@ const ShowUserDetails = (props: any) => {
     apiFriends
       .post("/isFriends", { userId, targetId: target.id })
       .then((response: any) => {
+       // console.log("RES + ", response)
         setFriend(response.data);
       })
       .catch((err: any) => {
@@ -130,7 +132,6 @@ const ShowUserDetails = (props: any) => {
     }
   }
   // /******************     switch      ****************** */
-
   if (watch) {
     return (
       <Iframe
