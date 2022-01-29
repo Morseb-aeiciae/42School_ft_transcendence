@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loading } from "../..";
 import { apiChat } from "../../../conf/axios.conf_chats";
 import { Formik } from "formik";
@@ -53,7 +53,6 @@ const MessageBar = (props: any) => {
 const Messages = (props: any) => {
   const [msg, setMsg] = useState([]);
   const [isLoading, setLoading] = useState(true);
-
   useEffect(() => {
     apiChat
       .get(`getMessageOfChat/${props.chatId}`)
@@ -61,7 +60,6 @@ const Messages = (props: any) => {
         let msgs = response.data;
         setMsg(msgs);
         setLoading(false);
-        console.log(response);
       })
       .catch((err: any) => {
         console.log("Chat:", err);
@@ -74,7 +72,7 @@ const Messages = (props: any) => {
     <>
       {msg.map((m: any, index: number) => (
         <div key={index}>
-          {m.userId} : {m.message}
+          {m.username} : {m.message}
         </div>
       ))}
     </>
@@ -91,7 +89,6 @@ const FetchChat = (props: any) => {
     protection: 2,
   });
   const [blocked, setBlocked] = useState(false);
-
   const i = props.id;
 
   useEffect(() => {
@@ -132,7 +129,7 @@ const FetchChat = (props: any) => {
           <div className="d-flex border bg-primary text-dark">
             <hr />
             <div className="flex-fill border p-2 m-1 bg-light">
-              <Messages id={i} chatId={props.chatId} />
+              <Messages id={i} chatId={props.chatId } mounted={props.mounted}  />
               <MessageBar id={i} chatId={props.chatId} />
             </div>
           </div>
@@ -146,7 +143,7 @@ const PrivateMsg = (props: any) => {
   const [chat, setChat] = useState(-1);
   const target = props.targetId;
   const userId = props.userId;
-
+  const mounted = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const userId_1 = target > userId ? userId : target;
     const userId_2 = target > userId ? target : userId;
@@ -178,8 +175,8 @@ const PrivateMsg = (props: any) => {
     return <Loading />;
   } else {
     return (
-      <section className="d-flex flex-row">
-        <FetchChat chatId={chat} target={target} id={userId} />
+      <section ref={mounted} className="d-flex flex-row">
+        <FetchChat chatId={chat} target={target} id={userId} mounted={mounted}  />
       </section>
     );
   }

@@ -24,7 +24,7 @@ const ChatPeek = (props: any) => {
     <div ref={mounted}>
       {msg.map((m: any, index: number) => (
         <div key={index}>
-          {m.userId} : {m.message}
+          {m.username} : {m.message}
         </div>
       ))}
     </div>

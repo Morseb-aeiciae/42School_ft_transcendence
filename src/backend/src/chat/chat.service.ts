@@ -10,6 +10,7 @@ import { createQueryBuilder, getConnection, getRepository, In, Repository } from
 import * as bcrypt from 'bcrypt';
 import { REQUEST } from '@nestjs/core';
 import { request } from 'express';
+import { UserService } from 'src/user/user.service';
 
 enum chat_protection {
 	public = 1,
@@ -24,7 +25,8 @@ export class ChatService {
 		@InjectRepository(Chat_userEntity) private Chat_userRepo: Repository<Chat_userEntity>,
 		@InjectRepository(MessageEntity) private MessageRepo: Repository<MessageEntity>,
 		@InjectRepository(UserEntity) private UserRepo: Repository<UserEntity>,
-		@InjectRepository(BlockEntity) private BlockRepo: Repository<BlockEntity>, ) {}
+		@InjectRepository(BlockEntity) private BlockRepo: Repository<BlockEntity>,
+		private userService: UserService ) {}
 
 	async getAllChats() {
 		const chats = await this.ChatRepo.find();
@@ -175,6 +177,8 @@ export class ChatService {
 		if (chat == undefined || user == undefined)
 			throw new ConflictException("Chat or user undefined");
 		const msg = this.MessageRepo.create(msg_info);
+		const userS = await this.userService.findById(msg_info.userId);
+		msg.username = userS.username;
 		await msg.save();
 		return msg;
 	} catch (error) {
@@ -326,7 +330,7 @@ export class ChatService {
 			.createQueryBuilder("msg")
 			.where("msg.chatId = :id", {id: chatId})
 			.getMany()
-			console.log(msg[0].user);
+			//console.log(msg[0].user);
 			return msg;
 		} catch (error) {
 			return error;

@@ -18,7 +18,7 @@ const Duel = (props: any) => {
     return (
       <section>
         <p>
-          Duel : id-{target} VS id-{userId} incomming
+          Waiting for opponent to join
         </p>
 		<Game />
       </section>

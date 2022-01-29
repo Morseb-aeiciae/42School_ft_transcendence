@@ -27,4 +27,5 @@ export class Chat_userEntity extends AbstractEntity {
 
 	@Column({default: false})
 	muted: boolean;
+
 }

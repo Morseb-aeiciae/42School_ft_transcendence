@@ -11,6 +11,8 @@ import PrivateMsg from "../contacts/PrivateMsg";
 import Duel from "../contacts/Duel";
 
 const displayChatCard = (chat: any, setState: any, leave: any) => {
+
+ 
   if (chat.banned) {
     return (
       <>
@@ -105,6 +107,10 @@ const CurrentChats = (props: any) => {
                 }
                 return null;
               });
+              setTimeout(() => {
+                setLoading(false);
+                
+              }, 100);
             })
             .catch((err: any) => {
               console.log("Chat:", err);
@@ -112,7 +118,6 @@ const CurrentChats = (props: any) => {
           return chat;
         });
         setChats(chats);
-        setLoading(false);
       })
       .catch((err: any) => {
         console.log("Chats:", err);

@@ -40,9 +40,8 @@ const ChatUsers = (props: any) => {
 const MessageBar = (props: any) => {
   const [r, setR] = useState(0);
   const [currentUser, setCurrentUser] = useState({
-    banned: false,
+    banned: false, muted:false,
   });
-
   useEffect(() => {
     // check if the user is ban of the chat and allow to send msg
 
@@ -51,6 +50,7 @@ const MessageBar = (props: any) => {
       .then((response: any) => {
         if (props.mounted.current === null) return;
         const users = response.data;
+        //console.log("USER  + ", users);
         users.map((u: any) => {
           if (u.userId === props.id) {
             if (props.mounted.current === null) return 0;
@@ -68,6 +68,8 @@ const MessageBar = (props: any) => {
   }, [r, props.chatId, props.id, props.mounted]);
 
   const submit = (values: any, action: any) => {
+    if (currentUser.muted)
+      return ;
     if (!currentUser.banned && values.message)
       apiChat
         .post("/isUserOnChat", { userId: props.id, chatId: props.chatId })
@@ -202,7 +204,7 @@ const Messages = (props: any) => {
           key={index}
           className="d-flex align-items-start justify-content-start"
         >
-          {m.userId} : {m.message}
+          {m.username} : {m.message}
         </div>
       ))}
     </>

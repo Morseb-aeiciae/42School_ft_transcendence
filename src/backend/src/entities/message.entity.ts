@@ -20,4 +20,7 @@ export class MessageEntity extends AbstractEntity {
 
 	@Column()
 	message: string;
+
+	@Column({nullable: true})
+	username: string;
 }

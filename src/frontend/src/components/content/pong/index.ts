@@ -31,7 +31,7 @@ import { setTokenSourceMapRange } from "typescript";
 
 let socket: any;
 
-socket = io.connect("http://" + process.env.REACT_APP_BACKEND + "/", { withCredentials: true });
+socket = io.connect("http://172.31.141.126:3001/" ,{ withCredentials: true });
 
 socket.on("connect", () => {
   console.log("Successfully connected to the newsocket game ");
