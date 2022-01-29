@@ -1,19 +1,17 @@
 import axios, { AxiosResponse } from "axios";
 
 const configHeaders = {
-   withCredentials: true, 
+  "Access-Control-Allow-Origin": "*",
   "content-type": "application/json",
   Accept: "*/*",
   "Access-Control-Max-Age": 12,
-  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
-  "Access-Control-Allow-Credentials": "true",
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
 export const apiAuth = axios.create({
-  baseURL: "http://localhost:3001/auth",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_FRONTEND + "/auth",
   headers: configHeaders,
   timeout: 10000,
 });

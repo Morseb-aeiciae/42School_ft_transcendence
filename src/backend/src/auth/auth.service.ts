@@ -65,6 +65,7 @@ export class AuthService {
     tab.isBan = user.isBan;
     if (user.isTwoFactorAuthenticationEnabled == true) 
       tab.user = undefined;
+    console.log(tab);
     return tab;
   }
   /*

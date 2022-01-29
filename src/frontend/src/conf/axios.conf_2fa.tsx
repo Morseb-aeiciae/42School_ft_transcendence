@@ -7,12 +7,11 @@ const configHeaders = {
   "Access-Control-Max-Age": 12,
   "Access-Control-Allow-Headers":
     "Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
-  "Access-Control-Allow-Credentials": "true",
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
 export const api2fa = axios.create({
-  baseURL: "http://localhost:3001/2fa",
+  baseURL: "http://172.31.141.126:8080/2fa",
   headers: configHeaders,
   timeout: 3000,
 });

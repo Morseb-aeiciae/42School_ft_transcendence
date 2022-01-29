@@ -11,6 +11,8 @@ services:
         target: /app
       - type: volume
         target: /app/cache/
+    env_file:
+        - docker.env
       #   target: /app/node_modules
     # networks:
     #   - front_network
@@ -21,8 +23,7 @@ services:
       dockerfile: Dockerfile.dev
     command: npm run start:dev
     env_file:
-      - ./src/db/.env
-      - ./src/backend/.env
+      - docker.env
     ports:
       - 3001:3000
     volumes:
@@ -36,7 +37,7 @@ services:
   db:
     image: postgres:13
     env_file:
-      - ./src/db/.env
+        - docker.env
     volumes:
       - type: volume
         source: dbtest
@@ -55,20 +56,6 @@ services:
       - 3002:8080
     # networks:
     #   - db_network
-
-  reverse-proxy:
-    build:
-      context: ./src/reverse-proxy
-      dockerfile: Dockerfile.dev
-    ports:
-      - 80:80
-    depends_on:
-      - db
-    # networks:
-    #   - db_network
-    #   - front_network
-    #   - back_network
-
 # networks:
 #   db_network: {}
 #   front_network: {}
