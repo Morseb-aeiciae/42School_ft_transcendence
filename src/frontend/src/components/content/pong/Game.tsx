@@ -8,11 +8,8 @@ const LaunchGameTraining = () => {
       <p>
         mouse to move cam <br />
         <br />
-        blue bar : <br /> 'S' to move down <br />
-        'W' to move up <br />
-        <br />
-        pink bar : <br />
-        arrow up and down
+        mouse to move cam <br /> 'S' to move down <br />
+        'W' to move up
       </p>
       <Iframe
         url="../pong3D.html"

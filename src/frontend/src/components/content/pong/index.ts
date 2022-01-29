@@ -35,12 +35,12 @@ let socket: any;
 socket = io.connect("http://172.31.141.126:3001/" ,{ withCredentials: true });
 
 socket.on("connect", () => {
-  console.log("Successfully connected to the newsocket game ");
+  //console.log("Successfully connected to the newsocket game ");
   //Waiting for another player to connect (enter matchmaking)
 });
 
 socket.on("disconnect", () => {
-  console.log("Disconnected to newsocket game ");
+  //console.log("Disconnected to newsocket game ");
 });
 
 // var token = localStorage.getItem("token");
@@ -49,10 +49,10 @@ const GameMode = localStorage.getItem("mode");
 let UserId = localStorage.getItem("id");
 const DuelId = localStorage.getItem("duel");
 const username = localStorage.getItem("username");
-console.log("mode : " + GameMode + " id : " + UserId + " duel : " + DuelId);
+//console.log("mode : " + GameMode + " id : " + UserId + " duel : " + DuelId);
 
 const user_to_watch = localStorage.getItem("user");
-console.log(user_to_watch);
+//console.log(user_to_watch);
 
 if (user_to_watch != null) UserId = localStorage.getItem("spect");
 
@@ -76,7 +76,7 @@ var config = {
 // }
 
 socket.on("test", (i: number) => {
-  console.log("front sucesfully called");
+  //console.log("front sucesfully called");
 });
 
 // socket.on("change_mode", (i: number) =>
@@ -416,7 +416,7 @@ socket.on("change_ball_color", (i: number) => {
 
 socket.on("update_positions", (positions: any) => {
   //Ball
-  // console.log(positions.bpz + " test");
+  // //console.log(positions.bpz + " test");
   ball_s.ball.position.x = positions.bpx;
   ball_s.ball.position.z = positions.bpz;
   ball_s.ball_outline.position.x = ball_s.ball.position.x;
@@ -522,7 +522,7 @@ socket.on("spawn_bonus", (infos: any) =>
 
 socket.on("bonus_taken", (infos: any) =>
 {
-	console.log("BONUS TAKEN");
+	//console.log("BONUS TAKEN");
 	bonus_s.bonus.position.y = -50;
 	bonus_s.bonus_outline.position.y = -50;
 	bonus_s.bonus_outline.material.color.setHex(0xfffff);
@@ -538,7 +538,7 @@ socket.on("bonus_taken", (infos: any) =>
 			paddles_s.bar_left.scale.set(1, 1, 1.5);
 			paddles_s.bar_left_out.scale.set(1, 1, 1.5);
 		}		
-		console.log("Left took the bonus");
+		//console.log("Left took the bonus");
 	}
 	else
 	{
@@ -552,7 +552,7 @@ socket.on("bonus_taken", (infos: any) =>
 			paddles_s.bar_right.scale.set(1, 1, 1.5);
 			paddles_s.bar_right_out.scale.set(1, 1, 1.5);
 		}		
-		console.log("Right took the bonus");
+		//console.log("Right took the bonus");
 	}
 	bonus_s.bonus_outline.material.color.setHex(0x0000ff);
 });

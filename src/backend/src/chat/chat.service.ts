@@ -330,7 +330,6 @@ export class ChatService {
 			.createQueryBuilder("msg")
 			.where("msg.chatId = :id", {id: chatId})
 			.getMany()
-			//console.log(msg[0].user);
 			return msg;
 		} catch (error) {
 			return error;

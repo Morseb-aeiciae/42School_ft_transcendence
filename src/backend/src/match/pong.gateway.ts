@@ -51,12 +51,12 @@ export class PongGateway
 
 	afterInit(server: Server)
 	{
-		console.log("game socket init !");
+		//console.log("game socket init !");
 	}
 
 	handleConnection(client: Socket)
 	{
-		console.log (client.id + " has join the matchmaking");
+		//console.log (client.id + " has join the matchmaking");
 		users_key_status.set(client.id, 0);
 		users_id.set(client.id, -1);
 		return;
@@ -67,7 +67,7 @@ export class PongGateway
 		let index_of_client_0: number;
 		let index_of_client_1: number;
 
-		console.log (client.id + " has left the matchmaking");
+		//console.log (client.id + " has left the matchmaking");
 		// client.leave(client.id);
 		index_of_client_0 = users_in_matchmaking_0.indexOf(client);
 		index_of_client_1 = users_in_matchmaking_1.indexOf(client);
@@ -75,32 +75,32 @@ export class PongGateway
 		if (index_of_client_0 != -1)
 		{
 			users_in_matchmaking_0.splice(index_of_client_0, 1);
-			console.log("users in classic matchmaking : " + users_in_matchmaking_0.length);
+			//console.log("users in classic matchmaking : " + users_in_matchmaking_0.length);
 			await this.userService.changeStatus(users_id.get(client.id), Status.Online);
 		}
 		else if (index_of_client_1 != -1)
 		{
 			users_in_matchmaking_1.splice(index_of_client_1, 1);
-			console.log("users in bonus matchmaking : " + users_in_matchmaking_1.length);
+			//console.log("users in bonus matchmaking : " + users_in_matchmaking_1.length);
 			await this.userService.changeStatus(users_id.get(client.id), Status.Online);
 		}
 		else if (room_match_info.get(socket_id.get(users_id.get(client.id))))
 		{
-			console.log("OUI ON PASSE PAR LA  " + room_match_info.get(socket_id.get(users_id.get(client.id))));
+			//console.log("OUI ON PASSE PAR LA  " + room_match_info.get(socket_id.get(users_id.get(client.id))));
 			if (room_match_info.get(socket_id.get(users_id.get(client.id)))[9] != 1) //Le joeur était en game
 			{
 				var game_room: string;
 
 				room_match_info.get(socket_id.get(users_id.get(client.id)))[9] = 1;
 				game_room = socket_id.get(users_id.get(client.id));
-				console.log("Game socket = " + game_room);
+				//console.log("Game socket = " + game_room);
 				room_match_info.get(socket_id.get(users_id.get(client.id)));
 				this.server.to(socket_id.get(users_id.get(client.id))).emit("User_disconected", users_name.get(client.id));
 
-				console.log("A user LEFT A RUNNING MATCH");
+				//console.log("A user LEFT A RUNNING MATCH");
 
 
-				console.log(room_match_info.get(socket_id.get(users_id.get(client.id)))[4]);
+				//console.log(room_match_info.get(socket_id.get(users_id.get(client.id)))[4]);
 
 				let data_picker = socket_id.get(users_id.get(client.id));
 				//Remettre le deux user Online
@@ -140,7 +140,7 @@ export class PongGateway
 	@SubscribeMessage('send_username')
 	async get_username(client: Socket, user_id)
 	{
-		console.log("USER ID = " + user_id);
+		//console.log("USER ID = " + user_id);
 	}
 
 	@SubscribeMessage('up_paddle')
@@ -164,19 +164,19 @@ export class PongGateway
 	@SubscribeMessage('launch_game')
 	async launch_game(client: Socket, config)
 	{
-		console.log(client.id + " aka " + config.login + " trys to launch game, gamemode : " + config.mode + " vs " + config.duel);
+		//console.log(client.id + " aka " + config.login + " trys to launch game, gamemode : " + config.mode + " vs " + config.duel);
 		users_id.set(client.id, config.login);
 		users_name.set(client.id, config.username);
 		socket_id.set(config.login, client.id);
 
 		let launch_game = -1;
 
-		console.log(config.spec);
+		//console.log(config.spec);
 		if (config.spec != null)
 		{
-			console.log(client.id + " is willing to watch a game " + socket_id.get(config.spec));
+			//console.log(client.id + " is willing to watch a game " + socket_id.get(config.spec));
 			client.join(socket_id.get(config.spec));
-			// console.log(users_name.get(room_match_info.get(socket_id.get(config.spec))[0].id));
+			// //console.log(users_name.get(room_match_info.get(socket_id.get(config.spec))[0].id));
 			client.emit("update_usernames", {right_user: room_match_info.get(socket_id.get(config.spec))[1], left_user:  room_match_info.get(socket_id.get(config.spec))[0]});
 			client.emit("update_score", {ls: room_match_info.get(socket_id.get(config.spec))[2], rs: room_match_info.get(socket_id.get(config.spec))[3] });
 			client.emit("update_paddles_size", {lp: room_match_info.get(socket_id.get(config.spec))[10], rp: room_match_info.get(socket_id.get(config.spec))[11] });
@@ -198,7 +198,7 @@ export class PongGateway
 				}
 				else
 					duel_game_mode = config.mode;
-				console.log("The other player is willing to FIGHT ! Gamemode : " + duel_game_mode);
+				//console.log("The other player is willing to FIGHT ! Gamemode : " + duel_game_mode);
 
 				launch_game = duel_game_mode;
 				var players: Socket[];
@@ -223,7 +223,7 @@ export class PongGateway
 			}
 			else
 			{
-				console.log("Waiting for the other player...");
+				//console.log("Waiting for the other player...");
 			}
 		}
 
@@ -238,7 +238,7 @@ export class PongGateway
 			{
 				if (users_id.get(users_in_matchmaking_0[0].id) == users_id.get(users_in_matchmaking_0[1].id))
 				{
-					console.log("User allready registered !");
+					//console.log("User allready registered !");
 					users_in_matchmaking_0.pop();
 					return ;
 				}
@@ -251,9 +251,9 @@ export class PongGateway
 
 				users_in_matchmaking_0 = [];
 
-				console.log(users_in_matchmaking_0.length);
+				//console.log(users_in_matchmaking_0.length);
 
-				console.log("2 Users or more are looking for a Classic game");
+				//console.log("2 Users or more are looking for a Classic game");
 
 				players[0].join(players[0].id);
 				players[1].join(players[0].id);
@@ -265,7 +265,7 @@ export class PongGateway
 			{
 				if (users_id.get(users_in_matchmaking_1[0].id) == users_id.get(users_in_matchmaking_1[1].id))
 				{
-					console.log("User allready registered !");
+					//console.log("User allready registered !");
 					users_in_matchmaking_1.pop();
 					return ;
 				}
@@ -278,9 +278,9 @@ export class PongGateway
 
 				users_in_matchmaking_1 = [];
 
-				console.log(users_in_matchmaking_1.length);
+				//console.log(users_in_matchmaking_1.length);
 
-				console.log("2 Users or more are looking for a Bonus game");
+				//console.log("2 Users or more are looking for a Bonus game");
 
 				players[0].join(players[0].id);
 				players[1].join(players[0].id);
@@ -294,7 +294,7 @@ export class PongGateway
 			await this.userService.changeStatus(users_id.get(players[0].id), Status.Ongame);
 			await this.userService.changeStatus(users_id.get(players[1].id), Status.Ongame);
 
-			console.log(await this.userService.findById(users_id.get(players[0].id)));
+			//console.log(await this.userService.findById(users_id.get(players[0].id)));
 
 			var	match_info: any []; //user_name_0, user_name_1, score_0, score_1, socket_0, socket_1, id_0, id_1, game_mode, is_game_ended, paddle_l_size, paddle_r_size -> 0 = normal -1 = small 1 = huge
 			match_info = [];
@@ -419,7 +419,7 @@ export class PongGateway
 							positions.bonus_counter = getRandomInt(500, 1000);
 							positions.bonus_state = 1;
 							positions.bonus_type = getRandomInt(0, 10);
-							console.log("Bonus type = " + positions.bonus_type);
+							//console.log("Bonus type = " + positions.bonus_type);
 							positions.bonus_pos_x = getRandomInt(-positions.arena_right_pos_2, positions.arena_right_pos_2);
 							positions.bonus_pos_z = getRandomInt(-positions.arena_bot_pos_2, positions.arena_bot_pos_2);
 							positions.bonus_pos_z = 0;//Debug
@@ -460,7 +460,7 @@ export class PongGateway
 						positions.bonus_counter = getRandomInt(500, 1000);
 						positions.bonus_state = 1;
 						positions.bonus_type = getRandomInt(0, 10);
-						console.log("Bonus type = " + positions.bonus_type);
+						//console.log("Bonus type = " + positions.bonus_type);
 						positions.bonus_pos_x = getRandomInt(-positions.arena_right_pos_2, positions.arena_right_pos_2);
 						positions.bonus_pos_z = getRandomInt(-positions.arena_bot_pos_2, positions.arena_bot_pos_2);
 						positions.bonus_pos_z = 0;//Debug
@@ -555,7 +555,7 @@ export class PongGateway
 
 				this.MatchService.createMatch(return_tab);
 			}
-			// console.log(await this.MatchService.getMatchsOfUser(users_id.get(players[1].id)));
+			// //console.log(await this.MatchService.getMatchsOfUser(users_id.get(players[1].id)));
 		}
 	};
 };
