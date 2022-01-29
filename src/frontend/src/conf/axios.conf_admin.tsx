@@ -12,7 +12,7 @@ const configHeaders = {
 };
 
 export const apiAdmin = axios.create({
-  baseURL: "http://172.31.141.126:8080/admin",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND + "/admin",
   headers: configHeaders,
   timeout: 3000,
 });

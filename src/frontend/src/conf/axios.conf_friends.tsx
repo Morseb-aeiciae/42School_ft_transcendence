@@ -11,7 +11,7 @@ const configHeaders = {
 };
 
 export const apiFriends = axios.create({
-  baseURL: "http://localhost:3001/friends",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND + "/friends",
   headers: configHeaders,
   timeout: 3000,
 });

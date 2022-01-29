@@ -8,7 +8,7 @@ import { VerifiedCallback } from 'passport-jwt';
 import { AuthService } from './../auth.service';
 
 
-const callBack = "http://172.31.141.126:3000/auth/"
+const callBack = "http://" + process.env.FRONTEND + "/auth/"
 @Injectable()
 export class SchoolStrategy extends PassportStrategy(Strategy, '42') {
   constructor(private authService: AuthService) {

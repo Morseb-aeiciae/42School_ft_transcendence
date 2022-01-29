@@ -8,8 +8,8 @@ async function bootstrap() {
  
  app.enableCors({
     credentials: true,
-    origin: "http:/172.31.141.126:3000",
-    allowedHeaders: 'access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,access-control-max-age,Content-type,withcredentials',
+    origin: "http://" + process.env.FRONTEND,
+    allowedHeaders: 'authorization, access-control-allow-credentials, access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,access-control-max-age,Content-type,withcredentials',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
   // app.use(cookieParser());

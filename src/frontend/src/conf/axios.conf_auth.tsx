@@ -11,7 +11,8 @@ const configHeaders = {
 };
 
 export const apiAuth = axios.create({
-  baseURL: "http://" + process.env.REACT_APP_DOMAIN_FRONTEND + "/auth",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND +  "/auth",
+  
   headers: configHeaders,
   timeout: 10000,
 });

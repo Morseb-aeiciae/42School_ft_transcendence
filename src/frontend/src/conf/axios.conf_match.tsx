@@ -12,7 +12,7 @@ const configHeaders = {
 };
 
 export const apiMatch = axios.create({
-  baseURL: "http://localhost:3001/match",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND + "/match",
   headers: configHeaders,
   timeout: 3000,
 });

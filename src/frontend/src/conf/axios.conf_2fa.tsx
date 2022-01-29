@@ -11,7 +11,7 @@ const configHeaders = {
 };
 
 export const api2fa = axios.create({
-  baseURL: "http://172.31.141.126:8080/2fa",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND + "/2fa",
   headers: configHeaders,
   timeout: 3000,
 });

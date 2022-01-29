@@ -11,7 +11,7 @@ const configHeaders = {
 };
 
 export const apiChatAdmin = axios.create({
-  baseURL: "http://localhost:3001/chat/admin",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND + "/chat/admin",
   headers: configHeaders,
   timeout: 3000,
 });

@@ -37,7 +37,7 @@ var PI_s =
 }
 
 @WebSocketGateway({
-	cors: {origin:'http://localhost',
+	cors: {origin:'http://' + process.env.FRONTEND,
 	methods: ['GET', 'POST'],
 	credentials: true}
 })

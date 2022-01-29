@@ -11,19 +11,19 @@ const configHeaders = {
 };
 
 export const apiLocal3001 = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND,
   headers: configHeaders,
   timeout: 3000,
 });
 
 export const apiUser = axios.create({
-  baseURL: "http://localhost:3001/user",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND + "/user",
   headers: configHeaders,
   timeout: 3000,
 });
 
 const apiUsers = axios.create({
-  baseURL: "http://localhost:3001/users",
+  baseURL: "http://" + process.env.REACT_APP_DOMAIN_BACKEND + "/users",
   headers: configHeaders,
   timeout: 3000,
 });
