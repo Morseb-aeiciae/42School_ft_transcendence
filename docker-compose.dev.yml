@@ -56,19 +56,6 @@ services:
     # networks:
     #   - db_network
 
-  reverse-proxy:
-    build:
-      context: ./src/reverse-proxy
-      dockerfile: Dockerfile.dev
-    ports:
-      - 80:80
-    depends_on:
-      - db
-    # networks:
-    #   - db_network
-    #   - front_network
-    #   - back_network
-
 # networks:
 #   db_network: {}
 #   front_network: {}

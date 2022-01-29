@@ -13,7 +13,7 @@ export class SchoolStrategy extends PassportStrategy(Strategy, '42') {
     super({
       clientID: process.env.CLIENT_UID,
       clientSecret: process.env.SECRET,
-      callbackURL: process.env.CALLBACK_URL,
+      callbackURL: "http://localhost:3001/auth/redirec",
       scope: ['public'],
     });
   }
