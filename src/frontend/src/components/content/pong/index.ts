@@ -32,7 +32,7 @@ import { info } from "console";
 
 let socket: any;
 
-socket = io.connect("http://172.31.141.126:3001/" ,{ withCredentials: true });
+socket = io.connect("http://10.4.7.5:3001/" ,{ withCredentials: true });
 
 socket.on("connect", () => {
   //console.log("Successfully connected to the newsocket game ");
